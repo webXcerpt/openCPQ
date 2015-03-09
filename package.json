@@ -1,0 +1,31 @@
+
+{
+  "name": "opencpq",
+  "description": "A React.js-based product-configuration framework",
+  "version": "0.0.1",
+  "keywords": [
+    "configuration",
+    "CPQ",
+    "react"
+  ],
+  "repository": {
+    "type": "git",
+    "url": "https://github.com/openCPQ/openCPQ"
+  },
+  "homepage": "http://opencpq.org/",
+  "bugs": "https://github.com/openCPQ/openCPQ/issues",
+  "license": "MIT",
+  "browserify": {
+    "transform": [
+      ["babelify", {"experimental": true}]
+    ]
+  },
+  "peerDependencies": {
+    "babel": "",
+    "react": "",
+    "browser-filesaver": ""
+  },
+  "devDependencies": {
+    "babelify": ""
+  }
+}
