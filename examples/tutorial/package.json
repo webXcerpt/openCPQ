@@ -1,0 +1,16 @@
+{
+  "name": "opencpq-tutorial",
+  "description": "A simple demo for learning openCPQ.",
+  "dependencies": {
+  	"opencpq": "git://github.com/opencpq/opencpq.git#master"
+  },
+  "devDependencies": {
+    "babelify": "",
+    "browserify": "",
+    "gulp": "",
+    "gulp-connect": "",
+    "gulp-util": "",
+    "vinyl-source-stream": "",
+    "watchify": ""
+  }
+}
