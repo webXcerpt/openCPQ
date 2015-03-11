@@ -1,2 +1,2 @@
 # openCPQ
-A React.js-based product-configuration framework
+A browser-based product-configuration framework
