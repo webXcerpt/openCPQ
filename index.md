@@ -39,6 +39,14 @@ and IT operations:
 - Since openCPQ is a quite thin layer on top of standard web technology,
   it is easy to learn for many persons.
 
+Finally, since openCPQ is an open-source project published under the
+liberal
+[MIT license](https://raw.githubusercontent.com/openCPQ/openCPQ/master/LICENSE),
+
+- there are no license fees to pay and
+- you can even adapt openCPQ itself to your needs if the need should
+  arise.
+
 <!-- TODO
 - link to demo (once we have a public one) and example code
 -->
