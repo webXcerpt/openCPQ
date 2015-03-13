@@ -6,9 +6,10 @@ prio: 0
 ---
 
 With openCPQ you can implement product configurators that run completely
-in the browser.  Compared with the traditional approach of running a
-configuration engine in a server this has advantages for IT operations
-and end users:
+in the browser.  The traditional approach is to run a configuration
+engine in a server and to use the browser only for displaying the user
+interface.  The browser-based approach has advantages for several
+stakeholders:
 
 - End users need not wait for round-trips to the server after each
   input, which allows them to work more smoothly.
@@ -17,6 +18,9 @@ and end users:
   Caching feature.)
 - IT operations need not worry about scalability of a configuration
   server since they only need to host static web pages.
+- System integrators implementing a customer-specific user interface can
+  easily access the configuration data locally without the complexity of
+  requests for remote data.
 
 Product models are written as JavaScript programs using functions and
 classes from the openCPQ library.  Compared with the traditional
@@ -48,5 +52,6 @@ liberal
   arise.
 
 <!-- TODO
+- mention reactjs
 - link to demo (once we have a public one) and example code
 -->
