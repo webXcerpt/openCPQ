@@ -1,0 +1,35 @@
+{% assign sorted_pages = site.pages | sort:'prio' %}
+<ul>
+    {% for page in sorted_pages %}
+    {%   if page.prio %}
+    {%     if page.refurl %}
+    {%       assign url = page.refurl %}
+    {%     else %}
+    {%       assign url = page.url %}
+    {%     endif %}
+    <li>
+	<a href="{{ url | prepend:site.baseurl }}">
+	{% if page.reference %}
+	{{ page.reference }}
+	{% else %}
+	{{ page.title }}
+	{% endif %}
+	</a>
+	{% if page.isBlogList %}
+	<ul>
+	    {% for post in site.posts %}
+	    <li>
+		<a href="{{ post.url | prepend:site.baseurl }}">
+		    {{ post.date | date: "%Y-%m-%d" }}: {{ post.title }}
+		</a>
+	    </li>
+	    {% endfor %}
+	</ul>
+	{% endif %}
+    </li>
+    {%   endif %}
+    {% endfor %}
+    <li>
+	<a href="http://github.com/openCPQ/openCPQ">GitHub</a>
+    </li>
+</ul>

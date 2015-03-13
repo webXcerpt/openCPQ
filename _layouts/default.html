@@ -1,0 +1,22 @@
+<html>
+<head>
+    <title>openCPQ: {{ page.title }}</title>
+</head>
+<body>
+    <div>
+	<span>
+	    <img src="{{ "/images/openCPQ-logo-100x41.png" | prepend:site.baseurl }}"">
+	    <b>
+		openCPQ - A Browser-Based Product-Configuration Framework
+	    </b>
+	<hr>
+	<div>
+	    {% include navbar.html %}
+	</div>
+	<hr>
+	<div>
+	    {{ content }}
+	</div>
+    </div>
+</body>
+<html>

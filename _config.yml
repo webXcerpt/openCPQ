@@ -1,0 +1,22 @@
+baseurl: "/openCPQ"
+url: "http://opencpq.github.io"
+title: "openCPQ"
+
+exclude:
+  - "README.md"
+  - "Gemfile"
+  - "params.json"
+
+defaults:
+  -
+    scope:
+      path: ""
+      type: "pages"
+    values:
+      layout: "default"
+  -
+    scope:
+      path: ""
+      type: "posts"
+    values:
+      layout: "post"

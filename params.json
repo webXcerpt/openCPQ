@@ -1,1 +1,7 @@
-{"name":"Opencpq","tagline":"A React.js-based product-configuration framework","body":"### Welcome to openCPQ.\r\n\r\nopenCPQ is a library for building product configurators that run completely in the web browser.","google":"","note":"Don't delete this file! It's used internally to help with page regeneration."}
+{
+    "name": "openCPQ",
+    "tagline": "A browser-based product-configuration framework",
+    "body": "Welcome to openCPQ.\r\n\r\nopenCPQ is a library for building product configurators that run completely in the web browser.",
+    "google": "",
+    "note": "Don't delete this file! It's used internally to help with page regeneration."
+}
