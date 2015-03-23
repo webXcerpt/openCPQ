@@ -45,7 +45,7 @@ and IT operations:
 
 Finally, since openCPQ is an open-source project published under the
 liberal
-[MIT license](https://raw.githubusercontent.com/openCPQ/openCPQ/master/LICENSE),
+[MIT license](https://raw.githubusercontent.com/webXcerpt/openCPQ/master/LICENSE),
 
 - there are no license fees to pay and
 - you can even adapt openCPQ itself to your needs if the need should
