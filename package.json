@@ -23,6 +23,7 @@
   "peerDependencies": {
     "babel": "",
     "react": "",
+    "react-bootstrap": "",
     "browser-filesaver": ""
   },
   "devDependencies": {
