@@ -1,4 +1,4 @@
-require("babel/polyfill");
+require("babel-core/polyfill");
 
 module.exports = {
 	...require("./lib/base"),
