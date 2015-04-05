@@ -38,7 +38,7 @@ achieve this is something like the following directory structure:
 So in `some_common_ancestor_directory` you run
 
 ```
-  npm install babel-core browser-filesaver react react-bootstrap
+  npm install babel-core babel-loader browser-filesaver react react-bootstrap
 ```
 
 or you just run
