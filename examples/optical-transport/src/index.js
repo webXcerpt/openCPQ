@@ -9,8 +9,11 @@ var {
 	CHtml,
 	CUnit,
 	CNameSpace,
-	Problems,
+	CTOCEntry,
+	TOC, Problems, 
+	VBOM, VTOC, VProblems, 
 	CQuantifiedList,
+	NamedAdder,
     renderTree, rootPath,
 } = require("opencpq");
 
@@ -295,13 +298,44 @@ var configuration = CQuantifiedList({}, "Configuration", CSelect([
     ccase("Rack", "Rack", rack),
 ]));
 
+var itemList = []; // TODO fill itemList
+
 var workbench = CWorkbench(
-	ctx => ({}),
-	innerNode => (
-		<div>
-			{packed(innerNode.renderHB())}
-		</div>
-	),
+	ctx => ({toc: VTOC(ctx), bom: VBOM(itemList, ctx), problems: VProblems(ctx)}),
+	(innerNode, {toc, bom, problems}) => {
+		function colStyle(percentage) {
+			return {
+				display: "inline-block",
+				verticalAlign: "top",
+				width: `${percentage}%`,
+				height: "100%",
+				overflow: "auto"
+			};
+		}
+		function rowStyle(percentage) {
+			return {height: `${percentage}%`, overflow: "auto"};
+		}
+		return <div>
+			<div style={colStyle(15)}>
+				<h3>Contents</h3>
+				{toc.render()}
+			</div>
+			<div style={colStyle(50)}>
+				<h3>Configuration</h3>
+				{packed(innerNode.renderHB())}
+			</div>
+			<div style={colStyle(35)}>
+				<div style={rowStyle(70)}>
+					<h3>Bill of Materials</h3>
+					{bom.render()}
+				</div>
+				<div style={rowStyle(30)}>
+					<h3>Problems</h3>
+					{problems.render()}
+				</div>
+			</div>
+		</div>; // TODO: Use tabs for bom/problems?
+	},
 	configuration
 );
 
@@ -310,6 +344,9 @@ renderTree(
 	undefined,
 	() => ({
 		path: rootPath,
+		toc: new TOC(),
+		bom: new NamedAdder(),
+		linearAggregators: ["bom"],
 		problems: new Problems(),
 	}),
 	document.getElementsByTagName("body")[0]
