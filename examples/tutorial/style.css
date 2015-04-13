@@ -2,8 +2,7 @@
 .validate-error { color: #FA1E1E; }
 .validate-warning { color: #FFA826; }
 
-.member-label { width: 100px; }
-.member-body {
+.select-detail, .labeled-data {
   border-left: 1px dashed grey;
   padding-left: 30px;
 }
