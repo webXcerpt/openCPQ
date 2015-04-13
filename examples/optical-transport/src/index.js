@@ -4,6 +4,7 @@ var {
 	CWorkbench,
 	CGroup, cmember,
 	CSelect, ccase, cdefault, unansweredCase,
+	CBoolean,
 	CInteger,
 	CHtml,
 	CUnit,
@@ -196,14 +197,31 @@ function range(from, to) {
 	return result;
 }
 
+function software(p) {
+	return
+	cmember("Software", "Software", CGroup([
+	    cmember("Release", "Release", CSelect([
+	        ccase("R1.0", "Rel. 1.0"),
+	        ccase("R1.1", "Rel. 1.1"),
+	        ccase("R2.0", "Rel. 2.0"),
+	    ])),                                    
+	    cmember("Licenses", "Licenses", CGroup([
+	        (p.Release === "R2.0" ?
+	            cmember("MPLS-TP", "MPLS-TP", CBoolean({})) :
+	            undefined
+	        ),
+	        cmember("NetM", "Connection License to Network Management", CBoolean({})),
+	    ])),                                    
+	]));
+}
+
 var opticalSwitch4 = CTOCEntry("OS4", x => "Optical Switch OS4", CNameSpace("productProps", CGroup(function({productProps: p}) {	return [
     cmember("Slots", "Slots", CGroup(
     	[for (i of range(1, 4))
     		cmemberNV(`slot${i}`, `Slot ${i}`, boards(false))
         ]
     )),
-	cmember("Software", "Software", CGroup([
-	])),
+	software(p),
 ]})));
 
 
@@ -218,8 +236,7 @@ var opticalSwitch16 = CTOCEntry("OS16", x => "Optical Switch OS16", CNameSpace("
     		)
         ]
     )),
-	cmember("Software", "Software", CGroup([
-	])),
+	software(p),
 	
 	/*
 	 * power supply
