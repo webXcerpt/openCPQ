@@ -30,6 +30,7 @@ var {CPorts} = require("../lib/ports");
 
 // TODO move into a file data.js
 
+
 var allBoards = [
     {name: "B:FP",         label: "unequipped"},
     {name: "B:16x10_32x1", label: "16 x 10 G + 32 x 1 G board", doubleWidth: true, power: 45, ports: [{label: "SFP+ ports",  number: 16, type: "SFP+"}, {label: "SFP ports", number: 32, type: "SFP"}]}, // material, image, ...
@@ -141,7 +142,7 @@ function boards(isDoubleWidthSlot) {
 	return CSelect(allBoards.map(b =>
 		b.doubleWidth && !isDoubleWidthSlot ? 
 		undefined :
-		ccase(b.name, b.label,
+		ccaseBOM(b.name, b.label,
 			aggregate("power", b.power,
 				b.ports ? ports(b.ports) :
 				b.modules ? modules(b.modules) :
@@ -160,7 +161,7 @@ function modules(number) {
 	return CGroup(
 		[for (i of range(1, number))
 			cmember(`module${i}`, `Module ${i}`, CSelect(allModules.map(
-				m => ccase(m.name, m.label, m.ports ? aggregate("power", m.power, ports(m.ports)) : undefined)
+				m => ccaseBOM(m.name, m.label, m.ports ? aggregate("power", m.power, ports(m.ports)) : undefined)
 			)))
 		]
 	);
@@ -172,7 +173,7 @@ function transceivers(type) {
 		if (ps.length == 0)
 			return CHtml(`no transceivers of type ${type}`); // this is an error situation
 		else
-			return CSelect(ps.map(pl =>	ccase(pl.name, pl.label, aggregate("power", pl.power, wavelengths(pl.wavelengths)))));
+			return CSelect(ps.map(pl =>	ccaseBOM(pl.name, pl.label, aggregate("power", pl.power, wavelengths(pl.wavelengths)))));
 	else
 		return undefined;
 }
@@ -195,7 +196,7 @@ function range(from, to) {
 	return result;
 }
 
-var opticalSwitch4 = CNameSpace("productProps", CGroup(function({productProps: p}) {	return [
+var opticalSwitch4 = CTOCEntry("OS4", x => "Optical Switch OS4", CNameSpace("productProps", CGroup(function({productProps: p}) {	return [
     cmember("Slots", "Slots", CGroup(
     	[for (i of range(1, 4))
     		cmemberNV(`slot${i}`, `Slot ${i}`, boards(false))
@@ -203,10 +204,10 @@ var opticalSwitch4 = CNameSpace("productProps", CGroup(function({productProps: p
     )),
 	cmember("Software", "Software", CGroup([
 	])),
-]}));
+]})));
 
 
-var opticalSwitch16 = CNameSpace("productProps", CGroup(function({productProps: p}) {	return [
+var opticalSwitch16 = CTOCEntry("OS16", x => "Optical Switch OS16", CNameSpace("productProps", CGroup(function({productProps: p}) {	return [
     cmember("Slots", "Slots", CGroup(
     	[for (i of range(1, 16))
     		() =>
@@ -237,7 +238,7 @@ var opticalSwitch16 = CNameSpace("productProps", CGroup(function({productProps: 
 	 *
 	 */
 	
-]}));
+]})));
 
 var opticalSwitches = [
     ccase("OS4",  "Optical Switch OS4",  aggregate("hu",  8, opticalSwitch4)),
@@ -290,13 +291,13 @@ function CCheckHeightUnits(max, type) {
 	));
 }
 
-var rack = CGroup([
+var rack = CTOCEntry("rack", x => "Rack", CGroup([
     cmember("type", "Rack type", CSelect([
-        ccase("ANSI", "ANSI"),
-        ccase("ETSI", "ETSI"),
+        ccaseBOM("R:ANSI", "ANSI"),
+        ccaseBOM("R:ETSI", "ETSI"),
     ])),
     cmember("switches", "Switches", CCheckHeightUnits(100, CQuantifiedList({}, "Product", CSelect(opticalSwitches)))),
-]);
+]));
 
 var services = CGroup([
 ]);
