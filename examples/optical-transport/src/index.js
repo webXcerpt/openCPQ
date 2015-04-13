@@ -198,8 +198,7 @@ function range(from, to) {
 }
 
 function software(p) {
-	return
-	cmember("Software", "Software", CGroup([
+	return cmember("Software", "Software", CGroup([
 	    cmember("Release", "Release", CSelect([
 	        ccase("R1.0", "Rel. 1.0"),
 	        ccase("R1.1", "Rel. 1.1"),
@@ -237,24 +236,9 @@ var opticalSwitch16 = CTOCEntry("OS16", x => "Optical Switch OS16", CNameSpace("
         ]
     )),
 	software(p),
-	
 	/*
-	 * power supply
-	 * 
-	 * 16 Interface Slots: populate via for loop
-	 *   - double-width boards (only in slots with odd slot numbers)
-	 *   - module-carrier boards (deeper hierarchy)
-	 *   - capacity restrictions
-	 *   
-	 * 2 uplink slots 
-	 * 
-	 * software:
-	 *   version
-	 *   special licenses
-	 *   connection to management system
-	 *
+	 * power supply: DC if in rack, otherwise select betweek AC and DC
 	 */
-	
 ]})));
 
 var opticalSwitches = [
