@@ -1,7 +1,6 @@
 var React = require("react");
 
 var {
-	packed,
 	CWorkbench,
 	CGroup, cmember,
 	CSelect, ccase, cdefault, unansweredCase,
@@ -322,7 +321,7 @@ var workbench = CWorkbench(
 			</div>
 			<div style={colStyle(50)}>
 				<h3>Configuration</h3>
-				{packed(innerNode.renderHB())}
+				{innerNode.render()}
 			</div>
 			<div style={colStyle(35)}>
 				<div style={rowStyle(70)}>
@@ -351,3 +350,5 @@ renderTree(
 	}),
 	document.getElementsByTagName("body")[0]
 );
+
+require("./style.css");
