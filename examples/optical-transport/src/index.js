@@ -23,10 +23,6 @@ var {
 var {cmemberNV, cmemberTOC, ccaseBOM, onlyIf, cforbidden, cassert} = require("../lib/utils");
 var {CPorts} = require("../lib/ports");
 
-// TODO
-// two types of switch - smaller and larger, with overlapping set of boards
-// perhaps use a function to construct a "switch"
-
 // TODO assign materials, images
 
 // TODO move into a file data.js
@@ -197,13 +193,16 @@ function range(from, to) {
 	return result;
 }
 
+var release =
+	cmember("Release", "Release", CSelect([
+	    ccase("R1.0", "Rel. 1.0"),
+	    ccase("R1.1", "Rel. 1.1"),
+	    ccase("R2.0", "Rel. 2.0"),
+	]));
+
 function software(p) {
 	return cmember("Software", "Software", CGroup([
-	    cmember("Release", "Release", CSelect([
-	        ccase("R1.0", "Rel. 1.0"),
-	        ccase("R1.1", "Rel. 1.1"),
-	        ccase("R2.0", "Rel. 2.0"),
-	    ])),                                    
+	    release,                                    
 	    cmember("Licenses", "Licenses", CGroup([
 	        (p.Release === "R2.0" ?
 	            cmember("MPLS-TP", "MPLS-TP", CBoolean({})) :
@@ -214,7 +213,7 @@ function software(p) {
 	]));
 }
 
-var opticalSwitch4 = CTOCEntry("OS4", x => "Optical Switch OS4", CNameSpace("productProps", CGroup(function({productProps: p}) {	return [
+var opticalSwitch4 = CTOCEntry("OS4", () => "Optical Switch OS4", CNameSpace("productProps", CGroup(function({productProps: p}) {	return [
     cmember("Slots", "Slots", CGroup(
     	[for (i of range(1, 4))
     		cmemberNV(`slot${i}`, `Slot ${i}`, boards(false))
@@ -224,7 +223,7 @@ var opticalSwitch4 = CTOCEntry("OS4", x => "Optical Switch OS4", CNameSpace("pro
 ]})));
 
 
-var opticalSwitch16 = CTOCEntry("OS16", x => "Optical Switch OS16", CNameSpace("productProps", CGroup(function({productProps: p}) {	return [
+var opticalSwitch16 = CTOCEntry("OS16", () => "Optical Switch OS16", CNameSpace("productProps", CGroup(function({productProps: p}) {	return [
     cmember("Slots", "Slots", CGroup(
     	[for (i of range(1, 16))
     		() =>
@@ -242,21 +241,9 @@ var opticalSwitch16 = CTOCEntry("OS16", x => "Optical Switch OS16", CNameSpace("
 ]})));
 
 var opticalSwitches = [
-    ccase("OS4",  "Optical Switch OS4",  aggregate("hu",  8, opticalSwitch4)),
-    ccase("OS16", "Optical Switch OS16", aggregate("hu", 32, opticalSwitch16)),
+    ccase("OS4",  "Optical Switch OS4",  aggregate("hu",  6, opticalSwitch4)),
+    ccase("OS16", "Optical Switch OS16", aggregate("hu", 11, opticalSwitch16)),
 ];
-
-var management = CGroup([]);
-/*
- * TODO
- * version
- * software
- * licenses
- * update
- * 
- * 
- * 
- */
 
 function aggregate(what, value, type) {
 	return CSideEffect(
@@ -292,37 +279,67 @@ function CCheckHeightUnits(max, type) {
 	));
 }
 
-var rack = CTOCEntry("rack", x => "Rack", CGroup([
-    cmember("type", "Rack type", CSelect([
+var rackType =
+	cmember("type", "Rack type", CSelect([
         ccaseBOM("R:ANSI", "ANSI"),
         ccaseBOM("R:ETSI", "ETSI"),
-    ])),
-    cmember("switches", "Switches", CCheckHeightUnits(100, CQuantifiedList({}, "Product", CSelect(opticalSwitches)))),
+    ]));
+
+var rack = CTOCEntry("rack", () => "Rack", CGroup([
+    rackType,
+    cmember("UPS", "Uninteruptable Power Supply", CBoolean({})),
+    cmember("switches", "Switches", CAggregate("power", CCheckHeightUnits(42, CQuantifiedList({}, "Product", CSelect(opticalSwitches))))),
+    // compute fans based on power consumption
 ]));
 
-var services = CGroup([
+var solution = CGroup([
+    cmemberTOC("project", "Project Settings", CGroup([
+        release,
+        rackType,
+    ])),
+    cmember("racks", "Racks", CQuantifiedList({}, "Rack", rack)),
+    cmemberTOC("management", "Network Management", CGroup([
+        cmember("server", "Server type", CSelect([
+            ccase("small", "small server"),
+            ccase("large", "large server"),
+        ])),
+        cmember("redundancy", "Redundant server", CBoolean({})),
+        cmember("features", "Management Features", CGroup([
+            cmember("fault",         "Fault Management",         CBoolean({})),
+            cmember("configuration", "Configuration Management", CBoolean({})),
+            cmember("accounting",    "Accounting Management",    CBoolean({})),
+            cmember("performance",   "Performance Management",   CBoolean({})),
+            cmember("security",      "Security Management",      CBoolean({})),
+        ])),
+    ])),
+    // TODO management system and UPS in one special rack
+    cmemberTOC("services", "Services", CGroup([
+        // TODO some general service level as Silver, Gold, Platin?
+        cmember("maintenance",  "Maintenance", CGroup([
+            cmember("technicalsupport",    "Technical support",    CSelect([
+                ccase("business", "business hours"),
+                ccase("24/7",     "24/7"),
+            ])),
+            cmember("softwareupdates",     "Software updates",     CSelect([
+                ccase("download", "via download"),
+                ccase("managed",  "managed update"),
+             ])),
+            cmember("hardwarereplacement", "Hardware replacement", CSelect([
+                ccase("next", "next business day"),
+                ccase("same", "same day"),
+            ])),
+        ])),
+        cmember("deployment",   "Deployment", CGroup([
+            cmember("engineering",  "Engineering",  CBoolean({})),
+            cmember("installation", "Installation", CBoolean({})),
+            cmember("test",         "Test",         CBoolean({})),
+        ])),
+        cmember("training",     "Training", CSelect([
+            ccase("basic",    "basic training"),
+            ccase("advanced", "advanced training"),
+        ])),
+    ])),
 ]);
-
-// TODO
-// installation
-// spare part exchange
-// maintenance
-
-var solution = CGroup([]);
-
-/*
- * TODO
- * configure single boxes or configure solution
- *   single boxes: shopping list structure of boxes
- *   single rack
- *   solution:
- *     general configuration parameters (sw version, rack height, rack type)
- *     list of racks
- *       rack contains boxes
- *     management system
- *       new or extension
- *     services
- */
 
 /*
  * TODO
@@ -331,11 +348,12 @@ var solution = CGroup([]);
  * use jquery to download material master data
  */
 
-var configuration = CAggregate("power", CQuantifiedList({}, "Configuration", CSelect([
-    unansweredCase("Select Configuration"),
-    opticalSwitches,
-    ccase("Rack", "Rack", rack),
-])));
+var configuration = CSelect([
+    unansweredCase("Configuration Mode"),
+    ccase("Boxes",    "Optical Switches", CQuantifiedList({}, "Optical Switch", CSelect(opticalSwitches))),
+    ccase("Rack",     "Racks",            CQuantifiedList({}, "Rack",           rack)),
+    ccase("Solution", "Solution",         solution),
+]);
 
 var itemList = []; // TODO fill itemList
 
