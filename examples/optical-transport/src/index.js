@@ -250,29 +250,26 @@ var rack =
 			CCheckHeightUnits(42,
 				CAggregate("power",
 					CSideEffect(
-						function contributeUPS(node, {rackProps, bom, power, hu}) {
+						// This code could also be moved to some table.
+						function powerDependentRackEquipment(node, {rackProps, bom, power, hu}) {
+							var pwr = power.get();
+							// uninteruptable power supply
 							if (rackProps.UPS) {
-								var pwr = power.get();
-								// TODO move this to a table
-								if (pwr <= 500) {
-									bom.add("UPS:500");
-									hu.add(1);
-								} else if (pwr <= 1000) {
-									bom.add("UPS:1000");
-									hu.add(2);
-								} else if (pwr <= 2000) {
-									bom.add("UPS:2000");
-									hu.add(4);
-								} else {
-									bom.add("no such UPS"); // TODO how to handle this case. Perhaps an error message?
-								}
+								if (pwr <= 500)  { bom.add("UPS:500");     hu.add(1); } else
+								if (pwr <= 1000) { bom.add("UPS:1000");    hu.add(2); } else
+								if (pwr <= 2000) { bom.add("UPS:2000");    hu.add(4); } else
+								                 { bom.add("UPS:2000", 2); hu.add(8); }
 							}
+							// fans
+							if (pwr <= 400)  { bom.add("FAN:3");    hu.add(1); } else
+							if (pwr <= 700)  { bom.add("FAN:6");    hu.add(1); } else
+							if (pwr <= 1000) { bom.add("FAN:9");    hu.add(1); } else
+							                 { bom.add("FAN:9", 2);	hu.add(2); }
 						},
 						CGroup([
 						    ({solutionProps}) => solutionProps == undefined ? rackType : undefined, // TODO use solutionProps.rackType for adding rack to BOM
 						    cmember("UPS", "Uninteruptable Power Supply", CNamed("rackProps", "UPS", {valueAccessor: node => node.value}, CBoolean({}))),
 						    cmember("switches", "Switches", CQuantifiedList({}, "Product", CSelect(opticalSwitches))),
-						    // TODO compute fans based on power consumption
 						])
 )))));
 
