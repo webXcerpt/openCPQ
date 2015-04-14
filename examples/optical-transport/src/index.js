@@ -2,7 +2,7 @@ var React = require("react");
 
 var {
 	CWorkbench,
-	CGroup, cmember,
+	CGroup, cmember, cUnlabelledMember,
 	CSelect, ccase, cdefault, unansweredCase,
 	CBoolean,
 	CInteger,
@@ -238,11 +238,10 @@ function CCheckHeightUnits(max, type) {
 	));
 }
 
-var rackType =
-	cmember("rackType", "Rack type", CSelect([
-        ccaseBOM("R:ANSI", "ANSI"),
-        ccaseBOM("R:ETSI", "ETSI"),
-    ]));
+var rackType = CSelect([
+    ccase("R:ANSI", "ANSI"),
+    ccase("R:ETSI", "ETSI"),
+]);
 
 var rack =
 	CTOCEntry("rack", () => "Rack",
@@ -267,7 +266,16 @@ var rack =
 							                 { bom.add("FAN:9", 2);	hu.add(2); }
 						},
 						CGroup([
-						    ({solutionProps}) => solutionProps == undefined ? rackType : undefined, // TODO use solutionProps.rackType for adding rack to BOM
+						    ({solutionProps}) => {
+								if (solutionProps == undefined)
+									return cmember("rackType", "Rack type", CSideEffect(
+										(node, {bom}) => { bom.add(node.caseName); },
+										rackType));
+								else
+									return cUnlabelledMember("rackType", CSideEffect(
+										(node, {bom}) => { bom.add(solutionProps.rackType); },
+										CUnit()));
+							},
 						    cmember("UPS", "Uninteruptable Power Supply", CNamed("rackProps", "UPS", {valueAccessor: node => node.value}, CBoolean({}))),
 						    cmember("switches", "Switches", CQuantifiedList({}, "Product", CSelect(opticalSwitches))),
 						])
@@ -276,7 +284,10 @@ var rack =
 var solution = CNameSpace("solutionProps", CGroup([
     cmemberTOC("project", "Project Settings", CGroup([
         release,
-        rackType,
+        cmember("rackType", "Rack type", CSideEffect(
+			(node, {solutionProps}) => { solutionProps.rackType = node.caseName; },
+			rackType
+		)),
     ])),
     cmember("racks", "Racks", CQuantifiedList({}, "Rack", rack)),
     cmemberTOC("management", "Network Management", CGroup([
