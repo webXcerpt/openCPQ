@@ -77,62 +77,19 @@ var allTransceivers = [
 ];
 
 var allWavelengths = {
-	DWDM: [
-		{label: "1529.553 nm", value: 1529.553},
-		{label: "1530.334 nm"},
-		{label: "1531.115 nm"},
-		{label: "1531.898 nm"},
-		{label: "1532.681 nm"},
-		{label: "1533.465 nm"},
-		{label: "1534.250 nm"},
-		{label: "1535.035 nm"},
-		{label: "1535.822 nm"},
-		{label: "1536.609 nm"},
-		{label: "1537.397 nm"},
-		{label: "1538.186 nm"},
-		{label: "1538.975 nm"},
-		{label: "1539.766 nm"},
-		{label: "1540.557 nm"},
-		{label: "1541.349 nm"},
-		{label: "1542.142 nm"},
-		{label: "1542.936 nm"},
-		{label: "1543.730 nm"},
-		{label: "1544.526 nm"},
-		{label: "1545.322 nm"},
-		{label: "1546.119 nm"},
-		{label: "1546.917 nm"},
-		{label: "1547.715 nm"},
-		{label: "1548.514 nm"},
-		{label: "1549.315 nm"},
-		{label: "1550.116 nm"},
-		{label: "1550.918 nm"},
-		{label: "1551.720 nm"},
-		{label: "1552.524 nm"},
-		{label: "1553.328 nm"},
-		{label: "1554.134 nm"},
-		{label: "1554.940 nm"},
-		{label: "1555.747 nm"},
-		{label: "1556.555 nm"},
-		{label: "1557.363 nm"},
-		{label: "1558.173 nm"},
-		{label: "1558.983 nm"},
-		{label: "1559.794 nm"},
-		{label: "1560.606 nm"},
-		{label: "1561.419 nm"},
-		{label: "1562.232 nm"},
-		{label: "1563.047 nm"},
-		{label: "1563.862 nm"},
-	],
-	CWDM: [
-		{label: "1471 nm"},
-		{label: "1491 nm"},
-		{label: "1511 nm"},
-		{label: "1531 nm"},
-		{label: "1551 nm"},
-		{label: "1571 nm"},
-		{label: "1591 nm"},
-		{label: "1611 nm"},
-	],
+	// This is actually the C band.
+	// http://en.wikipedia.org/wiki/Wavelength-division_multiplexing#Dense_WDM
+	DWDM: range(191700, 196100, 100).reverse().map(f_GHz => {
+		let wl_nm = 299792458 / f_GHz;
+		let f_THz = f_GHz / 1000;
+		let wl_text = wl_nm.toFixed(2);
+		let f_text = f_THz.toFixed(2);
+		return {label: `${wl_text} nm / ${f_text} THz`, value: wl_text}
+	}),
+	CWDM: range(1471, 1611, 20).map(wl_nm => {
+		let wl_text = wl_nm.toFixed(2);
+		return {label: `${wl_text} nm`, value: wl_text}
+	}),
 };
 
 function boards(isDoubleWidthSlot) {
@@ -187,9 +144,9 @@ function hasDoubleWidth(n) {
 	return allBoards.find(b => b.name === n).doubleWidth;
 }
 
-function range(from, to) {
+function range(from, to, step = 1) {
 	var result = [];
-	for (var i = from; i <= to; i++) result.push(i);
+	for (var i = from; i <= to; i += step) result.push(i);
 	return result;
 }
 
