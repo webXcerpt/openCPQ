@@ -150,54 +150,63 @@ function range(from, to, step = 1) {
 	return result;
 }
 
-var release =
-	cmember("Release", "Release", CSelect([
+var release = CSelect([
 	    ccase("R1.0", "Rel. 1.0"),
 	    ccase("R1.1", "Rel. 1.1"),
 	    ccase("R2.0", "Rel. 2.0"),
-	]));
+	]);
 
-function software(p) {
-	// TODO only show this "tab" if some parameter is visible
-	return cmember("Software", "Software", CGroup([
-	    ({solutionProps}) => solutionProps == undefined ? release : undefined,                                    
-	    cmember("Licenses", "Licenses", CGroup([
-	        (p.Release === "R2.0" ? // TODO also query solutionProps
-	            cmember("MPLS-TP", "MPLS-TP", CBoolean({})) :
-	            undefined
-	        ),
-	        ({solutionProps}) => solutionProps == undefined ?
-	        	cmember("NetM", "Connection License to Network Management", CBoolean({})) : undefined,
-	    ])),                                    
-	]));
+function getFromProps(propsList, property) {
+	for (var props of propsList) {
+		if (props != undefined) {
+			var v = props[property];
+			if (v != undefined)
+				return v;
+			}
+	};
 }
 
-var opticalSwitch4 = CTOCEntry("OS4", () => "Optical Switch OS4", CNameSpace("productProps", CGroup(function({productProps: p}) {	return [
-    cmember("Slots", "Slots", CGroup(
-    	[for (i of range(1, 4))
-    		cmemberNV(`slot${i}`, `Slot ${i}`, boards(false))
-        ]
-    )),
-	software(p),
-]})));
+function software({solutionProps, productProps}) {
+	if (solutionProps == undefined || solutionProps.release === "R2.0") {
+		return cmember("Software", "Software and Licenses", CGroup([
+		           solutionProps == undefined ? cmemberNV("release", "Release", release) : undefined,                                    
+		           cmember("Licenses", "Licenses", CGroup([
+		               () => getFromProps([productProps, solutionProps], "release") === "R2.0" ? cmember("MPLS-TP", "MPLS-TP", CBoolean({})) : undefined,
+		               solutionProps == undefined ? cmember("NetM", "Connection License to Network Management", CBoolean({})) : undefined,
+                   ])),                                    
+               ]));
+	}
+};
 
+var opticalSwitch4 = CTOCEntry("OS4", () => "Optical Switch OS4",
+	CNameSpace("productProps",
+		CGroup([
+		    cmember("Slots", "Slots", CGroup(
+		    	[for (i of range(1, 4))
+		    		cmemberNV(`slot${i}`, `Slot ${i}`, boards(false))
+		    	]
+		    )),
+		    software,
+])));
 
-var opticalSwitch16 = CTOCEntry("OS16", () => "Optical Switch OS16", CNameSpace("productProps", CGroup(function({productProps: p}) {	return [
-    cmember("Slots", "Slots", CGroup(
-    	[for (i of range(1, 16))
-    		() =>
-    		cmemberNV(`slot${i}`, `Slot ${i}`, 
-				i % 2 === 0 && hasDoubleWidth(p[`slot${i-1}`]) ?
-				CHtml("occupied") :
-				boards(i % 2 === 1)
-    		)
-        ]
-    )),
-	software(p),
+var opticalSwitch16 = CTOCEntry("OS16", () => "Optical Switch OS16",
+	CNameSpace("productProps",
+		CGroup(({productProps: p}) => [
+		    cmember("Slots", "Slots", CGroup(
+		    	[for (i of range(1, 16))
+		    		() =>
+		    		cmemberNV(`slot${i}`, `Slot ${i}`, 
+		    			i % 2 === 0 && hasDoubleWidth(p[`slot${i-1}`]) ?
+		    			CHtml("occupied") :
+		    			boards(i % 2 === 1)
+		    		)
+		    	]
+		    )),
+		    software,
 	/*
 	 * power supply: DC if in rack, otherwise select betweek AC and DC
 	 */
-]})));
+])));
 
 var opticalSwitches = [
     ccase("OS4",  "Optical Switch OS4",  aggregate("hu",  6, opticalSwitch4)),
@@ -283,7 +292,10 @@ var rack =
 
 var solution = CNameSpace("solutionProps", CGroup([
     cmemberTOC("project", "Project Settings", CGroup([
-        release,
+        cmember("relase", "Release", CSideEffect(
+			(node, {solutionProps}) => { solutionProps.release = node.caseName; },
+			release
+		)),
         cmember("rackType", "Rack Type", CSideEffect(
 			(node, {solutionProps}) => { solutionProps.rackType = node.caseName; },
 			rackType
