@@ -252,7 +252,7 @@ var rack =
 						// This code could also be moved to some table.
 						function powerDependentRackEquipment(node, {rackProps, bom, power, hu}) {
 							var pwr = power.get();
-							// uninteruptable power supply
+							// uninterruptible power supply
 							if (rackProps.UPS) {
 								if (pwr <= 500)  { bom.add("UPS:500");     hu.add(1); } else
 								if (pwr <= 1000) { bom.add("UPS:1000");    hu.add(2); } else
@@ -268,7 +268,7 @@ var rack =
 						CGroup([
 						    ({solutionProps}) => {
 								if (solutionProps == undefined)
-									return cmember("rackType", "Rack type", CSideEffect(
+									return cmember("rackType", "Rack Type", CSideEffect(
 										(node, {bom}) => { bom.add(node.caseName); },
 										rackType));
 								else
@@ -276,7 +276,7 @@ var rack =
 										(node, {bom}) => { bom.add(solutionProps.rackType); },
 										CUnit()));
 							},
-						    cmember("UPS", "Uninteruptable Power Supply", CNamed("rackProps", "UPS", {valueAccessor: node => node.value}, CBoolean({}))),
+						    cmember("UPS", "Uninterruptible Power Supply", CNamed("rackProps", "UPS", {valueAccessor: node => node.value}, CBoolean({}))),
 						    cmember("switches", "Switches", CQuantifiedList({}, "Product", CSelect(opticalSwitches))),
 						])
 )))));
@@ -284,18 +284,18 @@ var rack =
 var solution = CNameSpace("solutionProps", CGroup([
     cmemberTOC("project", "Project Settings", CGroup([
         release,
-        cmember("rackType", "Rack type", CSideEffect(
+        cmember("rackType", "Rack Type", CSideEffect(
 			(node, {solutionProps}) => { solutionProps.rackType = node.caseName; },
 			rackType
 		)),
     ])),
     cmember("racks", "Racks", CQuantifiedList({}, "Rack", rack)),
     cmemberTOC("management", "Network Management", CGroup([
-        cmember("server", "Server type", CSelect([
+        cmember("server", "Server Type", CSelect([
             ccase("small", "small server"),
             ccase("large", "large server"),
         ])),
-        cmember("redundancy", "Redundant server", CBoolean({})),
+        cmember("redundancy", "Redundant Server", CBoolean({})),
         cmember("features", "Management Features", CGroup([
             cmember("fault",         "Fault Management",         CBoolean({})),
             cmember("configuration", "Configuration Management", CBoolean({})),
@@ -306,17 +306,17 @@ var solution = CNameSpace("solutionProps", CGroup([
     ])),
     // TODO management system and UPS in one special rack
     cmemberTOC("services", "Services", CGroup([
-        // TODO some general service level as Silver, Gold, Platin?
+        // TODO some general service level as Silver, Gold, Platinum?
         cmember("maintenance",  "Maintenance", CGroup([
-            cmember("technicalsupport",    "Technical support",    CSelect([
+            cmember("technicalsupport",    "Technical Support",    CSelect([
                 ccase("business", "business hours"),
                 ccase("24/7",     "24/7"),
             ])),
-            cmember("softwareupdates",     "Software updates",     CSelect([
+            cmember("softwareupdates",     "Software Updates",     CSelect([
                 ccase("download", "via download"),
                 ccase("managed",  "managed update"),
              ])),
-            cmember("hardwarereplacement", "Hardware replacement", CSelect([
+            cmember("hardwarereplacement", "Hardware Replacement", CSelect([
                 ccase("next", "next business day"),
                 ccase("same", "same day"),
             ])),
