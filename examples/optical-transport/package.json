@@ -3,7 +3,7 @@
   "description": "openCPQ demo with optical-transport products.",
   "scripts": {
     "start": "webpack-dev-server --progress --watch",
-    "prod": "webpack --progress -p",
+    "prod": "webpack --progress -p"
   },
   "devDependencies": {
     "appcache-webpack-plugin": "^0.1.1",
