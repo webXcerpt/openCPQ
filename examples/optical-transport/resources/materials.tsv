@@ -1,0 +1,68 @@
+B:FP	Blank faceplate for board slots	20
+B:16x10_32x1	16 x 10 G + 32 x 1 G board	20000
+B:16x10	16 x 10 G board	15000
+B:32xE1_75	32 x E1 electrical board (75 Ohm)	3000
+B:32xE1_120	32 x E1 electrical board (120 Ohm)	3000
+B:4x40	4 x 40 G board	20000
+B:2x100	2 x 100 G board	20000
+B:2xMOD	Module-carrier board for 2 modules	500
+M:FP	Blank faceplate for module slots	10
+M:8xE1_75	8 x E1 module (75 Ohm)	250
+M:8xE1_120	8 x E1 module (120 Ohm)	250
+M:8xE3	8 x E3 module	400
+M:8xSTM1	8 x STM-1e module	300
+M:16xFE	16 x FE module	150
+M:8xGE	8 x GE module	200
+SFP:SX	SFP SX (850 nm, up to 550 m)	100
+SFP:LX	SFP LX (1310 nm, up to 10 km)	150
+SFP:EX	SFP EX (1310 nm, up to 40 km)	200
+SFP:ZX	SFP ZX (1550 nm, up to 80 km)	250
+SFP:BX	SFP BX (1490 nm/1310 nm, 10 km)	220
+SFP:1000BT	SFP 1000BASE-T (electrical)	50
+SFP:CWDM40	SFP CWDM (40 km)	1000
+SFP:CWDM80	SFP CWDM (80 km)	1500
+SFP+:SR	SFP+ SR (850 nm, up to 300 m)	1000
+SFP+:LR	SFP+ LR (1310 nm, up to 10 km)	1200
+SFP+:ER	SFP+ ER (1550 nm, up to 40 km)	1500
+SFP+:ZR	SFP+ ZR (1550 nm, up to 80 km)	1800
+SFP+:CWDM40	SFP+ CWDM (40 km)	4000
+SFP+:CWDM80	SFP+ CWDM (80 km)	6000
+SFP+:DWDM40	SFP+ DWDM (40 km)	5000
+SFP+:DWDM80	SFP+ DWDM (80 km)	7000
+QSFP+:SR	QSFP+ SR (850 nm, up to 300 m)	5000
+QSFP+:LR	QSFP+ LR (1310 nm, up to 10 km)	10000
+CFP:SR	CFP SR (850 nm, up to 300 m)	10000
+CFP:LR	CFP LR (1310 nm, up to 10 km)	20000
+CFP:ER	CFP ER (1550 nm, up to 40 km)	30000
+R:ANSI	19 inch ANSI rack	1200
+R:ETSI	23 inch ETSI rack	1250
+UPS:500	Uninteruptable power supply 500 W	1500
+UPS:1000	Uninteruptable power supply 1000 W	2000
+UPS:2000	Uninteruptable power supply 2000 W	3000
+FAN:3	Fan module with 3 fans	300
+FAN:6	Fan module with 6 fans	500
+FAN:9	Fan module with 9 fans	750
+CH:OS4	Chassis for Optical Switch OS4	10000
+CH:OS16	Chassis for Optical Switch OS16	25000
+SW:OS4:1.0	Software for Optical Switch OS4	R1.0 10
+SW:OS4:1.1	Software for Optical Switch OS4	R1.1 10
+SW:OS4:2.0	Software for Optical Switch OS4	R2.0 10
+SW:OS16:1.0	Software for Optical Switch OS16 R1.0	10
+SW:OS16:1.1	Software for Optical Switch OS16 R1.1	10
+SW:OS16:2.0	Software for Optical Switch OS16 R2.0	10
+LIC:100G	License for 100 G (per port)	1000
+LIC:40G	License for 40 G (per port)	500
+LIC:10G	License for 10 G (per port)	50
+LIC:1G	License for 1 G (per port)	5
+NM:OS4	Network Manager connection license for OS4	1000
+NM:OS16	Network Manager connection license for OS16	2500
+NM:S	Network Manager small server	1000
+NM:M	Network Manager medium server	1500
+NM:L	Network Manager large server	2500
+LIC:NM:F	Fault Management license	2000
+LIC:NM:C	Configuration Management license	3000
+LIC:NM:A	Accounting Management license	4000
+LIC:NM:P	Performance Management license	1000
+LIC:NM:S	Security Management license	5000
+TR:BASIC	Basic training	5000
+TR:ADVANCED	Advanced training	3000
