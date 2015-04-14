@@ -201,14 +201,16 @@ var release =
 	]));
 
 function software(p) {
+	// TODO only show this "tab" if some parameter is visible
 	return cmember("Software", "Software", CGroup([
-	    release,                                    
+	    ({solutionProps}) => solutionProps == undefined ? release : undefined,                                    
 	    cmember("Licenses", "Licenses", CGroup([
-	        (p.Release === "R2.0" ?
+	        (p.Release === "R2.0" ? // TODO also query solutionProps
 	            cmember("MPLS-TP", "MPLS-TP", CBoolean({})) :
 	            undefined
 	        ),
-	        cmember("NetM", "Connection License to Network Management", CBoolean({})),
+	        ({solutionProps}) => solutionProps == undefined ?
+	        	cmember("NetM", "Connection License to Network Management", CBoolean({})) : undefined,
 	    ])),                                    
 	]));
 }
@@ -280,19 +282,19 @@ function CCheckHeightUnits(max, type) {
 }
 
 var rackType =
-	cmember("type", "Rack type", CSelect([
+	cmember("rackType", "Rack type", CSelect([
         ccaseBOM("R:ANSI", "ANSI"),
         ccaseBOM("R:ETSI", "ETSI"),
     ]));
 
 var rack = CTOCEntry("rack", () => "Rack", CGroup([
-    rackType,
+    ({solutionProps}) => solutionProps == undefined ? rackType : undefined, // TODO use solutionProps.rackType for adding rack to BOM
     cmember("UPS", "Uninteruptable Power Supply", CBoolean({})),
     cmember("switches", "Switches", CAggregate("power", CCheckHeightUnits(42, CQuantifiedList({}, "Product", CSelect(opticalSwitches))))),
     // compute fans based on power consumption
 ]));
 
-var solution = CGroup([
+var solution = CNameSpace("solutionProps", CGroup([
     cmemberTOC("project", "Project Settings", CGroup([
         release,
         rackType,
@@ -339,7 +341,7 @@ var solution = CGroup([
             ccase("advanced", "advanced training"),
         ])),
     ])),
-]);
+]));
 
 /*
  * TODO
@@ -350,7 +352,7 @@ var solution = CGroup([
 
 var configuration = CSelect([
     unansweredCase("Configuration Mode"),
-    ccase("Boxes",    "Optical Switches", CQuantifiedList({}, "Optical Switch", CSelect(opticalSwitches))),
+    ccase("Switches", "Optical Switches", CQuantifiedList({}, "Optical Switch", CSelect(opticalSwitches))),
     ccase("Rack",     "Racks",            CQuantifiedList({}, "Rack",           rack)),
     ccase("Solution", "Solution",         solution),
 ]);
