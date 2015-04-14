@@ -8,7 +8,7 @@ var {
 	CInteger,
 	CHtml,
 	CUnit,
-	CNameSpace,
+	CNameSpace, CNamed,
 	CTOCEntry,
 	TOC, Problems, 
 	VBOM, VTOC, VProblems, 
@@ -244,12 +244,37 @@ var rackType =
         ccaseBOM("R:ETSI", "ETSI"),
     ]));
 
-var rack = CTOCEntry("rack", () => "Rack", CGroup([
-    ({solutionProps}) => solutionProps == undefined ? rackType : undefined, // TODO use solutionProps.rackType for adding rack to BOM
-    cmember("UPS", "Uninteruptable Power Supply", CBoolean({})),
-    cmember("switches", "Switches", CAggregate("power", CCheckHeightUnits(42, CQuantifiedList({}, "Product", CSelect(opticalSwitches))))),
-    // compute fans based on power consumption
-]));
+var rack =
+	CTOCEntry("rack", () => "Rack",
+		CNameSpace("rackProps", 
+			CCheckHeightUnits(42,
+				CAggregate("power",
+					CSideEffect(
+						function contributeUPS(node, {rackProps, bom, power, hu}) {
+							if (rackProps.UPS) {
+								var pwr = power.get();
+								// TODO move this to a table
+								if (pwr <= 500) {
+									bom.add("UPS:500");
+									hu.add(1);
+								} else if (pwr <= 1000) {
+									bom.add("UPS:1000");
+									hu.add(2);
+								} else if (pwr <= 2000) {
+									bom.add("UPS:2000");
+									hu.add(4);
+								} else {
+									bom.add("no such UPS"); // TODO how to handle this case. Perhaps an error message?
+								}
+							}
+						},
+						CGroup([
+						    ({solutionProps}) => solutionProps == undefined ? rackType : undefined, // TODO use solutionProps.rackType for adding rack to BOM
+						    cmember("UPS", "Uninteruptable Power Supply", CNamed("rackProps", "UPS", {valueAccessor: node => node.value}, CBoolean({}))),
+						    cmember("switches", "Switches", CQuantifiedList({}, "Product", CSelect(opticalSwitches))),
+						    // TODO compute fans based on power consumption
+						])
+)))));
 
 var solution = CNameSpace("solutionProps", CGroup([
     cmemberTOC("project", "Project Settings", CGroup([
