@@ -179,39 +179,35 @@ function software({solutionProps, productProps}) {
 };
 
 var opticalSwitch4 = CTOCEntry("OS4", () => "Optical Switch OS4",
-	CNameSpace("productProps",
-		CGroup([
-		    cmember("Slots", "Slots", CGroup(
-		    	[for (i of range(1, 4))
-		    		cmemberNV(`slot${i}`, `Slot ${i}`, boards(false))
-		    	]
-		    )),
-		    software,
-])));
+	CGroup([
+	    cmember("Slots", "Slots", CGroup(
+	    	[for (i of range(1, 4))
+	    		cmemberNV(`slot${i}`, `Slot ${i}`, boards(false))
+	    	]
+	    )),
+	    software,
+]));
 
 var opticalSwitch16 = CTOCEntry("OS16", () => "Optical Switch OS16",
-	CNameSpace("productProps",
-		CGroup(({productProps: p}) => [
-		    cmember("Slots", "Slots", CGroup(
-		    	[for (i of range(1, 16))
-		    		() =>
-		    		cmemberNV(`slot${i}`, `Slot ${i}`, 
-		    			i % 2 === 0 && hasDoubleWidth(p[`slot${i-1}`]) ?
-		    			CHtml("occupied") :
-		    			boards(i % 2 === 1)
-		    		)
-		    	]
-		    )),
-		    software,
-	/*
-	 * power supply: DC if in rack, otherwise select betweek AC and DC
-	 */
-])));
+	CGroup(({productProps: p}) => [
+	    cmember("Slots", "Slots", CGroup(
+	    	[for (i of range(1, 16))
+	    		() =>
+	    		cmemberNV(`slot${i}`, `Slot ${i}`, 
+	    			i % 2 === 0 && hasDoubleWidth(p[`slot${i-1}`]) ?
+	    			CHtml("occupied") :
+	    			boards(i % 2 === 1)
+	    		)
+	    	]
+	    )),
+	    software,
+	    // TODO power supply: DC if in rack, otherwise select betweek AC and DC
+]));
 
-var opticalSwitches = [
+var opticalSwitches = CNameSpace("productProps", CSelect([
     ccase("OS4",  "Optical Switch OS4",  aggregate("hu",  6, opticalSwitch4)),
     ccase("OS16", "Optical Switch OS16", aggregate("hu", 11, opticalSwitch16)),
-];
+]));
 
 function aggregate(what, value, type) {
 	return CSideEffect(
@@ -274,23 +270,22 @@ var rack =
 							if (pwr <= 1000) { bom.add("FAN:9");    hu.add(1); } else
 							                 { bom.add("FAN:9", 2);	hu.add(2); }
 						},
-						CGroup([
-						    ({solutionProps}) => {
-								if (solutionProps == undefined)
-									return cmember("rackType", "Rack Type", CSideEffect(
-										(node, {bom}) => { bom.add(node.caseName); },
-										rackType));
-								else
-									return cUnlabelledMember("rackType", CSideEffect(
-										(node, {bom}) => { bom.add(solutionProps.rackType); },
-										CUnit()));
-							},
-						    cmember("UPS", "Uninterruptible Power Supply", CNamed("rackProps", "UPS", {valueAccessor: node => node.value}, CBoolean({}))),
-						    cmember("switches", "Switches", CQuantifiedList({}, "Product", CSelect(opticalSwitches))),
+						CGroup(({solutionProps}) => [
+							solutionProps == undefined ?
+								cmember("rackType", "Rack Type", CSideEffect(
+									(node, {bom}) => { bom.add(node.caseName); },
+									rackType)) :
+								cUnlabelledMember("rackType", CSideEffect(
+									(node, {bom}) => { bom.add(solutionProps.rackType); },
+									CUnit())),
+						    cmember("UPS", "Uninterruptible Power Supply", CNamed("rackProps", "UPS", {valueAccessor: node => node.value},
+						    	CBoolean({defaultValue: solutionProps == undefined ? undefined : solutionProps.UPS}))),
+						    cmember("switches", "Switches", CQuantifiedList({}, "Product", opticalSwitches)),
 						])
 )))));
 
 var solution = CNameSpace("solutionProps", CGroup([
+    // parameters to be inherited
     cmemberTOC("project", "Project Settings", CGroup([
         cmember("relase", "Release", CSideEffect(
 			(node, {solutionProps}) => { solutionProps.release = node.caseName; },
@@ -300,20 +295,24 @@ var solution = CNameSpace("solutionProps", CGroup([
 			(node, {solutionProps}) => { solutionProps.rackType = node.caseName; },
 			rackType
 		)),
+		cmember("UPS", "Uninterruptible Power Supply (default for each rack)", // inheritance of default values 
+			CNamed("solutionProps", "UPS", {valueAccessor: node => node.value}, CBoolean({}))),
     ])),
     cmember("racks", "Racks", CQuantifiedList({}, "Rack", rack)),
     cmemberTOC("management", "Network Management", CGroup([
+        cmember("ne", "Number of managed network elements", CInteger({defaultValue: 0})), // TODO default value should be number of switches configured in "racks"
         cmember("server", "Server Type", CSelect([
-            ccase("small", "small server"),
+            ccase("small", "small server"), // TODO small server only if less than 10 network elements
+            ccase("medium", "medium server"),
             ccase("large", "large server"),
         ])),
-        cmember("redundancy", "Redundant Server", CBoolean({})),
+        cmember("redundancy", "Redundant Server", CBoolean({})), // TODO redundant server only for medium or large
         cmember("features", "Management Features", CGroup([
-            cmember("fault",         "Fault Management",         CBoolean({})),
-            cmember("configuration", "Configuration Management", CBoolean({})),
-            cmember("accounting",    "Accounting Management",    CBoolean({})),
-            cmember("performance",   "Performance Management",   CBoolean({})),
-            cmember("security",      "Security Management",      CBoolean({})),
+            cmember("fault",         "Fault Management",         CBoolean({defaultValue: true})),
+            cmember("configuration", "Configuration Management", CBoolean({defaultValue: true})),
+            cmember("accounting",    "Accounting Management",    CBoolean({defaultValue: true})),
+            cmember("performance",   "Performance Management",   CBoolean({defaultValue: true})),
+            cmember("security",      "Security Management",      CBoolean({defaultValue: true})),
         ])),
     ])),
     // TODO management system and UPS in one special rack
@@ -322,11 +321,11 @@ var solution = CNameSpace("solutionProps", CGroup([
         cmember("maintenance",  "Maintenance", CGroup([
             cmember("technicalsupport",    "Technical Support",    CSelect([
                 ccase("business", "business hours"),
-                ccase("24/7",     "24/7"),
+                cdefault(ccase("24/7",     "24/7")),
             ])),
             cmember("softwareupdates",     "Software Updates",     CSelect([
                 ccase("download", "via download"),
-                ccase("managed",  "managed update"),
+                cdefault(ccase("managed",  "managed update")),
              ])),
             cmember("hardwarereplacement", "Hardware Replacement", CSelect([
                 ccase("next", "next business day"),
@@ -334,13 +333,13 @@ var solution = CNameSpace("solutionProps", CGroup([
             ])),
         ])),
         cmember("deployment",   "Deployment", CGroup([
-            cmember("engineering",  "Engineering",  CBoolean({})),
-            cmember("installation", "Installation", CBoolean({})),
-            cmember("test",         "Test",         CBoolean({})),
+            cmember("engineering",  "Engineering",  CBoolean({defaultValue: true})),
+            cmember("installation", "Installation", CBoolean({defaultValue: true})),
+            cmember("test",         "Test",         CBoolean({defaultValue: true})),
         ])),
         cmember("training",     "Training", CSelect([
-            ccase("basic",    "basic training"),
-            ccase("advanced", "advanced training"),
+            ccase("basic",    "basic training"), // TODO number of seats
+            ccase("advanced", "advanced training"), // TODO number of seats. Warn if more seats for advanced training are booked than for basic training.
         ])),
     ])),
 ]));
@@ -354,7 +353,7 @@ var solution = CNameSpace("solutionProps", CGroup([
 
 var configuration = CSelect([
     unansweredCase("Configuration Mode"),
-    ccase("Switches", "Optical Switches", CQuantifiedList({}, "Optical Switch", CSelect(opticalSwitches))),
+    ccase("Switches", "Optical Switches", CQuantifiedList({}, "Optical Switch", opticalSwitches)),
     ccase("Rack",     "Racks",            CQuantifiedList({}, "Rack",           rack)),
     ccase("Solution", "Solution",         solution),
 ]);
