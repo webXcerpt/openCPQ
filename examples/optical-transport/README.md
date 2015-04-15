@@ -14,16 +14,18 @@ For the demo configurator, assume the following:
 - Racks contain additional fan trays which depend on the heat dissipation of the contained devices.
 - Racks can contain an uninteruptible power supply (UPS). The dimensioning of the UPS depends on the used power.
 
-...
+Three different modes of configuration should be implemented:
+- Configuration of single products.
+- Configuration of racks, which contain products and additional rack equipment.
+- Configuration of a solution consisting of equipped racks, a network-management system, and additional service.
+  The configuration should be facilitated with some top-level parameters.  
 
-- solution
-- cables
-- software
-- licenses
-- management system
-- service
-
-three different roles for maintenance of the product models:
-- openCPQ modeling expert (JavaScript + openCPQ knowledge, models structure of each product)
-- product manager (maintains tabular data for boards and transceivers)
-- pricing manager (maintains prices of components)
+The product models are maintained by three different roles:
+- The openCPQ modeling expert models the structure of the configurator and the structure of each product.
+  JavaScript and openCPQ knowledge is required, as well as some understanding of the configuration process and the products.
+  This part of the configurator changes only when new products are introduced or products are changed heavily.
+- The product manager maintains nearly-tabular data for boards, modules, and transceivers.
+  This nearly-tabular data is represented in JSON format. This part of the configurator might change every month.
+  It might be imported from a PDM system.
+- The basic-data manager maintains materials with descriptions and prices in tabular form (tab-separated values).
+  This data can change daily and should be loaded at each start of the configurator. It might be imported from an ERP system.
