@@ -210,15 +210,10 @@ var opticalSwitches = CNameSpace("productProps", CSelect([
     ccase("OS16", "Optical Switch OS16", aggregate("hu", 11, opticalSwitch16)),
 ]));
 
-function aggregate(what, value, type) {
+function aggregate(what, value = 0, type) {
 	return CSideEffect(
-		function agg(node, ctx) {
-			if (value) {
-				var aggregator = ctx[what];
-				if (aggregator)
-					aggregator.add(value);
-			}
-		},
+		// Notice that the context might not contain an "interested" aggregator.
+		(node, {[what]: aggregator}) => aggregator && aggregator.add(value),
 		type
 	);
 }
