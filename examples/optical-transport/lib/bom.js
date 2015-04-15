@@ -53,7 +53,6 @@ var ReactBom = React.createClass({
         saveAs(blob, "openCPQ.csv");
     },
 	render() {
-    	console.log({props: this.props});
 		var accumulatedPrice = 0;
 		return <div>
 			<button onClick={() => this.exportCSV()}>export as CSV</button>
