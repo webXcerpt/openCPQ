@@ -3,7 +3,7 @@
   "description": "openCPQ demo with optical-transport products.",
   "scripts": {
     "start": "webpack-dev-server --progress --watch",
-    "prod": "webpack --progress -p",
+    "prod": "webpack --progress --production",
     "deploy": "gulp ftp"
   },
   "dependencies": {
