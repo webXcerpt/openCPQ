@@ -33,6 +33,7 @@ var config = {
 	module: {
 		loaders: [
 			{ test: /\.js$/, loader: "babel?stage=0" },
+			{ test: /\.json$/, loader: "json" },
 			{ test: /\.css$/, loader: "style!css" },
 			{ test: /\.less$/, loader: "style!css!less" },
 			{ test: /\.(eot|svg|ttf|woff2?)$/, loader: "url?limit=10000" },

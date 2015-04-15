@@ -26,56 +26,7 @@ var {VBOM} = require("../lib/bom.js"); // specific BOM implementation
 
 // TODO assign images
 
-// TODO move into a file data.js
-
-
-var allBoards = [
-    {name: "B:FP",         label: "unequipped"},
-    {name: "B:16x10_32x1", label: "16 x 10 G + 32 x 1 G board", doubleWidth: true, power: 45, ports: [{label: "SFP+ ports",  number: 16, type: "SFP+"}, {label: "SFP ports", number: 32, type: "SFP"}]}, // material, image, ...
-    {name: "B:16x10",      label: "16 x 10 G board",                               power: 30, ports: [{label: "SFP+ ports",  number: 16, type: "SFP+"}]},
-    {name: "B:32xE1_75",   label: "32 x E1 electrical board (75 Ohm)",             power: 40},
-    {name: "B:32xE1_120",  label: "32 x E1 electrical board (120 Ohm)",            power: 40},
-    {name: "B:4x40",       label: "4 x 40 G board",                                power: 60, ports: [{label: "QSFP+ ports", number: 4,  type: "QSFP+"}]},
-    {name: "B:2x100",      label: "2 x 100 G board",                               power: 60, ports: [{label: "CFP ports",   number: 2,  type: "CFP"}]},
-    {name: "B:2xMOD",      label: "module-carrier board for 2 modules",            power: 20, modules: 2},
-];
-
-var allModules = [
-    {name: "M:FP",       label: "unequipped"},
-    {name: "M:8xE1_75",  label: "8 x E1 module (75 Ohm)"  , power: 10},
-    {name: "M:8xE1_120", label: "8 x E1 module (120 Ohm)",  power: 10},
-    {name: "M:8xE3",     label: "8 x E3 module",            power: 12},
-    {name: "M:8xSTM1",   label: "8 x STM-1e module",        power: 12},
-    {name: "M:16xFE",    label: "16 x FE module",           power: 20},
-    {name: "M:8xGE",     label: "8 x GE module",            power: 15, ports: [{label: "SFP ports", number: 8, type: "SFP"}]},
-];
-
-var allTransceivers = [
-    {name: "SFP:SX",       label: "SX (850 nm, up to 550 m)",    type: "SFP", power: 0.5},
-    {name: "SFP:LX",       label: "LX (1310 nm, up to 10 km)",   type: "SFP", power: 1},
-    {name: "SFP:EX",       label: "EX (1310 nm, up to 40 km)",   type: "SFP", power: 2},
-    {name: "SFP:ZX",       label: "ZX (1550 nm, up to 80 km)",   type: "SFP", power: 3},
-    {name: "SFP:BX",       label: "BX (1490 nm/1310 nm, 10 km)", type: "SFP", power: 1},
-    {name: "SFP:1000BT",   label: "1000BASE-T (electrical)",     type: "SFP", power: 0.5},
-    {name: "SFP:CWDM40",   label: "CWDM (40 km)",                type: "SFP", power: 1, wavelengths: "CWDM"},
-    {name: "SFP:CWDM80",   label: "CWDM (80 km)",                type: "SFP", power: 2, wavelengths: "CWDM"},
-    
-    {name: "SFP+:SR",      label: "SR (850 nm, up to 300 m)",    type: "SFP+", power: 3},
-    {name: "SFP+:LR",      label: "LR (1310 nm, up to 10 km)",   type: "SFP+", power: 3},
-    {name: "SFP+:ER",      label: "ER (1550 nm, up to 40 km)",   type: "SFP+", power: 3},
-    {name: "SFP+:ZR",      label: "ZR (1550 nm, up to 80 km)",   type: "SFP+", power: 3},
-    {name: "SFP+:CWDM40",  label: "CWDM (40 km)",                type: "SFP+", power: 4, wavelengths: "CWDM"},
-    {name: "SFP+:CWDM80",  label: "CWDM (80 km)",                type: "SFP+", power: 5, wavelengths: "CWDM"},
-    {name: "SFP+:DWDM40",  label: "DWDM (40 km)",                type: "SFP+", power: 4, wavelengths: "DWDM"},
-    {name: "SFP+:DWDM80",  label: "DWDM (80 km)",                type: "SFP+", power: 5, wavelengths: "DWDM"},
-    
-    {name: "QSFP+:SR",     label: "SR (850 nm, up to 300 m)",    type: "QSFP+", power: 1},
-    {name: "QSFP+:LR",     label: "LR (1310 nm, up to 10 km)",   type: "QSFP+", power: 3},
-    
-    {name: "CFP:SR",       label: "SR (850 nm, up to 300 m)",    type: "CFP", power: 1},
-    {name: "CFP:LR",       label: "LR (1310 nm, up to 10 km)",   type: "CFP", power: 2},
-    {name: "CFP:ER",       label: "ER (1550 nm, up to 40 km)",   type: "CFP", power: 3},
-];
+var {boards: allBoards, modules: allModules, transceivers: allTransceivers} = require("../resources/components.json");
 
 var allWavelengths = {
 	// This is actually the C band.
