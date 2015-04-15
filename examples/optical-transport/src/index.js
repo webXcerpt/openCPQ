@@ -206,8 +206,8 @@ var opticalSwitch16 = CTOCEntry("OS16", () => "Optical Switch OS16",
 ]));
 
 var opticalSwitches = CNameSpace("productProps", CSelect([
-    ccase("OS4",  "Optical Switch OS4",  aggregate("hu",  6, opticalSwitch4)),
-    ccase("OS16", "Optical Switch OS16", aggregate("hu", 11, opticalSwitch16)),
+    ccase("OS4",  "Optical Switch OS4",  aggregate("networkElements", 1, aggregate("hu",  6, opticalSwitch4))),
+    ccase("OS16", "Optical Switch OS16", aggregate("networkElements", 1, aggregate("hu", 11, opticalSwitch16))),
 ]));
 
 function aggregate(what, value, type) {
@@ -285,7 +285,7 @@ var rack =
 						])
 )))));
 
-var solution = CNameSpace("solutionProps", CGroup([
+var solution = CNameSpace("solutionProps", CAggregate("networkElements", CGroup([
     // parameters to be inherited
     cmemberTOC("project", "Project Settings", CGroup([
         cmember("release", "Release", CSideEffect(
@@ -300,11 +300,11 @@ var solution = CNameSpace("solutionProps", CGroup([
 			CNamed("solutionProps", "UPS", {valueAccessor: node => node.value}, CBoolean({}))),
     ])),
     cmember("racks", "Racks", CQuantifiedList({}, "Rack", rack)),
-    cmemberTOC("management", "Network Management", CGroup([
-        cmember("ne", "Number of managed network elements", CInteger({defaultValue: 0})), // TODO default value should be number of switches configured in "racks"
-        cmember("server", "Server Type", CSelect([
-            ccase("small", "small server"), // TODO small server only if less than 10 network elements
-            ccase("medium", "medium server"),
+    ({networkElements}) => cmemberTOC("management", "Network Management", CGroup([
+        cmember("ne", "Number of managed network elements", CNamed("solutionProps", "ne", {valueAccessor: node => node.value}, CInteger({defaultValue: networkElements.get()}))),
+        ({solutionProps}) => cmember("server", "Server Type", CSelect([
+            onlyIf(solutionProps.ne <= 20,  "Small server only possible for at most 20 managed network elements",    [ccase("small",  "small server")]),
+            onlyIf(solutionProps.ne <= 100, "Medium server only possible for at most 100 manageed network elements", [ccase("medium", "medium server")]),
             ccase("large", "large server"),
         ])),
         cmember("redundancy", "Redundant Server", CBoolean({})), // TODO redundant server only for medium or large
@@ -343,7 +343,7 @@ var solution = CNameSpace("solutionProps", CGroup([
             ccase("advanced", "advanced training"), // TODO number of seats. Warn if more seats for advanced training are booked than for basic training.
         ])),
     ])),
-]));
+])));
 
 /*
  * TODO
