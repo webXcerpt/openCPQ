@@ -210,15 +210,10 @@ var opticalSwitches = CNameSpace("productProps", CSelect([
     ccase("OS16", "Optical Switch OS16", aggregate("networkElements", 1, aggregate("hu", 11, opticalSwitch16))),
 ]));
 
-function aggregate(what, value, type) {
+function aggregate(what, value = 0, type) {
 	return CSideEffect(
-		function agg(node, ctx) {
-			if (value) {
-				var aggregator = ctx[what];
-				if (aggregator)
-					aggregator.add(value);
-			}
-		},
+		// Notice that the context might not contain an "interested" aggregator.
+		(node, {[what]: aggregator}) => aggregator && aggregator.add(value),
 		type
 	);
 }
@@ -244,10 +239,15 @@ function CCheckHeightUnits(max, type) {
 	));
 }
 
-var rackType = CSelect([
-    ccase("R:ANSI", "ANSI"),
-    ccase("R:ETSI", "ETSI"),
-]);
+// rackType can be used as a group member on multiple levels.  It only
+// "materializes" if we do not yet have an "inherited" value.
+var rackType = ({inheritableRackProps}) => {
+	if (inheritableRackProps.rackType == undefined)
+		return cmember("rackType", "Rack Type", CNamed("inheritableRackProps", "rackType", {valueAccessor: n => n.caseName}, CSelect([
+			ccase("R:ANSI", "ANSI"),
+			ccase("R:ETSI", "ETSI"),
+		])))
+};
 
 var rack =
 	CTOCEntry("rack", () => "Rack",
@@ -255,8 +255,9 @@ var rack =
 			CCheckHeightUnits(42,
 				CAggregate("power",
 					CSideEffect(
-						// This code could also be moved to some table.
-						function powerDependentRackEquipment(node, {rackProps, bom, power, hu}) {
+						function rackEquipment(node, {inheritableRackProps, rackProps, bom, power, hu}) {
+							bom.add(inheritableRackProps.rackType);
+							// The following code could also be moved to some table.
 							var pwr = power.get();
 							// uninterruptible power supply
 							if (rackProps.UPS) {
@@ -272,13 +273,7 @@ var rack =
 							                 { bom.add("FAN:9", 2);	hu.add(2); }
 						},
 						CGroup(({solutionProps}) => [
-							solutionProps == undefined ?
-								cmember("rackType", "Rack Type", CSideEffect(
-									(node, {bom}) => { bom.add(node.caseName); },
-									rackType)) :
-								cUnlabelledMember("rackType", CSideEffect(
-									(node, {bom}) => { bom.add(solutionProps.rackType); },
-									CUnit())),
+							rackType,
 						    cmember("UPS", "Uninterruptible Power Supply", CNamed("rackProps", "UPS", {valueAccessor: node => node.value},
 						    	CBoolean({defaultValue: solutionProps == undefined ? undefined : solutionProps.UPS}))),
 						    cmember("switches", "Switches", CQuantifiedList({}, "Product", opticalSwitches)),
@@ -292,10 +287,7 @@ var solution = CNameSpace("solutionProps", CAggregate("networkElements", CGroup(
 			(node, {solutionProps}) => { solutionProps.release = node.caseName; },
 			release
 		)),
-        cmember("rackType", "Rack Type", CSideEffect(
-			(node, {solutionProps}) => { solutionProps.rackType = node.caseName; },
-			rackType
-		)),
+        rackType,
 		cmember("UPS", "Uninterruptible Power Supply (default for each rack)", // inheritance of default values 
 			CNamed("solutionProps", "UPS", {valueAccessor: node => node.value}, CBoolean({}))),
     ])),
@@ -355,8 +347,8 @@ var solution = CNameSpace("solutionProps", CAggregate("networkElements", CGroup(
 var configuration = CSelect([
     unansweredCase("Configuration Mode"),
     ccase("Switches", "Optical Switches", CQuantifiedList({}, "Optical Switch", opticalSwitches)),
-    ccase("Rack",     "Racks",            CQuantifiedList({}, "Rack",           rack)),
-    ccase("Solution", "Solution",         solution),
+    ccase("Rack",     "Racks",            CQuantifiedList({}, "Rack",           CNameSpace("inheritableRackProps", rack))),
+    ccase("Solution", "Solution",         CNameSpace("inheritableRackProps", solution)),
 ]);
 
 var workbench = CWorkbench(
