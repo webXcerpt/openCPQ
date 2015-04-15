@@ -288,7 +288,7 @@ var rack =
 var solution = CNameSpace("solutionProps", CGroup([
     // parameters to be inherited
     cmemberTOC("project", "Project Settings", CGroup([
-        cmember("relase", "Release", CSideEffect(
+        cmember("release", "Release", CSideEffect(
 			(node, {solutionProps}) => { solutionProps.release = node.caseName; },
 			release
 		)),
