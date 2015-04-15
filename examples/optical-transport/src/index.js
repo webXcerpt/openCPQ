@@ -239,6 +239,8 @@ function CCheckHeightUnits(max, type) {
 	));
 }
 
+// rackType can be used as a group member on multiple levels.  It only
+// "materializes" if we do not yet have an "inherited" value.
 var rackType = ({inheritableRackProps}) => {
 	if (inheritableRackProps.rackType == undefined)
 		return cmember("rackType", "Rack Type", CNamed("inheritableRackProps", "rackType", {valueAccessor: n => n.caseName}, CSelect([
