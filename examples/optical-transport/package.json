@@ -1,9 +1,10 @@
 {
-  "name": "opencpq-demo-optical-transport",
+  "name": "optical-transport",
   "description": "openCPQ demo with optical-transport products.",
   "scripts": {
     "start": "webpack-dev-server --progress --watch",
-    "prod": "webpack --progress -p"
+    "prod": "webpack --progress -p",
+    "deploy": "gulp ftp"
   },
   "dependencies": {
     "babyparse": "^0.4.3"
@@ -12,8 +13,11 @@
     "appcache-webpack-plugin": "^0.1.1",
     "bootstrap": "^3.3.4",
     "css-loader": "^0.9.1",
+    "del": "^1.1.1",
     "file-loader": "^0.8.1",
     "glob": "^5.0.3",
+    "gulp": "^3.8.11",
+    "gulp-util": "^3.0.4",
     "json-loader": "^0.5.1",
     "less": "^2.5.0",
     "less-loader": "^2.2.0",
@@ -21,6 +25,7 @@
     "path": "^0.11.14",
     "style-loader": "^0.9.0",
     "url-loader": "^0.5.5",
+    "vinyl-ftp": "^0.4.0",
     "webpack": "^1.7.3",
     "webpack-dev-server": "^1.8.0"
   },
