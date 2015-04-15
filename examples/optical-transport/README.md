@@ -24,8 +24,8 @@ The product models are maintained by three different roles:
 - The openCPQ modeling expert models the structure of the configurator and the structure of each product.
   JavaScript and openCPQ knowledge is required, as well as some understanding of the configuration process and the products.
   This part of the configurator changes only when new products are introduced or products are changed heavily.
-- The product manager maintains nearly-tabular data for boards, modules, and transceivers.
-  This nearly-tabular data is represented in JSON format. This part of the configurator might change every month.
+- The product manager maintains nearly-tabular data for the components (boards, modules, and transceivers).
+  This nearly-tabular data is represented in JSON format (in file `resources/components.json`). This part of the configurator might change every month.
   It might be imported from a PDM system.
-- The basic-data manager maintains materials with descriptions and prices in tabular form (tab-separated values).
+- The basic-data manager maintains materials with descriptions and prices in tabular form (as tab-separated values in file `resources/materials.tsv`).
   This data can change daily and should be loaded at each start of the configurator. It might be imported from an ERP system.
