@@ -11,7 +11,7 @@ var {
 	CNameSpace, CNamed,
 	CTOCEntry,
 	TOC, Problems, 
-	VBOM, VTOC, VProblems, 
+	VTOC, VProblems, 
 	CQuantifiedList,
 	CLinearAggregation, SimpleAdder,
 	CValidate,
@@ -22,8 +22,9 @@ var {
 
 var {cmemberNV, cmemberTOC, ccaseBOM, onlyIf, cforbidden, cassert} = require("../lib/utils");
 var {CPorts} = require("../lib/ports");
+var {VBOM} = require("../lib/bom.js"); // specific BOM implementation
 
-// TODO assign materials, images
+// TODO assign images
 
 // TODO move into a file data.js
 
@@ -358,10 +359,8 @@ var configuration = CSelect([
     ccase("Solution", "Solution",         solution),
 ]);
 
-var itemList = []; // TODO fill itemList
-
 var workbench = CWorkbench(
-	ctx => ({toc: VTOC(ctx), bom: VBOM(itemList, ctx), problems: VProblems(ctx)}),
+	ctx => ({toc: VTOC(ctx), bom: VBOM(ctx), problems: VProblems(ctx)}),
 	(innerNode, {toc, bom, problems}) => {
 		function colStyle(percentage) {
 			return {

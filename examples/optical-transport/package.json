@@ -5,6 +5,9 @@
     "start": "webpack-dev-server --progress --watch",
     "prod": "webpack --progress -p"
   },
+  "dependencies": {
+    "babyparse": "^0.4.3"
+  },
   "devDependencies": {
     "appcache-webpack-plugin": "^0.1.1",
     "bootstrap": "^3.3.4",
