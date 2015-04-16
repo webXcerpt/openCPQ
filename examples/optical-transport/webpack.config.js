@@ -1,6 +1,6 @@
 "use strict";
 
-var manifestCacheEntries = ['http://code.jquery.com/jquery-2.1.3.min.js'];
+var manifestCacheEntries = [];
 
 var resources = require("glob").sync("./resources/**", {nodir: true}).map(function(file) {
 	return "!file?name=[path][name].[ext]&context=.!" + file;

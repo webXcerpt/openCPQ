@@ -1,5 +1,6 @@
 var React = require("react");
 var openCPQ = require("opencpq");
+var $ = require("jquery");
 var Baby = require("babyparse");
 var saveAs = require("browser-filesaver");
 
