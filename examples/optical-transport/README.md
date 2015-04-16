@@ -1,4 +1,10 @@
+openCPQ Demo - Optical-Networks Configurator
+============================================
+
 The hypothetical company OptoKom SE sells equipment for optical networks, e.g. optical switches.
+
+Configuration Rules
+-------------------
 
 For the demo configurator, assume the following:
 - There are two products, OptoSwitch 4 and OptoSwitch 16.
@@ -14,11 +20,17 @@ For the demo configurator, assume the following:
 - Racks contain additional fan trays which depend on the heat dissipation of the contained devices.
 - Racks can contain an uninteruptible power supply (UPS). The dimensioning of the UPS depends on the used power.
 
+Configuation Modes
+------------------
+
 Three different modes of configuration should be implemented:
 - Configuration of single products.
 - Configuration of racks, which contain products and additional rack equipment.
 - Configuration of a solution consisting of equipped racks, a network-management system, and additional service.
   The configuration should be facilitated with some top-level parameters.  
+
+Maintenance of the Configurator
+-------------------------------
 
 The product models are maintained by three different roles:
 - The openCPQ modeling expert models the structure of the configurator and the structure of each product.
@@ -29,3 +41,8 @@ The product models are maintained by three different roles:
   It might be imported from a PDM system.
 - The basic-data manager maintains materials with descriptions and prices in tabular form (as tab-separated values in file `resources/materials.tsv`).
   This data can change daily and should be loaded at each start of the configurator. It might be imported from an ERP system.
+  
+Running the Configurator in the Web
+-----------------------------------
+
+The configurator can be started from http://opencpq.webxcerpt.com/examples/optical-transport/.
