@@ -8,8 +8,8 @@ var {
  * A variant of cmember which also inserts the contained node's value
  * into the "product" name space under the given name.
  */
-function cmemberNV(name, label, type) {
-	type = CNamed("productProps", name, {valueAccessor: node => node.value}, type);
+function cmemberNV(namespace, name, label, type) {
+	type = CNamed(namespace, name, {valueAccessor: node => node.value}, type);
 	return cmember(name, label, type);
 }
 

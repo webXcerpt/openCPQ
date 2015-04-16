@@ -8,7 +8,7 @@ var {
 	CInteger,
 	CHtml,
 	CUnit,
-	CNameSpace, CNamed,
+	CNameSpace,
 	CTOCEntry,
 	TOC, Problems, 
 	VTOC, VProblems, 
@@ -26,7 +26,7 @@ var {VBOM} = require("../lib/bom.js"); // specific BOM implementation
 
 // TODO assign images
 
-var {boards: allBoards, modules: allModules, transceivers: allTransceivers} = require("../resources/components.json");
+var components = require("../resources/components.json");
 
 var allWavelengths = {
 	// This is actually the C band.
@@ -45,7 +45,7 @@ var allWavelengths = {
 };
 
 function boards(isDoubleWidthSlot) {
-	return CSelect(allBoards.map(b =>
+	return CSelect(components.boards.map(b =>
 		b.doubleWidth && !isDoubleWidthSlot ? 
 		undefined :
 		ccaseBOM(b.name, b.label,
@@ -66,7 +66,7 @@ function ports(ps) {
 function modules(number) {
 	return CGroup(
 		[for (i of range(1, number))
-			cmember(`module${i}`, `Module ${i}`, CSelect(allModules.map(
+			cmember(`module${i}`, `Module ${i}`, CSelect(components.modules.map(
 				m => ccaseBOM(m.name, m.label, m.ports ? aggregate("power", m.power, ports(m.ports)) : undefined)
 			)))
 		]
@@ -74,12 +74,12 @@ function modules(number) {
 }
 
 function transceivers(type) {
-	var ps = allTransceivers.filter(pl => pl.type === type);
-	if (ps)
-		if (ps.length == 0)
+	var ts = components.transceivers.filter(t => t.type === type);
+	if (ts)
+		if (ts.length == 0)
 			return CHtml(`no transceivers of type ${type}`); // this is an error situation
 		else
-			return CSelect(ps.map(pl =>	ccaseBOM(pl.name, pl.label, aggregate("power", pl.power, wavelengths(pl.wavelengths)))));
+			return CSelect(ts.map(t => ccaseBOM(t.name, t.label, aggregate("power", t.power, wavelengths(t.wavelengths)))));
 	else
 		return undefined;
 }
@@ -121,7 +121,7 @@ function getFromProps(propsList, property) {
 function software({solutionProps, productProps}) {
 	if (solutionProps == undefined || solutionProps.release === "R2.0") {
 		return cmember("Software", "Software and Licenses", CGroup([
-		           solutionProps == undefined ? cmemberNV("release", "Release", release) : undefined,                                    
+		           solutionProps == undefined ? cmemberNV("productProps", "release", "Release", release) : undefined,                                    
 		           cmember("Licenses", "Licenses", CGroup([
 		               () => getFromProps([productProps, solutionProps], "release") === "R2.0" ? cmember("MPLS-TP", "MPLS-TP", CBoolean({})) : undefined,
 		               solutionProps == undefined ? cmember("NetM", "Connection License to Network Management", CBoolean({})) : undefined,
@@ -134,7 +134,7 @@ var opticalSwitch4 = CTOCEntry("OS4", () => "Optical Switch OS4",
 	CGroup([
 	    cmember("Slots", "Slots", CGroup(
 	    	[for (i of range(1, 4))
-	    		cmemberNV(`slot${i}`, `Slot ${i}`, boards(false))
+	    		cmemberNV("productProps", `slot${i}`, `Slot ${i}`, boards(false))
 	    	]
 	    )),
 	    software,
@@ -145,7 +145,7 @@ var opticalSwitch16 = CTOCEntry("OS16", () => "Optical Switch OS16",
 	    cmember("Slots", "Slots", CGroup(
 	    	[for (i of range(1, 16))
 	    		() =>
-	    		cmemberNV(`slot${i}`, `Slot ${i}`, 
+	    		cmemberNV("productProps", `slot${i}`, `Slot ${i}`, 
 	    			i % 2 === 0 && hasDoubleWidth(p[`slot${i-1}`]) ?
 	    			CHtml("occupied") :
 	    			boards(i % 2 === 1)
@@ -194,10 +194,10 @@ function CCheckHeightUnits(max, type) {
 // "materializes" if we do not yet have an "inherited" value.
 var rackType = ({inheritableRackProps}) => {
 	if (inheritableRackProps.rackType == undefined)
-		return cmember("rackType", "Rack Type", CNamed("inheritableRackProps", "rackType", {valueAccessor: n => n.caseName}, CSelect([
+		return cmemberNV("inheritableRackProps", "rackType", "Rack Type", CSelect([
 			ccase("R:ANSI", "ANSI"),
 			ccase("R:ETSI", "ETSI"),
-		])))
+		]));
 };
 
 var rack =
@@ -225,8 +225,7 @@ var rack =
 						},
 						CGroup(({solutionProps}) => [
 							rackType,
-						    cmember("UPS", "Uninterruptible Power Supply", CNamed("rackProps", "UPS", {valueAccessor: node => node.value},
-						    	CBoolean({defaultValue: solutionProps == undefined ? undefined : solutionProps.UPS}))),
+						    cmemberNV("rackProps", "UPS", "Uninterruptible Power Supply", CBoolean({defaultValue: solutionProps == undefined ? undefined : solutionProps.UPS})),
 						    cmember("switches", "Switches", CQuantifiedList({}, "Product", opticalSwitches)),
 						])
 )))));
@@ -234,17 +233,13 @@ var rack =
 var solution = CNameSpace("solutionProps", CAggregate("networkElements", CGroup([
     // parameters to be inherited
     cmemberTOC("project", "Project Settings", CGroup([
-        cmember("release", "Release", CSideEffect(
-			(node, {solutionProps}) => { solutionProps.release = node.caseName; },
-			release
-		)),
+        cmemberNV("solutionProps", "release", "Release", release),
         rackType,
-		cmember("UPS", "Uninterruptible Power Supply (default for each rack)", // inheritance of default values 
-			CNamed("solutionProps", "UPS", {valueAccessor: node => node.value}, CBoolean({}))),
+		cmemberNV("solutionProps", "UPS", "Uninterruptible Power Supply (default for each rack)", CBoolean({})),
     ])),
     cmember("racks", "Racks", CQuantifiedList({}, "Rack", rack)),
     ({networkElements}) => cmemberTOC("management", "Network Management", CGroup([
-        cmember("ne", "Number of managed network elements", CNamed("solutionProps", "ne", {valueAccessor: node => node.value}, CInteger({defaultValue: networkElements.get()}))),
+        cmemberNV("solutionProps", "ne", "Number of managed network elements", CInteger({defaultValue: networkElements.get()})),
         ({solutionProps}) => cmember("server", "Server Type", CSelect([
             onlyIf(solutionProps.ne <= 20,  "Small server only possible for at most 20 managed network elements",    [ccase("small",  "small server")]),
             onlyIf(solutionProps.ne <= 100, "Medium server only possible for at most 100 manageed network elements", [ccase("medium", "medium server")]),
@@ -281,9 +276,9 @@ var solution = CNameSpace("solutionProps", CAggregate("networkElements", CGroup(
             cmember("installation", "Installation", CBoolean({defaultValue: true})),
             cmember("test",         "Test",         CBoolean({defaultValue: true})),
         ])),
-        cmember("training",     "Training", CSelect([
-            ccase("basic",    "basic training"), // TODO number of seats
-            ccase("advanced", "advanced training"), // TODO number of seats. Warn if more seats for advanced training are booked than for basic training.
+        cmember("training",     "Training", CGroup([
+            cmember("basic",    "basic training", CBoolean({})), // TODO number of seats
+            cmember("advanced", "advanced training", CBoolean({})), // TODO number of seats. Warn if more seats for advanced training are booked than for basic training.
         ])),
     ])),
 ])));
@@ -353,5 +348,3 @@ renderTree(
 	}),
 	document.getElementsByTagName("body")[0]
 );
-
-require("./style.css");
