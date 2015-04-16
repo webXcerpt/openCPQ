@@ -39,5 +39,3 @@ renderTree(
 	}),
 	document.getElementsByTagName("body")[0]
 );
-
-require("./style.css");

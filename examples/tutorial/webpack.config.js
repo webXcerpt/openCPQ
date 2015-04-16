@@ -1,9 +1,9 @@
 "use strict";
 
-var manifestCacheEntries = ['http://code.jquery.com/jquery-2.1.3.min.js'];
+var manifestCacheEntries = [];
 
 var resources = require("glob").sync("./resources/**", {nodir: true}).map(function(file) {
-	return "!file?name=[path][name].[ext]?[hash]&context=.!" + file;
+	return "!file?name=[path][name].[ext]&context=.!" + file;
 });
 
 // ----------------------------------------------------------------------
@@ -19,7 +19,7 @@ var debug = !(args.production || args.p);
 var config = {
 	target: "web",
 	entry: {
-		"index.html": "!file?name=[path][name].[ext]?[hash]&context=.!./index.html",
+		"index.html": "!file?name=[path][name].[ext]&context=.!./index.html",
 		resources: resources,
 		bundle: [
 			"bootstrap/less/bootstrap.less",
@@ -33,9 +33,11 @@ var config = {
 	module: {
 		loaders: [
 			{ test: /\.js$/, loader: "babel?stage=0" },
+			{ test: /\.json$/, loader: "json" },
 			{ test: /\.css$/, loader: "style!css" },
 			{ test: /\.less$/, loader: "style!css!less" },
 			{ test: /\.(eot|svg|ttf|woff2?)$/, loader: "url?limit=10000" },
+			{ test: /\.png$/, loader: "url-loader?mimetype=image/png" },
 		]
 	},
 	plugins: [
@@ -57,11 +59,9 @@ else {
 	config.plugins.push(
 		// The cache manifest goes to the hard-wired filename "manifest.appcache".
 		new AppCachePlugin({
-			cache: ['/'].concat(manifestCacheEntries),
-			network: ['http://*', 'https://*', '*',
-					  // Hack to get a SETTINGS section, which is not supported by the plugin:
-					  // (Must be appended to the last emitted (non-empty) section.)
-					  "\nSETTINGS:\nprefer-online"],
+			cache: ['.'].concat(manifestCacheEntries),
+			network: ['http://*', 'https://*', '*'],
+			settings: {preferOnline: true}
 		})
 	);
 }

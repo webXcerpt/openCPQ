@@ -1,6 +1,10 @@
 {
   "name": "opencpq-tutorial",
   "description": "A simple demo for learning openCPQ.",
+  "scripts": {
+    "start": "webpack-dev-server --progress --watch",
+    "prod": "webpack --progress --production"
+  },
   "devDependencies": {
     "appcache-webpack-plugin": "^0.1.1",
     "babel-core": "^5.1.2",
