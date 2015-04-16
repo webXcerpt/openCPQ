@@ -61,7 +61,7 @@ else {
 		new AppCachePlugin({
 			cache: ['.'].concat(manifestCacheEntries),
 			network: ['http://*', 'https://*', '*'],
-			settings: {preferOnline: true}
+			settings: ["prefer-online"],
 		})
 	);
 }
