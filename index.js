@@ -1,4 +1,5 @@
 require("babel-core/polyfill");
+require("./style.css");
 
 module.exports = {
 	...require("./lib/base"),

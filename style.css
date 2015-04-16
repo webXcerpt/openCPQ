@@ -1,0 +1,75 @@
+body {
+	font-family: 'Open Sans', sans-serif;
+}
+
+.validate { font-size: 80%; }
+.validate-error > a { color: #FA1E1E; }
+.validate-warning > a { color: #FFA826; }
+
+.select-detail, .labeled-data {
+  border-left: 1px dashed grey;
+  padding-left: 30px;
+}
+
+.select-mode-plain   > button > span, .select-mode-plain   > a,	.option-mode-plain   > a, .problem-plain   > .problems-level { color: #000000 !important; text-decoration: none; }
+.select-mode-warning > button > span, .select-mode-warning > a, .option-mode-warning > a, .problem-warning > .problems-level { color: #FFA826 !important; text-decoration: none; }
+.select-mode-error   > button > span, .select-mode-error   > a, .option-mode-error   > a, .problem-error   > .problems-level { color: #FA1E1E !important; text-decoration: none; }
+/* Options declared "hidden" may nevertheless be visible: */
+.select-mode-hidden  > button > span, .select-mode-hidden  > a, .option-mode-hidden  > a, .problem-hidden  > .problems-level { color: #FA1E1E !important; text-decoration: line-through; }
+
+tr, td {
+  vertical-align: top;
+}
+
+				.dim       { opacity: 0.1 }
+tr:hover > td > .dim       { opacity: 1.0 }
+/* Just in case the previous rule does not match the structure: */
+				.dim:hover { opacity: 1.0 }
+
+
+.bom-quantity, .bom-quantity-head, .bom-price {
+  text-align: right
+}
+
+.list-drop {
+  height: 3px
+}
+
+.drop-target {
+  background-color: #0F0;
+  opacity: 0
+}
+
+.drop-target.drop-target-dragging {
+  opacity: 0.2
+}
+
+.drop-target.drop-target-dragging.drop-target-hovering {
+  opacity: 1
+}
+
+.same-line > .select > * {
+  float: left;
+}
+
+.smooth-enter {
+  opacity: 0.01;
+  transform: translateX(200%);
+  transition: opacity .5s ease-in, transform 0.5s ease-out;
+}
+
+.smooth-enter.smooth-enter-active {
+  opacity: 1;
+  transform: translateX(0px);
+}
+
+.smooth-leave {
+  opacity: 1;
+  transform: translateX(0px);
+  transition: opacity .5s ease-out, transform 0.5s ease-in;
+}
+
+.smooth-leave.smooth-leave-active {
+  opacity: 0.01;
+  transform: translateX(200%);
+}
