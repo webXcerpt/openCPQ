@@ -23,4 +23,5 @@ module.exports = {
 	...require("./lib/root"),
 	...require("./lib/visualization"),
 	...require("./lib/tabbed-area"),
+	...require("./lib/accordion"),
 };
