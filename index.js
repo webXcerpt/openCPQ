@@ -22,4 +22,5 @@ module.exports = {
 	...require("./lib/workbench"),
 	...require("./lib/root"),
 	...require("./lib/visualization"),
+	...require("./lib/tabbed-area"),
 };
