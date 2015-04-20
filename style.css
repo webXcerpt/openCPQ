@@ -2,6 +2,13 @@ body {
 	font-family: 'Open Sans', sans-serif;
 }
 
+.navbar-brand {
+	background-image: url("openCPQ-logo-white-100x41.png");
+	background-repeat: no-repeat;
+	width: 110px;
+	height: 41px;
+}
+
 .validate { font-size: 80%; }
 .validate-error > a { color: #FA1E1E; }
 .validate-warning > a { color: #FFA826; }
