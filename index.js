@@ -1,5 +1,8 @@
 require("babel-core/polyfill");
+
 require("./style.css");
+require("bootstrap/less/bootstrap.less");
+require('react-widgets/lib/less/react-widgets.less');
 
 module.exports = {
 	...require("./lib/base"),

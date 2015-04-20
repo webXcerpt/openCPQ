@@ -19,6 +19,7 @@
     "babel-loader": "^5.0.0",
     "browser-filesaver": "^1.0.0",
     "react": "^0.13.1",
-    "react-bootstrap": "^0.20.1"
+    "react-bootstrap": "^0.20.1",
+    "react-widgets": "^2.4.1"
   }
 }
