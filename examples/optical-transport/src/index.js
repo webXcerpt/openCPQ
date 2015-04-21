@@ -6,6 +6,7 @@ var {
 	CSelect, ccase, cdefault, unansweredCase,
 	CBoolean,
 	CInteger,
+	CEither,
 	CHtml,
 	CUnit,
 	CNameSpace,
@@ -20,7 +21,7 @@ var {
     renderTree, rootPath,
 } = require("opencpq");
 
-var {cmemberNV, cmemberTOC, ccaseBOM, onlyIf, cforbidden, cassert} = require("../lib/utils");
+var {cmemberNV, cmemberTOC, ccaseBOM, cintegerBOM, onlyIf, cforbidden, cassert} = require("../lib/utils");
 var {CPorts} = require("../lib/ports");
 var {VBOM} = require("../lib/bom.js"); // specific BOM implementation
 
@@ -93,7 +94,7 @@ function wavelengths(type) {
 }
 
 function hasDoubleWidth(n) {
-	return allBoards.find(b => b.name === n).doubleWidth;
+	return components.boards.find(b => b.name === n).doubleWidth;
 }
 
 function range(from, to, step = 1) {
@@ -161,22 +162,22 @@ var opticalSwitches = CNameSpace("productProps", CSelect([
     ccase("OS16", "Optical Switch OS16", aggregate("networkElements", 1, aggregate("hu", 11, opticalSwitch16))),
 ]));
 
-function aggregate(what, value = 0, type) {
+function aggregate(name, value = 0, type) {
 	return CSideEffect(
 		// Notice that the context might not contain an "interested" aggregator.
-		(node, {[what]: aggregator}) => aggregator && aggregator.add(value),
+		(node, {[name]: aggregator}) => aggregator && aggregator.add(value),
 		type
 	);
 }
 
-function CAggregate(what, type) {
-	return CLinearAggregation(what, SimpleAdder, CValidate(
-		function check(node, {error, info}, ctx) {
-			var v = ctx[what].get();
-			info(`aggregated ${what}: ${v}`);
-		},
-		type
-	));
+function CAggregate(name, type) {
+	return CLinearAggregation(name, SimpleAdder,
+		CValidate((node, {info}, {[name]: aggregator}) => {
+				var v = aggregator.get();
+				info(`aggregated ${name}: ${v}`);
+			},
+			type
+		));
 }
 
 function CCheckHeightUnits(max, type) {
@@ -255,39 +256,46 @@ var solution = CNameSpace("solutionProps", CAggregate("networkElements", CGroup(
         ])),
     ])),
     // TODO management system and UPS in one special rack
-    cmemberTOC("services", "Services", CGroup([
-        // TODO some general service level as Silver, Gold, Platinum?
-        cmember("maintenance",  "Maintenance", CGroup([
-            cmember("technicalsupport",    "Technical Support",    CSelect([
-                ccase("business", "business hours"),
-                cdefault(ccase("24/7",     "24/7")),
-            ])),
-            cmember("softwareupdates",     "Software Updates",     CSelect([
-                ccase("download", "via download"),
-                cdefault(ccase("managed",  "managed update")),
-             ])),
-            cmember("hardwarereplacement", "Hardware Replacement", CSelect([
-                ccase("next", "next business day"),
-                ccase("same", "same day"),
-            ])),
-        ])),
-        cmember("deployment",   "Deployment", CGroup([
-            cmember("engineering",  "Engineering",  CBoolean({defaultValue: true})),
-            cmember("installation", "Installation", CBoolean({defaultValue: true})),
-            cmember("test",         "Test",         CBoolean({defaultValue: true})),
-        ])),
-        cmember("training",     "Training", CGroup([
-            cmember("basic",    "basic training", CBoolean({})), // TODO number of seats
-            cmember("advanced", "advanced training", CBoolean({})), // TODO number of seats. Warn if more seats for advanced training are booked than for basic training.
-        ])),
-    ])),
+    cmemberTOC("services", "Services", CNameSpace("serviceProps", CSideEffect(function (node, {serviceProps, bom}) {
+	    }, CGroup([
+	        // TODO some general service level as Silver, Gold, Platinum?
+	        cmember("maintenance",  "Maintenance", CGroup([
+	            cmemberNV("serviceProps", "technicalsupport",    "Technical Support",    CSelect([
+	                ccase("business", "business hours"),
+	                cdefault(ccase("24/7",     "24/7")),
+	            ])),
+	            cmember("softwareupdates",     "Software Updates",     CSelect([
+	                ccase("download", "via download"),
+	                cdefault(ccase("managed",  "managed update")),
+	             ])),
+	            cmember("hardwarereplacement", "Hardware Replacement", CSelect([
+	                ccase("next", "next business day"),
+	                ccase("same", "same day"),
+	            ])),
+	        ])),
+	        cmember("deployment",   "Deployment", CGroup([
+	            cmember("engineering",  "Engineering",  CBoolean({defaultValue: true})),
+	            cmember("installation", "Installation", CBoolean({defaultValue: true})),
+	            cmember("test",         "Test",         CBoolean({defaultValue: true})),
+	        ])),
+	        cmember("training", "Training", CGroup([
+	            cmember("basic", "Basic Training", CEither({}, CGroup([
+	                cmemberNV("serviceProps", "basicSeats",    "Number of Seats", cintegerBOM("TR:BASIC", {defaultValue: 0})),
+	            ]))),
+	            cmember("advanced", "Advanced Training", CEither({}, CGroup(({serviceProps}) => [
+	                cmember("advancedSeats", "Number of Seats", CValidate((node, {warning}, {serviceProps}) => {
+	                	if (serviceProps.basicSeats < node.value)
+	                		warning("Advanced training requires basic training.");
+	                }, cintegerBOM("TR:ADVANCED", {defaultValue: serviceProps.basicSeats}))),
+	            ]))),
+	        ])),
+    ])))),
 ])));
 
 /*
  * TODO
  * some HTML information for each product, including links
  * use react-bootstrap for styling
- * use jquery to download material master data
  */
 
 var configuration = CSelect([
@@ -331,7 +339,7 @@ var workbench = CWorkbench(
 					{problems.render()}
 				</div>
 			</div>
-		</div>; // TODO: Use tabs for bom/problems?
+		</div>;
 	},
 	configuration
 );
@@ -343,7 +351,7 @@ renderTree(
 		path: rootPath,
 		toc: new TOC(),
 		bom: new NamedAdder(),
-		linearAggregators: ["bom"],
+		linearAggregators: ["bom"], // TODO add other linear aggregators?
 		problems: new Problems(),
 	}),
 	document.getElementsByTagName("body")[0]

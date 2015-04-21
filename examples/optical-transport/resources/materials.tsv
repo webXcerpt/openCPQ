@@ -64,5 +64,5 @@ LIC:NM:C	Configuration Management license	3000
 LIC:NM:A	Accounting Management license	4000
 LIC:NM:P	Performance Management license	1000
 LIC:NM:S	Security Management license	5000
-TR:BASIC	Basic training	5000
-TR:ADVANCED	Advanced training	3000
+TR:BASIC	Basic training (per seat)	5000
+TR:ADVANCED	Advanced training (per seat)	3000

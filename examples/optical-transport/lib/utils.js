@@ -1,6 +1,8 @@
 var {
     cmember, cUnlabelledMember, CNamed, CTOCEntry, CLabeled,
 	ccase, CBOMEntry,
+	CSideEffect,
+	CInteger,
 	CValidationMessages,
 } = require("opencpq");
 
@@ -30,6 +32,10 @@ function ccaseBOM(name, label, type) {
 	return ccase(name, label, type);
 }
 
+function cintegerBOM(name, options) {
+	return CSideEffect((node, {bom}) => bom.add(name, node.value), CInteger(options));
+}
+
 function onlyIf(condition, explanation, cases) {
 	return condition ? cases : cases.map(c => ({...c, mode: "error", messages: [{level: "error", msg: explanation}]}));
 }
@@ -44,5 +50,5 @@ function cassert(name, condition, explanation) {
 }
 
 module.exports = {
-	cmemberNV, cmemberTOC, ccaseBOM, onlyIf, cforbidden, cassert
+	cmemberNV, cmemberTOC, ccaseBOM, cintegerBOM, onlyIf, cforbidden, cassert
 }
