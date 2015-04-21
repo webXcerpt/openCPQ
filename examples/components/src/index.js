@@ -55,6 +55,7 @@ var configuration = CTabbedArea([
             ccase("Apple"),
             ccase("Banana"),
             ccase("Orange"),
+            ccase("Other", "Other", CString()),
         ])),
         CExample("CGroup", "index.js", CGroup([
             cmember("Apple", "Apple", CBoolean()),
