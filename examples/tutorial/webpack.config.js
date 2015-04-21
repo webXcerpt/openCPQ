@@ -21,10 +21,7 @@ var config = {
 	entry: {
 		"index.html": "!file?name=[path][name].[ext]&context=.!./index.html",
 		resources: resources,
-		bundle: [
-			"bootstrap/less/bootstrap.less",
-			"./step-1.js",
-		],
+		bundle: "./step-1.js",
 	},
 	output: {
 		path: path.resolve("dist"),
@@ -36,7 +33,7 @@ var config = {
 			{ test: /\.json$/, loader: "json" },
 			{ test: /\.css$/, loader: "style!css" },
 			{ test: /\.less$/, loader: "style!css!less" },
-			{ test: /\.(eot|svg|ttf|woff2?)$/, loader: "url?limit=10000" },
+			{ test: /\.(eot|gif|svg|ttf|woff2?)(\?.*)?$/, loader: "url?limit=10000" },
 			{ test: /\.png$/, loader: "url-loader?mimetype=image/png" },
 		]
 	},
