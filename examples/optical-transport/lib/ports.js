@@ -18,7 +18,7 @@ function CPorts(max, type) {
 			else if (sum == max)
 				info(`All ${max} ports used.`);
 			else // sum > max
-				error(`More than the available ${max} ports configured: ${sum}.`);
+				error(`${sum} transceivers configured for only ${max} ports.`);
 		},
 		CQuantifiedList({}, "Transceiver", CSideEffect((node, {portCount}) => {portCount.add()}, type))
 	));

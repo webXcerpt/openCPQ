@@ -191,12 +191,10 @@ function aggregate(name, value = 0, type) {
 	);
 }
 
-function CAggregate(name, type) {
+function CAggregate(name, mkInfoMessage, type) {
 	return CLinearAggregation(name, SimpleAdder,
-		CValidate((node, {info}, {[name]: aggregator}) => {
-				var v = aggregator.get();
-				info(`aggregated ${name}: ${v}`);
-			},
+		CValidate(
+			(node, {info}, {[name]: aggregator}) =>	info(mkInfoMessage(aggregator.get())), 
 			type
 		));
 }
@@ -226,7 +224,7 @@ var rack =
 	CTOCEntry("rack", () => "Rack",
 		CNameSpace("rackProps", 
 			CCheckHeightUnits(42,
-				CAggregate("power",
+				CAggregate("power", v => `aggregated power consumption: ${v} W`,
 					CSideEffect(
 						function rackEquipment(node, {inheritableRackProps, rackProps, bom, power, hu}) {
 							bom.add(inheritableRackProps.rackType);
@@ -252,7 +250,7 @@ var rack =
 						])
 )))));
 
-var solution = CNameSpace("solutionProps", CAggregate("networkElements", CGroup([
+var solution = CNameSpace("solutionProps", CAggregate("networkElements", v => `aggregated number of network elements: ${v}`, CGroup([
     // parameters to be inherited
     cmemberTOC("project", "Project Settings", CGroup([
         cmemberNV("solutionProps", "release", "Release", release),
