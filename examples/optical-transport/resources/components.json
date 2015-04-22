@@ -1,21 +1,22 @@
 {"boards": [
     {"name": "B:FP",         "label": "unequipped"},
-    {"name": "B:16x10_32x1", "label": "16 x 10 G + 32 x 1 G board", "doubleWidth": true, "power": 45, "ports": [{"label": "SFP+ ports",  "number": 16, "type": "SFP+"}, {"label": "SFP ports", "number": 32, "type": "SFP"}]},
-    {"name": "B:16x10",      "label": "16 x 10 G board",                                 "power": 30, "ports": [{"label": "SFP+ ports",  "number": 16, "type": "SFP+"}]},
+    {"name": "B:8x10_16x1",  "label": "8 x 10 G + 16 x 1 G board", "doubleWidth": true,  "power": 45, "ports": [{"label": "SFP+ ports",  "number": 8, "type": "SFP+"}, {"label": "SFP ports", "number": 16, "type": "SFP"}]},
+    {"name": "B:8x10",       "label": "8 x 10 G board",                                  "power": 30, "ports": [{"label": "SFP+ ports",  "number": 8, "type": "SFP+"}]},
+    {"name": "B:16x10",      "label": "16 x 10 G board", "doubleWidth": true,            "power": 50, "ports": [{"label": "SFP+ ports",  "number": 16, "type": "SFP+"}]},
     {"name": "B:32xE1_75",   "label": "32 x E1 electrical board (75 Ohm)",               "power": 40},
     {"name": "B:32xE1_120",  "label": "32 x E1 electrical board (120 Ohm)",              "power": 40},
-    {"name": "B:4x40",       "label": "4 x 40 G board",                                  "power": 60, "ports": [{"label": "QSFP+ ports", "number": 4,  "type": "QSFP+"}]},
-    {"name": "B:2x100",      "label": "2 x 100 G board",                                 "power": 60, "ports": [{"label": "CFP ports",   "number": 2,  "type": "CFP"}]},
+    {"name": "B:2x40",       "label": "2 x 40 G board",                                  "power": 60, "ports": [{"label": "QSFP+ ports", "number": 2,  "type": "QSFP+"}]},
+    {"name": "B:1x100",      "label": "1 x 100 G board",                                 "power": 60, "ports": [{"label": "CFP ports",   "number": 1,  "type": "CFP"}]},
     {"name": "B:2xMOD",      "label": "module-carrier board for 2 modules",              "power": 20, "modules": 2}
 ],
 "modules": [
     {"name": "M:FP",       "label": "unequipped"},
-    {"name": "M:8xE1_75",  "label": "8 x E1 module (75 Ohm)"  , "power": 10},
-    {"name": "M:8xE1_120", "label": "8 x E1 module (120 Ohm)",  "power": 10},
-    {"name": "M:8xE3",     "label": "8 x E3 module",            "power": 12},
-    {"name": "M:8xSTM1",   "label": "8 x STM-1e module",        "power": 12},
-    {"name": "M:16xFE",    "label": "16 x FE module",           "power": 20},
-    {"name": "M:8xGE",     "label": "8 x GE module",            "power": 15, "ports": [{"label": "SFP ports", "number": 8, "type": "SFP"}]}
+    {"name": "M:6xE1_75",  "label": "6 x E1 module (75 Ohm)"  , "power": 10},
+    {"name": "M:6xE1_120", "label": "6 x E1 module (120 Ohm)",  "power": 10},
+    {"name": "M:6xE3",     "label": "6 x E3 module",            "power": 12},
+    {"name": "M:6xSTM1",   "label": "6 x STM-1e module",        "power": 12},
+    {"name": "M:8xFE",     "label": "8 x FE module",            "power": 20},
+    {"name": "M:4xGE",     "label": "4 x GE module",            "power": 15, "ports": [{"label": "SFP ports", "number": 4, "type": "SFP"}]}
 ],
 "transceivers": [
     {"name": "SFP:SX",       "label": "SX (850 nm, up to 550 m)",    "type": "SFP", "power": 0.5},
