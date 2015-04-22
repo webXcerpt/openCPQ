@@ -146,6 +146,21 @@ var opticalSwitch4 = CTOCEntry("OS4", () => "Optical Switch OS4",
 	    software,
 ]));
 
+var opticalSwitch6 = CTOCEntry("OS6", () => "Optical Switch OS6",
+	CGroup(({productProps: p}) => [
+	    cmember("Slots", "Slots", CGroup(
+	    	[for (i of range(1, 6))
+	    		() =>
+	    		cmemberNV("productProps", `slot${i}`, `Slot ${i}`, 
+	    			i % 2 === 0 && hasDoubleWidth(p[`slot${i-1}`]) ?
+	    			CHtml("occupied") :
+	    			boards(i % 2 === 1)
+	    		)
+	    	]
+	    )),
+	    software,
+]));
+
 var opticalSwitch16 = CTOCEntry("OS16", () => "Optical Switch OS16",
 	CGroup(({productProps: p}) => [
 	    cmember("Slots", "Slots", CGroup(
@@ -164,6 +179,7 @@ var opticalSwitch16 = CTOCEntry("OS16", () => "Optical Switch OS16",
 
 var opticalSwitches = CNameSpace("productProps", CSelect([
     ccase("OS4",  "Optical Switch OS4",  aggregate("networkElements", 1, aggregate("hu",  6, opticalSwitch4))),
+    ccase("OS6",  "Optical Switch OS6",  aggregate("networkElements", 1, aggregate("hu",  8, opticalSwitch6))),
     ccase("OS16", "Optical Switch OS16", aggregate("networkElements", 1, aggregate("hu", 11, opticalSwitch16))),
 ]));
 
