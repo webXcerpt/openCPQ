@@ -13,6 +13,11 @@ body {
 .validate-error > a { color: #FA1E1E; }
 .validate-warning > a { color: #FFA826; }
 
+.col-quantity {
+	width: 7.5em;
+	min-width: 7.5em;
+}
+
 .select-detail, .labeled-data {
   border-left: 1px dashed grey;
   padding-left: 30px;
