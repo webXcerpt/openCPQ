@@ -21,6 +21,11 @@ var {
     renderTree, rootPath,
 } = require("opencpq");
 
+var {
+	PanelGroup, Panel, 
+	TabbedArea, TabPane,
+} = require("react-bootstrap");
+
 var {cmemberNV, cmemberTOC, ccaseBOM, cintegerBOM, onlyIf, cforbidden, cassert} = require("../lib/utils");
 var {CPorts} = require("../lib/ports");
 var {VBOM} = require("../lib/bom.js"); // specific BOM implementation
@@ -314,30 +319,32 @@ var workbench = CWorkbench(
 				verticalAlign: "top",
 				width: `${percentage}%`,
 				height: "100%",
-				overflow: "auto"
 			};
-		}
-		function rowStyle(percentage) {
-			return {height: `${percentage}%`, overflow: "auto"};
 		}
 		return <div>
 			<div style={colStyle(15)}>
-				<h3>Contents</h3>
-				{toc.render()}
+				<PanelGroup>
+					<Panel header="Contents">
+						{toc.render()}
+					</Panel>
+				</PanelGroup> 
 			</div>
 			<div style={colStyle(50)}>
-				<h3>Configuration</h3>
-				{innerNode.render()}
+				<PanelGroup>
+					<Panel header="Configuration">
+						{innerNode.render()}
+					</Panel>
+				</PanelGroup> 
 			</div>
 			<div style={colStyle(35)}>
-				<div style={rowStyle(70)}>
-					<h3>Bill of Materials</h3>
-					{bom.render()}
-				</div>
-				<div style={rowStyle(30)}>
-					<h3>Problems</h3>
-					{problems.render()}
-				</div>
+				<PanelGroup defaultActiveKey={0} accordion> 
+					<Panel eventKey={0} header="Bill of Materials">
+						{bom.render()}
+					</Panel>
+					<Panel eventKey={1} header="Problems">
+						{problems.render()}
+					</Panel>
+				</PanelGroup> 
 			</div>
 		</div>;
 	},
