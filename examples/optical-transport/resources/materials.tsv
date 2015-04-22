@@ -1,12 +1,12 @@
 # chassis
 CH:OS4	Chassis for Optical Switch OS4	10000
-CH:OS6	Chassis for Optical Switch OS4	12000
+CH:OS6	Chassis for Optical Switch OS6	12000
 CH:OS16	Chassis for Optical Switch OS16	25000
 # boards
 B:FP	Blank faceplate for board slots	20
 B:8x10_16x1	8 x 10 G + 16 x 1 G board	20000
 B:8x10	8 x 10 G board	15000
-B:8x10	16 x 10 G board	25000
+B:16x10	16 x 10 G board	25000
 B:16xE1_75	16 x E1 electrical board (75 Ohm)	3000
 B:16xE1_120	16 x E1 electrical board (120 Ohm)	3000
 B:2x40	2 x 40 G board	20000
@@ -52,20 +52,21 @@ FAN:3	Fan module with 3 fans	300
 FAN:6	Fan module with 6 fans	500
 FAN:9	Fan module with 9 fans	750
 # software
-SW:OS4:1.0	Software for Optical Switch OS4	R1.0 10
-SW:OS4:1.1	Software for Optical Switch OS4	R1.1 10
-SW:OS4:2.0	Software for Optical Switch OS4	R2.0 10
-SW:OS6:1.0	Software for Optical Switch OS4	R1.0 10
-SW:OS6:1.1	Software for Optical Switch OS4	R1.1 10
-SW:OS6:2.0	Software for Optical Switch OS4	R2.0 10
-SW:OS16:1.0	Software for Optical Switch OS16 R1.0	10
-SW:OS16:1.1	Software for Optical Switch OS16 R1.1	10
-SW:OS16:2.0	Software for Optical Switch OS16 R2.0	10
+SW:OS4:10	Software for Optical Switch OS4	R1.0 10
+SW:OS4:11	Software for Optical Switch OS4	R1.1 10
+SW:OS4:20	Software for Optical Switch OS4	R2.0 10
+SW:OS6:10	Software for Optical Switch OS4	R1.0 10
+SW:OS6:11	Software for Optical Switch OS4	R1.1 10
+SW:OS6:20	Software for Optical Switch OS4	R2.0 10
+SW:OS16:10	Software for Optical Switch OS16 R1.0	10
+SW:OS16:11	Software for Optical Switch OS16 R1.1	10
+SW:OS16:20	Software for Optical Switch OS16 R2.0	10
 # licenses
 LIC:100G	License for 100 G (per port)	1000
 LIC:40G	License for 40 G (per port)	500
 LIC:10G	License for 10 G (per port)	50
 LIC:1G	License for 1 G (per port)	5
+LIC:MPLS-TP	License for MPLS-TP	2000
 NM:OS4	Network Manager connection license for OS4	1000
 NM:OS6	Network Manager connection license for OS4	1200
 NM:OS16	Network Manager connection license for OS16	2500

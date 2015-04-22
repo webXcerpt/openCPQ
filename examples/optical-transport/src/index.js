@@ -124,58 +124,82 @@ function getFromProps(propsList, property) {
 	};
 }
 
+function opticalSwitchBOM(name) {
+	return function (node, {solutionProps, productProps, bom}) {
+		bom.add(`CH:${name}`); // construct a material name
+		switch (getFromProps([productProps, solutionProps], "release")) {
+		case "R1.0": bom.add(`SW:${name}:10`); break;
+		case "R1.1": bom.add(`SW:${name}:11`); break;
+		case "R2.0": bom.add(`SW:${name}:20`); break;
+		};
+		if (productProps.NetM) // NetM might not be existing or not available - handle with same code
+			bom.add(`NM:${name}`);
+		if (productProps["MPLS-TP"]) // property name which is not an identifier
+			bom.add("LIC:MPLS-TP");
+	};
+}
+
 function software({solutionProps, productProps}) {
 	if (solutionProps == undefined || solutionProps.release === "R2.0") {
 		return cmember("Software", "Software and Licenses", CGroup([
 		           solutionProps == undefined ? cmemberNV("productProps", "release", "Release", release) : undefined,                                    
 		           cmember("Licenses", "Licenses", CGroup([
-		               () => getFromProps([productProps, solutionProps], "release") === "R2.0" ? cmember("MPLS-TP", "MPLS-TP", CBoolean({})) : undefined,
-		               solutionProps == undefined ? cmember("NetM", "Connection License to Network Management", CBoolean({})) : undefined,
+		               () => getFromProps([productProps, solutionProps], "release") === "R2.0" ? cmemberNV("productProps", "MPLS-TP", "MPLS-TP", CBoolean({})) : undefined,
+		               solutionProps == undefined ? cmemberNV("productProps", "NetM", "Connection License to Network Management", CBoolean({})) : undefined,
                    ])),                                    
                ]));
 	}
 };
 
 var opticalSwitch4 = CTOCEntry("OS4", () => "Optical Switch OS4",
-	CGroup([
-	    cmember("Slots", "Slots", CGroup(
-	    	[for (i of range(1, 4))
-	    		cmemberNV("productProps", `slot${i}`, `Slot ${i}`, boards(false))
-	    	]
-	    )),
-	    software,
-]));
+	CSideEffect(
+		opticalSwitchBOM("OS4"),
+		CGroup([
+		    cmember("Slots", "Slots", CGroup(
+		    	[for (i of range(1, 4))
+		    		cmemberNV("productProps", `slot${i}`, `Slot ${i}`, boards(false))
+		    	]
+		    )),
+		    software,
+	    ])
+));
 
 var opticalSwitch6 = CTOCEntry("OS6", () => "Optical Switch OS6",
-	CGroup(({productProps: p}) => [
-	    cmember("Slots", "Slots", CGroup(
-	    	[for (i of range(1, 6))
-	    		() =>
-	    		cmemberNV("productProps", `slot${i}`, `Slot ${i}`, 
-	    			i % 2 === 0 && hasDoubleWidth(p[`slot${i-1}`]) ?
-	    			CHtml("occupied") :
-	    			boards(i % 2 === 1)
-	    		)
-	    	]
-	    )),
-	    software,
-]));
+	CSideEffect(
+		opticalSwitchBOM("OS6"),
+		CGroup(({productProps: p}) => [
+		    cmember("Slots", "Slots", CGroup(
+		    	[for (i of range(1, 6))
+		    		() =>
+		    		cmemberNV("productProps", `slot${i}`, `Slot ${i}`, 
+		    			i % 2 === 0 && hasDoubleWidth(p[`slot${i-1}`]) ?
+		    			CHtml("occupied") :
+		    			boards(i % 2 === 1)
+		    		)
+		    	]
+		    )),
+		    software,
+	    ])
+));
 
 var opticalSwitch16 = CTOCEntry("OS16", () => "Optical Switch OS16",
-	CGroup(({productProps: p}) => [
-	    cmember("Slots", "Slots", CGroup(
-	    	[for (i of range(1, 16))
-	    		() =>
-	    		cmemberNV("productProps", `slot${i}`, `Slot ${i}`, 
-	    			i % 2 === 0 && hasDoubleWidth(p[`slot${i-1}`]) ?
-	    			CHtml("occupied") :
-	    			boards(i % 2 === 1)
-	    		)
-	    	]
-	    )),
-	    software,
+	CSideEffect(
+		opticalSwitchBOM("OS16"),
+		CGroup(({productProps: p}) => [
+		    cmember("Slots", "Slots", CGroup(
+		    	[for (i of range(1, 16))
+		    		() =>
+		    		cmemberNV("productProps", `slot${i}`, `Slot ${i}`, 
+		    			i % 2 === 0 && hasDoubleWidth(p[`slot${i-1}`]) ?
+		    			CHtml("occupied") :
+		    			boards(i % 2 === 1)
+		    		)
+		    	]
+		    )),
+		    software,
 	    // TODO power supply: DC if in rack, otherwise select betweek AC and DC
-]));
+		])
+));
 
 var opticalSwitches = CNameSpace("productProps", CSelect([
     ccase("OS4",  "Optical Switch OS4",  aggregate("networkElements", 1, aggregate("hu",  6, opticalSwitch4))),
