@@ -20,7 +20,7 @@ For the demo configurator, assume the following:
 - Racks contain additional fan trays which depend on the heat dissipation of the contained devices.
 - Racks can contain an uninteruptible power supply (UPS). The dimensioning of the UPS depends on the used power.
 
-Configuation Modes
+Configuration Modes
 ------------------
 
 Three different modes of configuration should be implemented:
