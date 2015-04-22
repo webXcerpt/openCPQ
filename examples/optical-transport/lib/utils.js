@@ -23,7 +23,7 @@ function cmemberTOC(name, label, type) {
 	return {name, type: CTOCEntry("", () => label, CLabeled(label, type))};
 }
 
-var debug = true;
+var debug = false;
 
 function ccaseBOM(name, label, type) {
 	if (debug)
