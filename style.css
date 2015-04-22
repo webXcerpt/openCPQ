@@ -13,6 +13,12 @@ body {
 .validate-error > a { color: #FA1E1E; }
 .validate-warning > a { color: #FFA826; }
 
+.col-buttons {
+	width: 2.5em;
+	min-width: 2.5em;
+	min-width: 2.5em;
+}
+
 .col-quantity {
 	width: 7.5em;
 	min-width: 7.5em;
