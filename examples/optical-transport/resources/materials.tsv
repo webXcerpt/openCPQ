@@ -52,12 +52,12 @@ FAN:3	Fan module with 3 fans	300
 FAN:6	Fan module with 6 fans	500
 FAN:9	Fan module with 9 fans	750
 # software
-SW:OS4:10	Software for Optical Switch OS4	R1.0 10
-SW:OS4:11	Software for Optical Switch OS4	R1.1 10
-SW:OS4:20	Software for Optical Switch OS4	R2.0 10
-SW:OS6:10	Software for Optical Switch OS4	R1.0 10
-SW:OS6:11	Software for Optical Switch OS4	R1.1 10
-SW:OS6:20	Software for Optical Switch OS4	R2.0 10
+SW:OS4:10	Software for Optical Switch OS4 R1.0	10
+SW:OS4:11	Software for Optical Switch OS4 R1.1	10
+SW:OS4:20	Software for Optical Switch OS4 R2.0	10
+SW:OS6:10	Software for Optical Switch OS4 R1.0	10
+SW:OS6:11	Software for Optical Switch OS4 R1.1	10
+SW:OS6:20	Software for Optical Switch OS4 R2.0	10
 SW:OS16:10	Software for Optical Switch OS16 R1.0	10
 SW:OS16:11	Software for Optical Switch OS16 R1.1	10
 SW:OS16:20	Software for Optical Switch OS16 R2.0	10
