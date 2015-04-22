@@ -34,6 +34,7 @@ var ReactBom = React.createClass({
 					},
 					fastMode: true,
 					skipEmptyLines: true,
+					comments: "#"
 				});
 			}
 		});

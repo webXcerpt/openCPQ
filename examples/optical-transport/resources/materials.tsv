@@ -1,3 +1,8 @@
+# chassis
+CH:OS4	Chassis for Optical Switch OS4	10000
+CH:OS6	Chassis for Optical Switch OS4	12000
+CH:OS16	Chassis for Optical Switch OS16	25000
+# boards
 B:FP	Blank faceplate for board slots	20
 B:8x10_16x1	8 x 10 G + 16 x 1 G board	20000
 B:8x10	8 x 10 G board	15000
@@ -7,6 +12,7 @@ B:16xE1_120	16 x E1 electrical board (120 Ohm)	3000
 B:2x40	2 x 40 G board	20000
 B:1x100	1 x 100 G board	20000
 B:2xMOD	Module-carrier board for 2 modules	500
+# modules
 M:FP	Blank faceplate for module slots	10
 M:6xE1_75	6 x E1 module (75 Ohm)	250
 M:6xE1_120	6 x E1 module (120 Ohm)	250
@@ -14,6 +20,7 @@ M:6xE3	6 x E3 module	400
 M:6xSTM1	6 x STM-1e module	300
 M:8xFE	8 x FE module	150
 M:4xGE	4 x GE module	200
+# transceivers
 SFP:SX	SFP SX (850 nm, up to 550 m)	100
 SFP:LX	SFP LX (1310 nm, up to 10 km)	150
 SFP:EX	SFP EX (1310 nm, up to 40 km)	200
@@ -35,6 +42,7 @@ QSFP+:LR	QSFP+ LR (1310 nm, up to 10 km)	10000
 CFP:SR	CFP SR (850 nm, up to 300 m)	10000
 CFP:LR	CFP LR (1310 nm, up to 10 km)	20000
 CFP:ER	CFP ER (1550 nm, up to 40 km)	30000
+# racks and rack equipment
 R:ANSI	19 inch ANSI rack	1200
 R:ETSI	23 inch ETSI rack	1250
 UPS:500	Uninteruptable power supply 500 W	1500
@@ -43,9 +51,7 @@ UPS:2000	Uninteruptable power supply 2000 W	3000
 FAN:3	Fan module with 3 fans	300
 FAN:6	Fan module with 6 fans	500
 FAN:9	Fan module with 9 fans	750
-CH:OS4	Chassis for Optical Switch OS4	10000
-CH:OS6	Chassis for Optical Switch OS4	12000
-CH:OS16	Chassis for Optical Switch OS16	25000
+# software
 SW:OS4:1.0	Software for Optical Switch OS4	R1.0 10
 SW:OS4:1.1	Software for Optical Switch OS4	R1.1 10
 SW:OS4:2.0	Software for Optical Switch OS4	R2.0 10
@@ -55,6 +61,7 @@ SW:OS6:2.0	Software for Optical Switch OS4	R2.0 10
 SW:OS16:1.0	Software for Optical Switch OS16 R1.0	10
 SW:OS16:1.1	Software for Optical Switch OS16 R1.1	10
 SW:OS16:2.0	Software for Optical Switch OS16 R2.0	10
+# licenses
 LIC:100G	License for 100 G (per port)	1000
 LIC:40G	License for 40 G (per port)	500
 LIC:10G	License for 10 G (per port)	50
@@ -70,5 +77,6 @@ LIC:NM:C	Configuration Management license	3000
 LIC:NM:A	Accounting Management license	4000
 LIC:NM:P	Performance Management license	1000
 LIC:NM:S	Security Management license	5000
+# training
 TR:BASIC	Basic training (per seat)	5000
 TR:ADVANCED	Advanced training (per seat)	3000
