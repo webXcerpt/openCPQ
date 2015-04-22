@@ -38,8 +38,7 @@ tr:hover > td > .dim       { opacity: 1.0 }
 /* Just in case the previous rule does not match the structure: */
 				.dim:hover { opacity: 1.0 }
 
-
-.bom-quantity, .bom-quantity-head, .bom-price {
+.integer, .bom-quantity, .bom-quantity-head, .bom-price {
   text-align: right
 }
 
