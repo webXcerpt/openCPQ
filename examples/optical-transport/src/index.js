@@ -345,7 +345,7 @@ var solution = CNameSpace("solutionProps", CAggregate("networkElements", v => `a
  */
 
 var configuration = CSelect([
-    unansweredCase("Configuration Mode"),
+    unansweredCase("Select Configuration Mode"),
     ccase("Switches", "Optical Switches", CQuantifiedList({}, "Optical Switch", opticalSwitches)),
     ccase("Rack",     "Racks",            CQuantifiedList({}, "Rack",           CNameSpace("inheritableRackProps", rack))),
     ccase("Solution", "Solution",         CNameSpace("inheritableRackProps", solution)),
