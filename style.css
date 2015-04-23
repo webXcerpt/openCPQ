@@ -10,8 +10,9 @@ body {
 }
 
 .validate { font-size: 80%; }
-.validate-error > a { color: #FA1E1E; }
-.validate-warning > a { color: #FFA826; }
+.validate-error { color: #FA1E1E; }
+.validate-warning { color: #FFA826; }
+.validate-info { color: #66F; } /* Do we have a value for this in the design doc? */
 
 .col-buttons {
 	width: 2.5em;
@@ -29,11 +30,11 @@ body {
   padding-left: 1.5em;
 }
 
-.select-mode-plain   > button > span, .select-mode-plain   > a,	.option-mode-plain   > a, .problem-plain   > .problems-level { color: #000000 !important; text-decoration: none; }
-.select-mode-warning > button > span, .select-mode-warning > a, .option-mode-warning > a, .problem-warning > .problems-level { color: #FFA826 !important; text-decoration: none; }
-.select-mode-error   > button > span, .select-mode-error   > a, .option-mode-error   > a, .problem-error   > .problems-level { color: #FA1E1E !important; text-decoration: none; }
+.select-mode-plain   > button > span, .select-mode-plain   > a,	.option-mode-plain   > a, .problem-info    { color: #000000 !important; text-decoration: none; }
+.select-mode-warning > button > span, .select-mode-warning > a, .option-mode-warning > a, .problem-warning { color: #FFA826 !important; text-decoration: none; }
+.select-mode-error   > button > span, .select-mode-error   > a, .option-mode-error   > a, .problem-error   { color: #FA1E1E !important; text-decoration: none; }
 /* Options declared "hidden" may nevertheless be visible: */
-.select-mode-hidden  > button > span, .select-mode-hidden  > a, .option-mode-hidden  > a, .problem-hidden  > .problems-level { color: #FA1E1E !important; text-decoration: line-through; }
+.select-mode-hidden  > button > span, .select-mode-hidden  > a, .option-mode-hidden  > a, .problem-hidden  { color: #FA1E1E !important; text-decoration: line-through; }
 
 tr, td {
   vertical-align: top;
