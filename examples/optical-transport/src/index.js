@@ -52,56 +52,56 @@ var allWavelengths = {
 };
 
 function boards(isDoubleWidthSlot) {
-	return CSelect(components.boards.map(b =>
-		b.doubleWidth && !isDoubleWidthSlot ? 
-		undefined :
-		ccaseBOM(b.name, b.label,
-			aggregate("power", b.power,
-				b.ports ? ports(b.ports) :
-				b.modules ? modules(b.modules) :
-				undefined
-		))
-	));
+	return CSelect([
+		for (b of components.boards)
+			if (!b.doubleWidth || isDoubleWidthSlot)
+				ccaseBOM(b.name, b.label,
+					aggregate("power", b.power,
+						b.ports ? ports(b.ports) :
+						b.modules ? modules(b.modules) :
+						undefined))
+	]);
 }
 
 function ports(ps) {
-	return CGroup(ps.map(
-		p => cmember(`port${p.type}`, p.label, CPorts(p.number, transceivers(p.type)))
-	));
+	return CGroup([
+		for (p of ps)
+			cmember(`port${p.type}`, p.label, CPorts(p.number, transceivers(p.type)))
+	]);
 }
 
 function modules(number) {
-	return CGroup(
-		[for (i of range(1, number))
-			cmember(`module${i}`, `Module ${i}`, CSelect(components.modules.map(
-				m => ccaseBOM(m.name, m.label, m.ports ? aggregate("power", m.power, ports(m.ports)) : undefined)
-			)))
-		]
-	);
+	return CGroup([
+		for (i of range(1, number))
+			cmember(`module${i}`, `Module ${i}`, CSelect([
+				for (m of components.modules)
+					ccaseBOM(m.name, m.label, m.ports ? aggregate("power", m.power, ports(m.ports)) : undefined)
+			]))
+	]);
 }
 
 function transceivers(type) {
 	var ts = components.transceivers.filter(t => t.type === type);
-	if (ts)
+	if (ts) {
 		if (ts.length == 0)
-			return CHtml(`no transceivers of type ${type}`); // this is an error situation
-		else {
+			return CHtml(`Internal error: no transceivers of type ${type}`);
+		else
 			return CSelect(ts.map(t => {
 				var wls = wavelengths(t.name, t.wavelengths);
-				// ccase: master items must not be included in the BOM
-				return ccase(t.name, t.label, wls ? aggregate("power", t.power, wls) : CBOMEntry(t.name, 1, CUnit()));
+				return ccase(t.name, t.label,
+							 aggregate("power", t.power,
+									   wls ? wls : CBOMEntry(t.name, 1, CUnit())));
 			}));
-		}
-	else
-		return undefined;
+	}
 }
 
 function wavelengths(master, type) {
 	var wls = allWavelengths[type];
 	if (wls)
-		return CSelect(wls.map(wl => ccaseBOM(`${master}:${wl.value}`, wl.label, undefined)));
-	else
-		return undefined;
+		return CSelect([
+			for (wl of wls)
+				ccaseBOM(`${master}:${wl.value}`, wl.label, undefined)
+		]);
 }
 
 function hasDoubleWidth(n) {
@@ -148,12 +148,19 @@ function opticalSwitchBOM(name) {
 function software({solutionProps, productProps}) {
 	if (solutionProps == undefined || solutionProps.release === "R2.0") {
 		return cmember("Software", "Software and Licenses", CGroup([
-		           solutionProps == undefined ? cmemberNV("productProps", "release", "Release", release) : undefined,                                    
-		           cmember("Licenses", "Licenses", CGroup([
-		               () => getFromProps([productProps, solutionProps], "release") === "R2.0" ? cmemberNV("productProps", "MPLS-TP", "MPLS-TP", CBoolean({})) : undefined,
-		               solutionProps == undefined ? cmemberNV("productProps", "NetM", "Connection License to Network Management", CBoolean({})) : undefined,
-                   ])),                                    
-               ]));
+		    solutionProps == undefined
+				? cmemberNV("productProps", "release", "Release", release)
+				: undefined,
+		    cmember("Licenses", "Licenses", CGroup([
+		        () =>
+					getFromProps([productProps, solutionProps], "release") === "R2.0"
+						? cmemberNV("productProps", "MPLS-TP", "MPLS-TP", CBoolean({}))
+						: undefined,
+		        solutionProps == undefined
+					? cmemberNV("productProps", "NetM", "Connection License to Network Management", CBoolean({}))
+					: undefined,
+            ])),
+        ]));
 	}
 };
 
@@ -162,7 +169,7 @@ var opticalSwitch4 =
 		opticalSwitchBOM("OS4"),
 		CGroup([
 		    [for (i of range(1, 4))
-		    	cmemberNV("productProps", `slot${i}`, `Slot ${i}`, boards(false))
+		    	cmember(`slot${i}`, `Slot ${i}`, boards(false))
 		    ],
 		    software,
 	    ])
@@ -173,12 +180,12 @@ var opticalSwitch6 =
 		opticalSwitchBOM("OS6"),
 		CGroup(({productProps: p}) => [
 		    [for (i of range(1, 6))
-	    		() =>
-	    		cmemberNV("productProps", `slot${i}`, `Slot ${i}`, 
-	    			i % 2 === 0 && hasDoubleWidth(p[`slot${i-1}`]) ?
-	    			CHtml("occupied") :
-	    			boards(i % 2 === 1)
-	    		)
+				() =>
+					cmemberNV("productProps", `slot${i}`, `Slot ${i}`, 
+						i % 2 === 0 && hasDoubleWidth(p[`slot${i-1}`])
+							? CHtml(<i>occupied</i>)
+							: boards(i % 2 === 1)
+					)
 		    ],
 		    software,
 	    ])
@@ -189,12 +196,12 @@ var opticalSwitch16 =
 		opticalSwitchBOM("OS16"),
 		CGroup(({productProps: p}) => [
 		    [for (i of range(1, 16))
-	    		() =>
-	    		cmemberNV("productProps", `slot${i}`, `Slot ${i}`, 
-	    			i % 2 === 0 && hasDoubleWidth(p[`slot${i-1}`]) ?
-	    			CHtml("occupied") :
-	    			boards(i % 2 === 1)
-	    		)
+				() =>
+					cmemberNV("productProps", `slot${i}`, `Slot ${i}`, 
+						i % 2 === 0 && hasDoubleWidth(p[`slot${i-1}`])
+							? CHtml(<i>occupied</i>)
+							: boards(i % 2 === 1)
+					)
 		    ],
 		    software,
 	    // TODO power supply: DC if in rack, otherwise select betweek AC and DC
@@ -211,14 +218,19 @@ var opticalSwitches = CTOCEntry(
 	]))
 );
 
+// Add the given value (if present) to the aggregator with the given
+// name from the context (if present).  Otherwise behave like the given
+// type.
 function aggregate(name, value = 0, type) {
 	return CSideEffect(
-		// Notice that the context might not contain an "interested" aggregator.
 		(node, {[name]: aggregator}) => aggregator && aggregator.add(value),
 		type
 	);
 }
 
+// Declare an aggregator with the given name that is accessible during
+// the configuration of the given type.  After that configuration emit a
+// message about the aggregation result.
 function CAggregate(name, mkInfoMessage, type) {
 	return CLinearAggregation(name, SimpleAdder,
 		CValidate(
@@ -229,7 +241,7 @@ function CAggregate(name, mkInfoMessage, type) {
 
 function CCheckHeightUnits(max, type) {
 	return CLinearAggregation("hu", SimpleAdder, CValidate(
-		function check(node, {error, info}, {hu}) {
+		(node, {error}, {hu}) => {
 			var v = hu.get();
 			if (v > max)
 				error(`Height of rack contents (${v}) exceeds maximum number of height units of rack (${max}).`);
@@ -252,7 +264,7 @@ var rack =
 	CTOCEntry("rack", (node, {rowIndex, quantity}) => `#${rowIndex+1}: ${quantity === 1 ? "Rack" : `${quantity} Racks`}`,
 		CNameSpace("rackProps", 
 			CCheckHeightUnits(42,
-				CAggregate("power", v => `aggregated power consumption: ${v} W`,
+				CAggregate("power", v => `Total power consumption: ${v} W`,
 					CSideEffect(
 						function rackEquipment(node, {inheritableRackProps, rackProps, bom, power, hu}) {
 							bom.add(inheritableRackProps.rackType);
@@ -278,7 +290,7 @@ var rack =
 						])
 )))));
 
-var solution = CNameSpace("solutionProps", CAggregate("networkElements", v => `aggregated number of network elements: ${v}`, CGroup([
+var solution = CNameSpace("solutionProps", CAggregate("networkElements", v => `Total number of network elements: ${v}`, CGroup([
     // parameters to be inherited
     cmemberTOC("project", "Project Settings", CGroup([
         cmemberNV("solutionProps", "release", "Release", release),
@@ -289,8 +301,8 @@ var solution = CNameSpace("solutionProps", CAggregate("networkElements", v => `a
     ({networkElements}) => cmemberTOC("management", "Network Management", CGroup([
         cmemberNV("solutionProps", "ne", "Number of managed network elements", CInteger({defaultValue: networkElements.get()})),
         ({solutionProps}) => cmember("server", "Server Type", CSelect([
-            onlyIf(solutionProps.ne <= 20,  "Small server only possible for at most 20 managed network elements",    [ccase("small",  "small server")]),
-            onlyIf(solutionProps.ne <= 100, "Medium server only possible for at most 100 manageed network elements", [ccase("medium", "medium server")]),
+            onlyIf(solutionProps.ne <= 20,  "Small server not sufficient for more than 20 managed network elements",    [ccase("small",  "small server")]),
+            onlyIf(solutionProps.ne <= 100, "Medium server not sufficient for more than 100 manageed network elements", [ccase("medium", "medium server")]),
             ccase("large", "large server"),
         ])),
         cmember("redundancy", "Redundant Server", CBoolean({})), // TODO redundant server only for medium or large
@@ -303,11 +315,15 @@ var solution = CNameSpace("solutionProps", CAggregate("networkElements", v => `a
         ])),
     ])),
     // TODO management system and UPS in one special rack
-    cmemberTOC("services", "Services", CNameSpace("serviceProps", CSideEffect(function (node, {serviceProps, bom}) {
-	    }, CGroup([
+    cmemberTOC("services", "Services", CNameSpace("serviceProps", CSideEffect(
+		(node, {serviceProps, bom}) => {
+			// TODO calculate BOM
+	    },
+		CGroup([
 	        // TODO some general service level as Silver, Gold, Platinum?
 	        cmember("maintenance",  "Maintenance", CGroup([
-	            cmemberNV("serviceProps", "technicalsupport",    "Technical Support",    CSelect([
+	            cmemberNV("serviceProps",
+						  "technicalsupport",  "Technical Support",    CSelect([
 	                ccase("business", "business hours"),
 	                cdefault(ccase("24/7",     "24/7")),
 	            ])),
@@ -330,10 +346,12 @@ var solution = CNameSpace("solutionProps", CAggregate("networkElements", v => `a
 	                cmemberNV("serviceProps", "basicSeats",    "Number of Seats", cintegerBOM("TR:BASIC", {defaultValue: 0})),
 	            ]))),
 	            cmember("advanced", "Advanced Training", CEither({}, CGroup(({serviceProps}) => [
-	                cmember("advancedSeats", "Number of Seats", CValidate((node, {warning}, {serviceProps}) => {
-	                	if (serviceProps.basicSeats < node.value)
-	                		warning("Advanced training requires basic training.");
-	                }, cintegerBOM("TR:ADVANCED", {defaultValue: serviceProps.basicSeats}))),
+	                cmember("advancedSeats", "Number of Seats", CValidate(
+						(node, {warning}, {serviceProps}) => {
+	                		if (serviceProps.basicSeats < node.value)
+	                			warning("Advanced training requires basic training.");
+						},
+						cintegerBOM("TR:ADVANCED", {defaultValue: serviceProps.basicSeats}))),
 	            ]))),
 	        ])),
     ])))),
@@ -371,17 +389,17 @@ var workbench = CWorkbench(
 				</PanelGroup> 
 			</div>
 			<div style={colStyle(30)}>
-				<PanelGroup defaultActiveKey="bom" accordion> 
-					<Panel eventKey="toc" header={<h3>Contents</h3>}>
+				<div>
+					<Panel collapsable header={<h3>Contents</h3>}>
 						{toc.render()}
 					</Panel>
-					<Panel eventKey="bom" header={<h3>Bill of Materials</h3>}>
+					<Panel collapsable defaultExpanded header={<h3>Bill of Materials</h3>}>
 						{bom.render()}
 					</Panel>
-					<Panel eventKey="problems" header={<h3>Problems</h3>}>
+					<Panel collapsable header={<h3>Problems</h3>}>
 						{problems.render()}
 					</Panel>
-				</PanelGroup> 
+				</div>
 			</div>
 		</div>;
 	},
