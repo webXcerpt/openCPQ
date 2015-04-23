@@ -157,7 +157,7 @@ function software({solutionProps, productProps}) {
 	}
 };
 
-var opticalSwitch4 = CTOCEntry("OS4", () => "Optical Switch OS4",
+var opticalSwitch4 =
 	CSideEffect(
 		opticalSwitchBOM("OS4"),
 		CGroup([
@@ -166,9 +166,9 @@ var opticalSwitch4 = CTOCEntry("OS4", () => "Optical Switch OS4",
 		    ],
 		    software,
 	    ])
-));
+	);
 
-var opticalSwitch6 = CTOCEntry("OS6", () => "Optical Switch OS6",
+var opticalSwitch6 =
 	CSideEffect(
 		opticalSwitchBOM("OS6"),
 		CGroup(({productProps: p}) => [
@@ -182,9 +182,9 @@ var opticalSwitch6 = CTOCEntry("OS6", () => "Optical Switch OS6",
 		    ],
 		    software,
 	    ])
-));
+	);
 
-var opticalSwitch16 = CTOCEntry("OS16", () => "Optical Switch OS16",
+var opticalSwitch16 =
 	CSideEffect(
 		opticalSwitchBOM("OS16"),
 		CGroup(({productProps: p}) => [
@@ -199,13 +199,17 @@ var opticalSwitch16 = CTOCEntry("OS16", () => "Optical Switch OS16",
 		    software,
 	    // TODO power supply: DC if in rack, otherwise select betweek AC and DC
 		])
-));
+	);
 
-var opticalSwitches = CNameSpace("productProps", CSelect([
-    ccase("OS4",  "Optical Switch OS4",  aggregate("networkElements", 1, aggregate("hu",  6, opticalSwitch4))),
-    ccase("OS6",  "Optical Switch OS6",  aggregate("networkElements", 1, aggregate("hu",  8, opticalSwitch6))),
-    ccase("OS16", "Optical Switch OS16", aggregate("networkElements", 1, aggregate("hu", 11, opticalSwitch16))),
-]));
+var opticalSwitches = CTOCEntry(
+	"switch",
+	(node, {rowIndex, quantity}) => `#${rowIndex+1}: ${quantity === 1 ? "" : `${quantity} \u00d7`} ${node.value}`,
+	CNameSpace("productProps", CSelect([
+		ccase("OS4",  "Optical Switch OS4",  aggregate("networkElements", 1, aggregate("hu",  6, opticalSwitch4))),
+		ccase("OS6",  "Optical Switch OS6",  aggregate("networkElements", 1, aggregate("hu",  8, opticalSwitch6))),
+		ccase("OS16", "Optical Switch OS16", aggregate("networkElements", 1, aggregate("hu", 11, opticalSwitch16))),
+	]))
+);
 
 function aggregate(name, value = 0, type) {
 	return CSideEffect(
@@ -245,7 +249,7 @@ var rackType = ({inheritableRackProps}) => {
 };
 
 var rack =
-	CTOCEntry("rack", () => "Rack",
+	CTOCEntry("rack", (node, {rowIndex, quantity}) => `#${rowIndex+1}: ${quantity === 1 ? "Rack" : `${quantity} Racks`}`,
 		CNameSpace("rackProps", 
 			CCheckHeightUnits(42,
 				CAggregate("power", v => `aggregated power consumption: ${v} W`,
