@@ -359,22 +359,18 @@ var workbench = CWorkbench(
 			};
 		}
 		return <div>
-			<div style={colStyle(15)}>
-				<PanelGroup>
-					<Panel header={<h3>Contents</h3>}>
-						{toc.render()}
-					</Panel>
-				</PanelGroup> 
-			</div>
-			<div style={colStyle(50)}>
+			<div style={colStyle(70)}>
 				<PanelGroup>
 					<Panel header={<h3>Configuration</h3>}>
 						{innerNode.render()}
 					</Panel>
 				</PanelGroup> 
 			</div>
-			<div style={colStyle(35)}>
+			<div style={colStyle(30)}>
 				<PanelGroup defaultActiveKey="bom" accordion> 
+					<Panel eventKey="toc" header={<h3>Contents</h3>}>
+						{toc.render()}
+					</Panel>
 					<Panel eventKey="bom" header={<h3>Bill of Materials</h3>}>
 						{bom.render()}
 					</Panel>
