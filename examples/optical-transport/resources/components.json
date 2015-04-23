@@ -3,8 +3,8 @@
     {"name": "B:8x10_16x1",  "label": "8 x 10 G + 16 x 1 G board", "doubleWidth": true,  "power": 45, "ports": [{"label": "SFP+ ports",  "number": 8, "type": "SFP+"}, {"label": "SFP ports", "number": 16, "type": "SFP"}]},
     {"name": "B:8x10",       "label": "8 x 10 G board",                                  "power": 30, "ports": [{"label": "SFP+ ports",  "number": 8, "type": "SFP+"}]},
     {"name": "B:16x10",      "label": "16 x 10 G board", "doubleWidth": true,            "power": 50, "ports": [{"label": "SFP+ ports",  "number": 16, "type": "SFP+"}]},
-    {"name": "B:32xE1_75",   "label": "32 x E1 electrical board (75 Ohm)",               "power": 40},
-    {"name": "B:32xE1_120",  "label": "32 x E1 electrical board (120 Ohm)",              "power": 40},
+    {"name": "B:16xE1_75",   "label": "16 x E1 electrical board (75 Ohm)",               "power": 40},
+    {"name": "B:16xE1_120",  "label": "16 x E1 electrical board (120 Ohm)",              "power": 40},
     {"name": "B:2x40",       "label": "2 x 40 G board",                                  "power": 60, "ports": [{"label": "QSFP+ ports", "number": 2,  "type": "QSFP+"}]},
     {"name": "B:1x100",      "label": "1 x 100 G board",                                 "power": 60, "ports": [{"label": "CFP ports",   "number": 1,  "type": "CFP"}]},
     {"name": "B:2xMOD",      "label": "module-carrier board for 2 modules",              "power": 20, "modules": 2}
