@@ -11,6 +11,7 @@ var {
 	CUnit,
 	CNameSpace,
 	CTOCEntry,
+	CBOMEntry,
 	TOC, Problems, 
 	VTOC, VProblems, 
 	CQuantifiedList,
@@ -84,16 +85,21 @@ function transceivers(type) {
 	if (ts)
 		if (ts.length == 0)
 			return CHtml(`no transceivers of type ${type}`); // this is an error situation
-		else
-			return CSelect(ts.map(t => ccaseBOM(t.name, t.label, aggregate("power", t.power, wavelengths(t.wavelengths)))));
+		else {
+			return CSelect(ts.map(t => {
+				var wls = wavelengths(t.name, t.wavelengths);
+				// ccase: master items must not be included in the BOM
+				return ccase(t.name, t.label, wls ? aggregate("power", t.power, wls) : CBOMEntry(t.name, 1, CUnit()));
+			}));
+		}
 	else
 		return undefined;
 }
 
-function wavelengths(type) {
+function wavelengths(master, type) {
 	var wls = allWavelengths[type];
 	if (wls)
-		return CSelect(wls.map(wl => ccase(wl.label, wl.label, undefined)));
+		return CSelect(wls.map(wl => ccaseBOM(`${master}:${wl.value}`, wl.label, undefined)));
 	else
 		return undefined;
 }
