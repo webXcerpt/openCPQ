@@ -66,13 +66,15 @@ var ReactBom = React.createClass({
 					<col className="bom-col-description"/>
 					<col className="bom-col-price"/>
 				</colgroup>
-			<tbody>
+			<thead>
 				<tr>
 					<th className="bom-quantity-head">#</th>
 					<th className="bom-item-head">Material No.</th>
 					<th className="bom-description-head">Description</th>
 					<th className="bom-price-head">Price (€)</th>
 				</tr>
+			</thead>
+			<tbody>
 				{this.props.bom.empty() ?
 				 <tr><td colSpan={4}>
 					 <div className="validate validate-info">(no entries)</div>

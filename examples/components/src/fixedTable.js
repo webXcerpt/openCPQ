@@ -16,11 +16,13 @@ class FixedTableNode extends Node {
 				<col className="col-heading" />
 				{columns.map(({name}) => <col className={`col-${name}`} />)}
 			</colgroup>
-			<tbody>
+			<thead>
 				<tr>
 					<th/>
 					{columns.map(({label}) => <th>{label}</th>)}
 				</tr>
+			</thead>
+			<tbody>
 				{rows.mapMembers(({node: row}) => {
 					return <tr>
 					    <td>{row.label}</td>
