@@ -389,7 +389,7 @@ var workbench = CWorkbench(
 				</PanelGroup> 
 			</div>
 			<div style={colStyle(30)}>
-				<div>
+				<PanelGroup>
 					<Panel collapsable header={<h3>Contents</h3>}>
 						{toc.render()}
 					</Panel>
@@ -399,7 +399,7 @@ var workbench = CWorkbench(
 					<Panel collapsable header={<h3>Problems</h3>}>
 						{problems.render()}
 					</Panel>
-				</div>
+				</PanelGroup>
 			</div>
 		</div>;
 	},
