@@ -30,11 +30,11 @@ body {
   padding-left: 1.5em;
 }
 
-.select-mode-plain   > button > span, .select-mode-plain   > a,	.option-mode-plain   > a, .problem-info    { color: #000000 !important; text-decoration: none; }
-.select-mode-warning > button > span, .select-mode-warning > a, .option-mode-warning > a, .problem-warning { color: #FFA826 !important; text-decoration: none; }
-.select-mode-error   > button > span, .select-mode-error   > a, .option-mode-error   > a, .problem-error   { color: #FA1E1E !important; text-decoration: none; }
+.select-mode-plain   > button > span, .select-mode-plain   > a,	.option-mode-plain   > a, .problem-info    > a, .problem-info    { color: #000000 !important; text-decoration: none; }
+.select-mode-warning > button > span, .select-mode-warning > a, .option-mode-warning > a, .problem-warning > a, .problem-warning { color: #FFA826 !important; text-decoration: none; }
+.select-mode-error   > button > span, .select-mode-error   > a, .option-mode-error   > a, .problem-error   > a, .problem-error   { color: #FA1E1E !important; text-decoration: none; }
 /* Options declared "hidden" may nevertheless be visible: */
-.select-mode-hidden  > button > span, .select-mode-hidden  > a, .option-mode-hidden  > a, .problem-hidden  { color: #FA1E1E !important; text-decoration: line-through; }
+.select-mode-hidden  > button > span, .select-mode-hidden  > a, .option-mode-hidden  > a, .problem-hidden  > a, .problem-hidden  { color: #FA1E1E !important; text-decoration: line-through; }
 
 tr, td {
   vertical-align: top;
