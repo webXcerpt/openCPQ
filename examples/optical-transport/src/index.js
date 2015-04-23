@@ -161,11 +161,9 @@ var opticalSwitch4 = CTOCEntry("OS4", () => "Optical Switch OS4",
 	CSideEffect(
 		opticalSwitchBOM("OS4"),
 		CGroup([
-		    cmember("Slots", "Slots", CGroup(
-		    	[for (i of range(1, 4))
-		    		cmemberNV("productProps", `slot${i}`, `Slot ${i}`, boards(false))
-		    	]
-		    )),
+		    [for (i of range(1, 4))
+		    	cmemberNV("productProps", `slot${i}`, `Slot ${i}`, boards(false))
+		    ],
 		    software,
 	    ])
 ));
@@ -174,16 +172,14 @@ var opticalSwitch6 = CTOCEntry("OS6", () => "Optical Switch OS6",
 	CSideEffect(
 		opticalSwitchBOM("OS6"),
 		CGroup(({productProps: p}) => [
-		    cmember("Slots", "Slots", CGroup(
-		    	[for (i of range(1, 6))
-		    		() =>
-		    		cmemberNV("productProps", `slot${i}`, `Slot ${i}`, 
-		    			i % 2 === 0 && hasDoubleWidth(p[`slot${i-1}`]) ?
-		    			CHtml("occupied") :
-		    			boards(i % 2 === 1)
-		    		)
-		    	]
-		    )),
+		    [for (i of range(1, 6))
+	    		() =>
+	    		cmemberNV("productProps", `slot${i}`, `Slot ${i}`, 
+	    			i % 2 === 0 && hasDoubleWidth(p[`slot${i-1}`]) ?
+	    			CHtml("occupied") :
+	    			boards(i % 2 === 1)
+	    		)
+		    ],
 		    software,
 	    ])
 ));
@@ -192,16 +188,14 @@ var opticalSwitch16 = CTOCEntry("OS16", () => "Optical Switch OS16",
 	CSideEffect(
 		opticalSwitchBOM("OS16"),
 		CGroup(({productProps: p}) => [
-		    cmember("Slots", "Slots", CGroup(
-		    	[for (i of range(1, 16))
-		    		() =>
-		    		cmemberNV("productProps", `slot${i}`, `Slot ${i}`, 
-		    			i % 2 === 0 && hasDoubleWidth(p[`slot${i-1}`]) ?
-		    			CHtml("occupied") :
-		    			boards(i % 2 === 1)
-		    		)
-		    	]
-		    )),
+		    [for (i of range(1, 16))
+	    		() =>
+	    		cmemberNV("productProps", `slot${i}`, `Slot ${i}`, 
+	    			i % 2 === 0 && hasDoubleWidth(p[`slot${i-1}`]) ?
+	    			CHtml("occupied") :
+	    			boards(i % 2 === 1)
+	    		)
+		    ],
 		    software,
 	    // TODO power supply: DC if in rack, otherwise select betweek AC and DC
 		])
