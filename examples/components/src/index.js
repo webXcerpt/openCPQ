@@ -38,6 +38,8 @@ function CExample(name, file, detail, doc) {
         ])));
 }
 
+var serverSizes = ["small", "medium", "large"];
+
 var configuration = CTabbedArea([
     cmember("Primitive Components", "Primitive Components", CGroup([
         CExample("CUnit",     "index.js", CUnit()),
@@ -84,21 +86,29 @@ var configuration = CTabbedArea([
              crow("2", "2", [cUnlabelledMember("A2", CBoolean()), cUnlabelledMember("B2", CBoolean()), cUnlabelledMember("C2", CBoolean())]),
              crow("3", "3", [cUnlabelledMember("A3", CBoolean()), cUnlabelledMember("B3", CBoolean()), cUnlabelledMember("C3", CBoolean())]),
         ])),
-        CExample("Exist-Plan", "existPlan.js", CNameSpace("props", CGroup([
-		    cmember("ConfigType", "Configuration Type", CNamed("props", "ConfigType", {valueAccessor: n => n.value}, CSelect([
-				ccase("NEW", "New Configuration"),
-				ccase("EXT", "Upgrade / Extension"),
-			]))),
-			() => cmember("Drink", "Fruit Drink", ep.table([
-			    ep.row("Fruit", "type of fruit", CSelect([
-					ccase("Apple"),
-					ccase("Banana"),
-					ccase("Orange"),
-			    ])),
-			    ep.rowBoolean("water", "add water?"), 
-			    ep.rowInteger("amount", "amount in liter"), 
-			])),
-		]))),
+        CExample("Exist-Plan", "existPlan.js",
+        	CNameSpace("props", CGroup([
+			    cmember("ConfigType", "Configuration Type",
+			    	CNamed("props", "ConfigType", {valueAccessor: n => n.value}, CSelect([
+			    	    ccase("NEW", "New Configuration"),
+					    ccase("EXT", "Upgrade / Extension"),
+				]))),
+				cmember("Server", "Server", ep.table([
+                    ep.rowInteger("clients", "Connected clients"), 
+				    crow("Size", "Server size", ({props}) =>
+				    	props.ConfigType === "EXT"
+				    	? [ep.eCell("Size", CSelect([for (s of serverSizes) ccase(s)])),
+					       () => 
+				    	   ep.pCell("Size", CSelect([for (s of serverSizes)
+				    		   onlyIf(serverSizes.indexOf(s) >= serverSizes.indexOf(ep.E(props.Size)), "Downgrade not supported", [ccase(s)])]))
+					      ]
+						: [ep.pCell("Size", CSelect([for (s of serverSizes) ccase(s)]))]
+					),
+					ep.rowBoolean("redundancy", "Redundant server"), 
+				])),
+		    ])),
+			CHtml(<p></p>)
+		),
         CExample("CSchedulingTable", "scheduling.js", CNameSpace("props", CGroup([
             cmember("days",  "Number of Days",  CNamed("props", "days",  {valueAccessor: n => n.value}, CInteger({defaultValue: 5}))),
             cmember("tasks", "Number of Tasks", CNamed("props", "tasks", {valueAccessor: n => n.value}, CInteger({defaultValue: 3}))),
@@ -113,6 +123,10 @@ var configuration = CTabbedArea([
 	    ])),
     ])),
 ]);
+
+function onlyIf(condition, explanation, cases) {
+	return condition ? cases : cases.map(c => ({...c, mode: "error", messages: [{level: "error", msg: explanation}]}));
+}
 
 var workbench = CWorkbench(
 	ctx => ctx,
