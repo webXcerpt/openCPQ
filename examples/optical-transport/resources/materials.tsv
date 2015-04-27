@@ -167,9 +167,9 @@ FAN:9	Fan module with 9 fans	750
 SW:OS4:10	Software for Optical Switch OS4 R1.0	10
 SW:OS4:11	Software for Optical Switch OS4 R1.1	10
 SW:OS4:20	Software for Optical Switch OS4 R2.0	10
-SW:OS6:10	Software for Optical Switch OS4 R1.0	10
-SW:OS6:11	Software for Optical Switch OS4 R1.1	10
-SW:OS6:20	Software for Optical Switch OS4 R2.0	10
+SW:OS6:10	Software for Optical Switch OS6 R1.0	10
+SW:OS6:11	Software for Optical Switch OS6 R1.1	10
+SW:OS6:20	Software for Optical Switch OS6 R2.0	10
 SW:OS16:10	Software for Optical Switch OS16 R1.0	10
 SW:OS16:11	Software for Optical Switch OS16 R1.1	10
 SW:OS16:20	Software for Optical Switch OS16 R2.0	10
@@ -180,7 +180,7 @@ LIC:10G	License for 10 G (per port)	50
 LIC:1G	License for 1 G (per port)	5
 LIC:MPLS-TP	License for MPLS-TP	2000
 NM:OS4	Network Manager connection license for OS4	1000
-NM:OS6	Network Manager connection license for OS4	1200
+NM:OS6	Network Manager connection license for OS6	1200
 NM:OS16	Network Manager connection license for OS16	2500
 NM:S	Network Manager small server	1000
 NM:M	Network Manager medium server	1500
