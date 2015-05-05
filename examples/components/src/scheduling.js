@@ -1,5 +1,4 @@
-var {CGroup, cUnlabelledMember, CSelect, ccase, CNameSpace, CNamed, CTime} = require("opencpq");
-var {CFixedTable, crow} = require("./fixedTable");
+var {CGroup, cUnlabelledMember, CSelect, ccase, CNameSpace, CNamed, CTime, CFixedTable, crow} = require("opencpq");
 
 /*
  * Scheduling of repetitive tasks during a week

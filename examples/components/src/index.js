@@ -20,11 +20,11 @@ var {
 	CLabeled,
 	Problems, 
 	CValidate,
+	CFixedTable, crow,
     renderTree, rootPath,
 } = require("opencpq");
 
 var {CPhone} = require("./phone");
-var {CFixedTable, crow} = require("./fixedTable");
 var ep = require("./existPlan");
 var {CSchedulingTable} = require("./scheduling");
 

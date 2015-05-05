@@ -28,4 +28,5 @@ module.exports = {
 	...require("./lib/tabbed-area"),
 	...require("./lib/accordion"),
 	...require("./lib/panel"),
+	...require("./lib/fixed-table"),
 };

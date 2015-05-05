@@ -1,6 +1,4 @@
-var {CUnit, CInteger, CBoolean, CValidate, CNamed, cUnlabelledMember, CSideEffect} = require("opencpq");
-
-var {CFixedTable, crow} = require("./fixedTable");
+var {CUnit, CInteger, CBoolean, CValidate, CNamed, cUnlabelledMember, CSideEffect, CFixedTable, crow} = require("opencpq");
 
 function table(rows) {
 	return CFixedTable(mkColumns, rows);
