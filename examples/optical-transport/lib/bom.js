@@ -1,6 +1,6 @@
 var React = require("react");
 var openCPQ = require("opencpq");
-var {Table, Button} = require("react-bootstrap");
+var {ButtonGroup, Button, Glyphicon, Table} = require("react-bootstrap");
 var $ = require("jquery");
 var Baby = require("babyparse");
 var saveAs = require("browser-filesaver");
@@ -58,7 +58,9 @@ var ReactBom = React.createClass({
 	render() {
 		var accumulatedPrice = 0;
 		return <div>
-			<Button onClick={() => this.exportCSV()}>export as CSV</Button>
+			<ButtonGroup>
+				<Button onClick={() => this.exportCSV()}><Glyphicon glyph="th"/> export as CSV</Button>
+			</ButtonGroup>
 			<Table className="bom">
 				<colgroup>
 					<col className="bom-col-quantity"/>
