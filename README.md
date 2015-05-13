@@ -1,11 +1,13 @@
 # openCPQ
 A browser-based product-configuration framework
 
-Follow [this link](http://webxcerpt.github.io/openCPQ/) for documentation.
-
-Demos:
-- [Configurator](http://opencpq.webxcerpt.com/examples/optical-transport/) for optical-transports products 
-- [Components](http://opencpq.webxcerpt.com/examples/components/) pre-defined in openCPQ and some application-specific components
+- Demos:
+  - [Configurator](http://opencpq.webxcerpt.com/examples/optical-transport/)
+	for optical-transports products 
+  - [Components](http://opencpq.webxcerpt.com/examples/components/)
+    pre-defined in openCPQ and some application-specific components
+- [Presentations](doc/presentations/README.md)
+- [Documentation](http://webxcerpt.github.io/openCPQ/) (work in progress)
 
 
 ## A Note on Installation
