@@ -6,7 +6,7 @@ const m_markdown	= require('metalsmith-markdown');
 const m_templates	= require('metalsmith-templates');
 const m_serve		= require('metalsmith-serve');
 const m_watch		= require('metalsmith-watch');
-const minimist = require('minimist')
+const minimist		= require('minimist')
 
 // ----------------------------------------------------------------------
 // Configuration
@@ -47,10 +47,18 @@ function m_log(files, metalsmith, done) {
 	done();
 }
 
+// Convert a source file path (relative to inDir) to the URL at which
+// the generated file will be available.
 function file2url(file) {
 	return (urlPrefix + file)
 		.replace(/\.md$/, ".html")
 		.replace(/\/index\.html$/, "/");
+}
+
+function m_assignURLs(files, metalsmith, done) {
+	for (const file in files)
+		files[file].url = file2url(file);
+	done();
 }
 
 function m_collectBlogs(files, metalsmith, done) {
@@ -61,20 +69,14 @@ function m_collectBlogs(files, metalsmith, done) {
 		var blogList = [];
 		for (const file of Object.keys(files)) {
 			if (blogRegExp.test(file)) {
-				const {date, title, teaser} = files[file];
-				blogList.push({date, title, teaser, url: file2url(file)});
+				const {date, title, teaser, url} = files[file];
+				blogList.push({date, title, teaser, url});
 			}
 		}
 
 		blogFile.blogList =
 			blogList.sort((x,y) => y.date.getTime() - x.date.getTime());
 	}
-	done();
-}
-
-function m_assignURLs(files, metalsmith, done) {
-	for (const file in files)
-		files[file].url = file2url(file);
 	done();
 }
 
@@ -116,22 +118,21 @@ const metalsmith = Metalsmith(__dirname)
 	.source(inDir)
 	.destination(outDir)
 	.ignore([
-		"*~", // Emacs' backup files
-		".#*", // Emacs' auxiliary files
+		"*~", // Emacs backup files
+		".#*", // Emacs auxiliary files (But "watch" still crashes with
+			   // these files, which are symbolic links pointing
+			   // nowhere.  Ignoring happens too late.)
 	])
     .use(m_initialMessage);
 
 if (production)
 	metalsmith.use(m_drafts());
-else
+
+if (!production)
 	metalsmith.use(m_watch({
 		livereload: true,
 		paths: {
-			// New/modified blog posts should also rebuild the blog-list page.
-			// TODO Make this work (using blogRegExp?).
-			//   "${source}/blog-posts/*": "${source}/blog.md",
-
-			// Rebuild a file when it changes.
+			// Rebuild a file when it changes:
 			"${source}/**/*": true,
 
 			// Rebuild everything when the template changes:
