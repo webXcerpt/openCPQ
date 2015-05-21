@@ -1,0 +1,206 @@
+<html>
+	<head>
+		<title>Tutorial</title>
+		
+		<script src="https://ajax.googleapis.com/ajax/libs/jquery/1.11.2/jquery.min.js"></script>
+		<link rel="stylesheet" href="https://maxcdn.bootstrapcdn.com/bootstrap/3.3.4/css/bootstrap.min.css">
+		<link rel="stylesheet" href="https://maxcdn.bootstrapcdn.com/bootstrap/3.3.4/css/bootstrap-theme.min.css">
+		<script src="https://maxcdn.bootstrapcdn.com/bootstrap/3.3.4/js/bootstrap.min.js"></script>
+	</head>
+	<body>
+		<div class="container">
+			<nav class="navbar navbar-default">
+				<div class="navbar-header">
+					<button type="button" class="navbar-toggle" data-toggle="collapse" data-target=".navbar-responsive-collapse">
+						<span class="icon-bar"></span>
+						<span class="icon-bar"></span>
+						<span class="icon-bar"></span>
+					</button>
+					<a class="navbar-brand" href="https://webxcerpt.github.io/openCPQ/">
+						<img src="https://webxcerpt.github.io/openCPQ/images/openCPQ-logo-425x175.png"
+							 alt="openCPQ logo"
+							 width="68"
+							 height="28">
+					</a>
+				</div>
+				<div class="navbar-collapse collapse navbar-responsive-collapse">
+					<ul class="nav navbar-nav">
+						
+						<li>
+							<a href="https://webxcerpt.github.io/openCPQ/"
+							   target="_self">
+								Home
+							</a>
+						</li>
+						
+						<li class="active">
+							<a href="https://webxcerpt.github.io/openCPQ/doc/tutorial.html"
+							   target="_self">
+								Tutorial
+							</a>
+						</li>
+						
+						<li>
+							<a href="https://webxcerpt.github.io/openCPQ/blog.html"
+							   target="_self">
+								Blog
+							</a>
+						</li>
+						
+						<li>
+							<a href="http://github.com/webXcerpt/openCPQ"
+							   target="_blank">
+								Source
+							</a>
+						</li>
+						
+					</ul>
+				</div>
+			</nav>
+			<h1 id="opencpq-tutorial">openCPQ Tutorial</h1>
+<!-- TODO
+What existing knowledge to expect from the reader?
+- JS, including new features
+- popular utilities for web applications such as node, npm, babel,
+  gulp
+  - react?
+- anything about CPQ, modeling, ...?
+-->
+<h2 id="getting-started">Getting started</h2>
+<h3 id="global-software-requirements">Global Software Requirements</h3>
+<p>For using openCPQ and for running the example code of this tutorial you
+need to have certain utilities from the nodejs ecosystem installed.  Get
+the npm package manager from <a href="http://npmjs.com">npmjs.com</a>.  Then use
+npm to install the JavaScript preprocessor <a href="http://babeljs.io">babel</a>
+and the build utility <a href="http://gulpjs.com">gulp</a>:</p>
+<pre><code>npm install --global babel gulp
+</code></pre><p>While openCPQ requires babel for compiling new JavaScript features into
+a JavaScript version understood by older browsers, you may replace gulp
+with another build tool.</p>
+<h3 id="the-project-directory">The Project Directory</h3>
+<p>If you have cloned the openCPQ repository the directory
+<a href="http://github.com/openCPQ/openCPQ/tree/master/examples/tutorial">examples/tutorial</a>
+will contain a simple openCPQ application with a basic project setup:</p>
+<ul>
+<li>package.json: configuration for <code>npm</code> and other utilities</li>
+<li>gulpfile.js: configuration for <code>gulp</code></li>
+<li>index.html: the HTML file to view</li>
+<li>style.css: some styling</li>
+<li>step-<em>n</em>.js: the models, i.e., the configuration logic for the various
+steps of this tutorial</li>
+</ul>
+<p>The following directory entries will be created automatically:</p>
+<ul>
+<li>node_modules/: a subdirectory holding opencpq and other modules it
+depends on</li>
+<li>bundle.js: a JavaScript file composed of the step</li>
+</ul>
+<p><code>cd</code> into the examples/tutorial directory.  Then run</p>
+<pre><code>npm install
+</code></pre><p>to install openCPQ and other required packages (as declared in
+package.json) in the subdirectory node_modules.</p>
+<p>Finally, in the same directory run</p>
+<pre><code>gulp
+</code></pre><p>without specifying a task name.  The default task will</p>
+<ul>
+<li>combine JavaScript code from the application and libraries into a file
+<code>bundle.js</code>, which is referenced by the HTML file <code>index.html</code>,</li>
+<li>repeat this whenever one of the included files changes, and</li>
+<li>start a web server at <code>http://localhost:8080/</code>.</li>
+</ul>
+<p>Point your browser to <a href="http://localhost:8080/"><code>http://localhost:8080/</code></a> and if
+all went well you see a very simple configurator for a book case.</p>
+<p>It is not really necessary that gulp starts a web server.  You can also
+open <code>index.html</code> with your browser via its <code>file:</code> url.  However, the
+server provides a convenience for developers: It tells your browser to
+refresh a page whenever it is updated.  For this to work, your browser
+must support <a href="http://livereload.com">livereload</a>.</p>
+<!-- TODO
+Out-of the box
+-->
+<h2 id="the-first-example-a-book-case">The First Example: A Book-Case</h2>
+<p>Now let&#39;s have a look at <code>step-1.js</code>, actually at the definition of the
+<code>model</code> variable.  (Consider the rest of the file as boilerplate code
+for now.  We will come back to this later.)</p>
+<!-- TODO
+Should I explain what a model is?  Or can we expect the reader to know
+this?
+
+Avoid confusion with ERP materials.
+-->
+<p>The model consists of several parameters: The material, dimensions, and
+a number of shelves.  They are passed to <code>CGroup</code> as an array of
+<code>cmember</code> invocations.  <code>cmember</code> takes</p>
+<ul>
+<li>a name of the group member for internal usage,</li>
+<li>a label of the member to be displayed in the user interface,</li>
+<li>and a &quot;widget&quot; to hold the actual parameter value.</li>
+</ul>
+<p>The widget for entering numbers is <code>CInteger</code>.  Here a default value is
+provided as an option parameter.</p>
+<p>The <code>CSelect</code> widget translates to a dropdown menu with the selectable
+cases passed as an array of <code>ccase</code> invocations.  Like <code>cmember</code>,
+<code>ccase</code> takes an argument for naming the case internally and a label to
+appear in the user interface.  Your internal names might be the
+identifiers from your CRM system.  The default case is marked by wrapping it
+with <code>cdefault(...)</code>.  (Without this marking, the first case would be
+used as the default.)</p>
+<p>Now try to enter some values in the browser and notice two things:</p>
+<ul>
+<li>When you enter some non-numeric value into one of the integer input
+fields, you will get an error message.</li>
+<li>If you have entered some data, the respective input field is extended
+with a button for retracting the value.  If you click that button, the
+default value is restored and the retract button disappears.  Note
+that the retract button does not disappear when you just change the
+input back to its initial value.  openCPQ keeps track which values
+were provided explicitly and which ones were just default values.</li>
+</ul>
+<p>The toolbar provides buttons for undoing and redoing your edits and for
+resetting the entire configuration.</p>
+<!-- TODO
+Explain the other toolbar buttons (leave some out).
+-->
+<p>With the export button you can download a JSON representation of your
+current configuration and with the &quot;Choose File&quot; and import buttons you
+can upload such a JSON file again.</p>
+<p>In the JSON data you see</p>
+<ul>
+<li>that it uses the internal names to identify group members and
+selection cases and</li>
+<li>that it only contains entries for those group members that have been
+set explicitly.</li>
+</ul>
+<p>Furthermore notice that the material (if you have selected one
+explicitly) is not given as just the internal identifier, but rather as
+an object <code>{&quot;$case&quot;: ...}</code>.  The reason for this will become clear in
+the next section.</p>
+<h3 id="a-bit-more-complexity">A Bit More Complexity</h3>
+<p>While the given materials are the common ones, you want to offer the
+possibility to enter other materials as well.  For this you extend the
+material selection with a case &quot;other&quot;, and a text field for entering
+the material name:</p>
+<pre><code>ccase(&quot;other&quot;, &quot;Other Material&quot;, CString())
+</code></pre><p>Don&#39;t forget to declare the variable <code>CString</code> in the destructuring
+assignment near the beginning of the file.</p>
+<p>If your gulp process is still running (and does not report an error),
+your browser API should refresh automatically.  Now you can select the
+&quot;Other Material&quot; in the </p>
+<!-- TODO
+- validation
+- conditional group members, disallowed selection cases
+- configuration result (BOM)
+- multiple products
+  - material on top-level is inherited but overridable
+-->
+
+			<footer>
+				<hr>
+				openCPQ was initiated and published as open-source software by
+				<a href="http://www.webxcerpt.com">webXcerpt Software GmbH</a>.
+				<br>
+				Contact: opencpq (at) opencpq (dot) org
+			</footer>
+		</div>
+	</body>
+</html>

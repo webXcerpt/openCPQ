@@ -1,0 +1,22 @@
+{
+  "name": "gh-pages-openCPQ-tmp",
+  "version": "1.0.0",
+  "description": "openCPQ documentation",
+  "scripts": {
+    "test": "node_modules/.bin/babel-node --stage 0 build.js",
+    "prod": "node_modules/.bin/babel-node --stage 0 build.js --prod"
+  },
+  "author": "hs",
+  "license": "-",
+  "devDependencies": {
+    "babel": "^5.4.3",
+    "ejs": "^2.3.1",
+    "metalsmith": "^1.7.0",
+    "metalsmith-drafts": "0.0.1",
+    "metalsmith-markdown": "^0.2.1",
+    "metalsmith-serve": "0.0.3",
+    "metalsmith-templates": "^0.7.0",
+    "metalsmith-watch": "^1.0.1",
+    "minimist": "^1.1.1"
+  }
+}

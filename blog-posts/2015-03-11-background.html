@@ -1,0 +1,323 @@
+<html>
+	<head>
+		<title>Why We Started openCPQ</title>
+		
+		<script src="https://ajax.googleapis.com/ajax/libs/jquery/1.11.2/jquery.min.js"></script>
+		<link rel="stylesheet" href="https://maxcdn.bootstrapcdn.com/bootstrap/3.3.4/css/bootstrap.min.css">
+		<link rel="stylesheet" href="https://maxcdn.bootstrapcdn.com/bootstrap/3.3.4/css/bootstrap-theme.min.css">
+		<script src="https://maxcdn.bootstrapcdn.com/bootstrap/3.3.4/js/bootstrap.min.js"></script>
+	</head>
+	<body>
+		<div class="container">
+			<nav class="navbar navbar-default">
+				<div class="navbar-header">
+					<button type="button" class="navbar-toggle" data-toggle="collapse" data-target=".navbar-responsive-collapse">
+						<span class="icon-bar"></span>
+						<span class="icon-bar"></span>
+						<span class="icon-bar"></span>
+					</button>
+					<a class="navbar-brand" href="https://webxcerpt.github.io/openCPQ/">
+						<img src="https://webxcerpt.github.io/openCPQ/images/openCPQ-logo-425x175.png"
+							 alt="openCPQ logo"
+							 width="68"
+							 height="28">
+					</a>
+				</div>
+				<div class="navbar-collapse collapse navbar-responsive-collapse">
+					<ul class="nav navbar-nav">
+						
+						<li>
+							<a href="https://webxcerpt.github.io/openCPQ/"
+							   target="_self">
+								Home
+							</a>
+						</li>
+						
+						<li>
+							<a href="https://webxcerpt.github.io/openCPQ/doc/tutorial.html"
+							   target="_self">
+								Tutorial
+							</a>
+						</li>
+						
+						<li>
+							<a href="https://webxcerpt.github.io/openCPQ/blog.html"
+							   target="_self">
+								Blog
+							</a>
+						</li>
+						
+						<li>
+							<a href="http://github.com/webXcerpt/openCPQ"
+							   target="_blank">
+								Source
+							</a>
+						</li>
+						
+					</ul>
+				</div>
+			</nav>
+			<h1 id="why-we-started-opencpq">Why We Started openCPQ</h1>
+<p><em>... and why we consider modeling to be a kind of programming.</em></p>
+<p>At <a href="http://www.webxcerpt.com">webXcerpt</a> we have been modeling
+configurable products since 2002, mostly for the telecom industry.  Over
+time we have worked with various CPQ frameworks which were in use at our
+customers.  While these frameworks had benefits like out-of-the-box
+integration with ERP and CRM systems, we also had to deal with various
+issues.</p>
+<p>In our opinion, modeling configurable products is software development,
+that is, a kind of programming.  So modelers should benefit from the
+same tools and best practices as programmers use them.</p>
+<h2 id="textual-modeling">Textual Modeling</h2>
+<p>We think that product models should be represented as text files.  This
+has several benefits:</p>
+<ul>
+<li><p>You can edit the model with your favorite editor.  While you might
+still need to learn the modeling language, you get all the standard
+editing functionality out of the box: searching and replacing, copying
+and pasting, undo/redo, and so on.</p>
+<p>As opposed to this, CPQ frameworks often provide a specialized
+modeling UI where you can manipulate the model as some internal data
+structure.  You have to click through various dialogs to get to the
+part of the model you are interested in.  These UIs might support
+search&amp;replace, copy&amp;paste or undo/redo to some degree, but typically
+your favorite text editor is more mature.  And even with a very good
+modeling UI you have to spend some time learning how to use it.</p>
+</li>
+<li><p>If you have two versions of a model, you can use a standard &quot;diff&quot;
+tool to figure out where the two versions differ.  Textual models can
+also be managed by version control systems.  It is your choice if you
+want to use a powerful distributed system such as GIT or a simpler one
+such as Subversion.</p>
+<p>Model versioning in CPQ frameworks is typically home-grown and less
+mature.  And again, even where it&#39;s good, it&#39;s different from what you
+are used to.  Finally, you cannot manage your models together with the
+other artefacts that you typically have in your project.</p>
+</li>
+<li><p>You may even print out your model on paper.  Ok, I admit that this
+isn&#39;t that important anymore these days.  But you might still want to
+attach a model file to an e-mail or even paste a part of it directly
+into the cover letter.  The recipient needs no special-purpose
+software to read it.</p>
+</li>
+</ul>
+<p>I have the impression that typically the philosophy behind CPQ
+frameworks is that modeling is (or should be) something simpler than
+programming.  Modelers need not be programmers.  So modelers are
+shielded from technicalities such as having to write text in an
+appropriate syntax.  For very simple models this may be the right
+approach.  But our experience shows that more complex models anyway
+require modelers with software-development (read: programming) skills.
+And these people become a lot more productive with state-of-the art
+tools, which are typically based on textual programs.</p>
+<p>By the way, while CPQ frameworks often represent the main structure of a
+model in a non-textual way they do use a textual representation for
+details, for example formulas.  GUI-based editing would simply become
+too clumsy here, and modelers are expected to be able to work with
+formulas.  (Notice that Excel follows a similar approach using textual
+formulas in cells.)  Commonly CPQ frameworks even support embedded
+programs which must be written in some home-grown programming languages.
+In a way this takes the claim that modeling is not programming ad
+absurdum.</p>
+<p>To benefit from textual model representations (and by this I mean
+actually human-readable and human-editable text, not just a model export
+in some arcane XML dialect) we have implemented languages for
+representing the product models of certain CPQ frameworks.  One example
+for this is
+<a href="http://www.vclipse.org">VClipse</a>.  It
+provides a textual syntax for models of the SAP Variant Configurator.
+But actually VClipse is quite a bit more: It is an integrated
+development environment for this language supporting</p>
+<ul>
+<li>syntax highlighting in the editor,</li>
+<li>navigation in the model along hyperlinks from an identifier usage to
+the identifier&#39;s definition (or in the opposite direction),</li>
+<li>consistency checking with errors and warnings accessible directly in
+the code,</li>
+<li>autocompletion,</li>
+</ul>
+<p>and several other features.  And of course VClipse can exchange models
+with the SAP Variant Configurator.  (<a href="http://xtext.org">Xtext</a> is very
+helpful to implement such an IDE as an extension for
+<a href="http://www.eclipse.org">Eclipse</a> with reasonable effort.)</p>
+<h2 id="higher-level-modeling">Higher-Level Modeling</h2>
+<p>In past projects we also noticed that modeling as supported by CPQ
+frameworks happens at a quite low level.  Of course the frameworks
+cannot provide customer-specific abstractions out of the box because
+they are intended for many very different customers.  And since the
+frameworks pretend that modeling is not programming they don&#39;t provide
+powerful mechanisms by which modelers could define their own
+customer-specific abstractions.  Our approach to cope with this was</p>
+<ul>
+<li>to define a customer-specific language for high-level modeling,</li>
+<li>to implement an IDE for this language (again with Xtext and Eclipse),</li>
+<li>and to provide a compiler from this high-level language to the
+CPQ framework&#39;s lower-level model representation (or to the textual
+language mentioned in the previous section).</li>
+</ul>
+<!-- TODO
+reference to CWG presentation (avalable via the VClipse web site)
+-->
+<p>As an example, languages for telecom suppliers support concepts like
+&quot;slots&quot;, into which one can plug &quot;boards&quot; containing the electronics for
+certain interfaces.</p>
+<p>With this approach it is not only possible to write concise models in a
+language easily understood by the customer.  The IDE can also support
+the modeler at that same high level, for example in error messages.
+This actually made many modeling tasks accessible to people without a
+programming background.</p>
+<h2 id="modeling-in-a-real-programming-language">Modeling in a &quot;Real&quot; Programming Language</h2>
+<p>Using a customer-specific high-level modeling language has the drawback
+that it requires quite some effort to introduce a new abstraction.  You
+have to extend the language, the IDE, and the compiler.</p>
+<p>Therefore we think that it makes sense to use a programming language for
+modeling.  This allows modelers to define abstractions (functions,
+types) by themselves without requiring changes to language, IDE, and
+compiler.  The &quot;modeling primitives&quot; are provided as library functions
+and types.</p>
+<p>And while each programming language has its drawbacks, it nevertheless
+makes sense to use some popular existing language.  There are not only
+many people around who could work with the language, but you can also
+expect many available tools and libraries.</p>
+<h2 id="modeling-with-html-and-javascript">Modeling with HTML and JavaScript</h2>
+<p>In the same time when we gained the above insights, another development
+happened: Web technologies matured and browsers became more and more
+capable.</p>
+<p>This brought us to the idea that we can switch to standard technologies
+not only on the language side to support flexible abstractions, but also
+for the &quot;modeling primitives&quot;, that is,</p>
+<ul>
+<li>choices (possibly implemented as menus),</li>
+<li>yes/no decisions (check boxes)</li>
+<li>text input fields,</li>
+<li>making the presence of certain inputs dependent on the values entered
+to other inputs,</li>
+<li>and so on.</li>
+</ul>
+<p>HTML, JavaScript APIs, and web-application frameworks such as AngularJS
+provide much of this.  And they provide much more flexibility for
+defining the configuration UI than what CPQ frameworks typically provide
+out of the box.</p>
+<p>So we might think of implementing configurators directly based on these
+technologies.  This is actually feasible, but a thin layer on top of
+these technologies makes sense for two reasons:</p>
+<ul>
+<li>Typical configuration modeling tasks can make use of certain
+abstractions which are a bit higher-level but still quite generic.</li>
+<li>If we tell a potential customer that we intend to implement a
+configurator based just on standard technologies, whithout any CPQ
+framework, then that customer might get afraid that we are reinventing
+the wheel (and exposing the project to unnecessary development risks)
+instead of making use of some framework providing basic CPQ
+functionality.</li>
+</ul>
+<p>So we implemented such a layer and called it openCPQ to give customers
+the warm cosy (and justified!) feeling that we are not starting from
+scratch.</p>
+<p>Furthermore we remodeled a bunch of examples (products of our
+past/existing customers and publicly available product models) with
+openCPQ.  These models were used to drive the implementation of openCPQ,
+suggesting useful abstractions.  Furthermore they are now used to
+showcase the power of openCPQ.</p>
+<h2 id="more-on-browser-based-configuration">More on Browser-Based Configuration</h2>
+<p>Notice that running the configurator in the browser has these benefits
+in addition to the fact that the modeling is based on standard and
+state-of the art tools:</p>
+<ul>
+<li><p>From an operational point of view there is no need to host an
+application server for the business logic.  A web server for static
+content suffices.</p>
+<!-- TODO
+Application server for business logic is not needed.
+Their architecture, implementation, and operation is usually very complex 
+since they have to manage many simultaneous sessions independently and efficiently.
+-->
+</li>
+<li><p>Configurators can also be loaded from the local file system, which
+makes them usable in &quot;offline mode&quot;, that is, without any need for a
+server.</p>
+</li>
+<li><p>Since there are no roundtrips to the server upon configuration updates
+the application feels much faster for the end user.</p>
+<!-- TODO
+Single-page application (have some buzzwords here to be found be
+Google), in-memory (vs SAP HANA)
+-->
+</li>
+</ul>
+<p>Some CPQ frameworks use an incremental reasoning algorithm.  That is,
+when a user changes some input, the algorithm propagates the change over
+the configuration along the dependencies and performs changes only to
+the affected parts of the model.  This is supposed to improve the
+configurator&#39;s efficiency.</p>
+<p>Nevertheless openCPQ recomputes the entire configuration from the
+collected explicit user input after each change for the following
+reasons:</p>
+<ul>
+<li>Incremental change propagation requires a lot of bookkeeping how
+certain values in a configuration are justified by other values.  This
+can consume quite some memory.  And maintaining these justifications
+also costs processor time, which may in some cases even outweigh the
+original savings brought by the incremental evaluation.</li>
+<li>Incremental change propagation is more error-prone.  You cannot only
+make mistakes in the actual calculations, but also in the decisions
+where to propagate a change.  As a consequence you also have to test
+much more: It does not suffice to test that a particular set of user
+inputs leads to a particular configuration.  You also have to test that
+all the ways that can lead to a particular user-input set will also
+lead to the same full configuration.</li>
+<li>Finally, computation cost in a configurator is anyway dominated by GUI
+rendering, not by the business logic.</li>
+</ul>
+<p>This approach does not fit well with popular MVC-based web-application
+frameworks such as AngularJS or EmberJS.  Fortunately a relatively
+recent contender in the field, Facebook&#39;s <a href="http://reactjs.com">ReactJS</a>,
+fits exactly with our approach.  It also performs full recomputation of
+the UI up to a representation of the DOM structure.  Only the final (and
+possibly expensive) updates to the actual DOM in the browser are
+performed incrementally.</p>
+<h2 id="synthesis">Synthesis</h2>
+<p>The power of modeling with a general-purpose programming language comes
+at a cost.  An IDE cannot understand user-defined abstractions in that
+much detail as it is possible for an abstraction built into the
+language.  That is, an IDE for a general-purpose langauge can provide
+less help to the modeler (regarding error messages, completions, ...)
+than an IDE for a specialized modeling language could.  Furthermore
+JavaScript is a dynamically typed language, which also limits the amount
+of understanding that an IDE can get about a program and thus also the
+amount of help that it can provide.</p>
+<p>We are following two approaches to alleviate this:</p>
+<ul>
+<li>We can still work with customer-specific high-level languages.
+Compiling these languages to the general-purpose language JavaScript
+(with openCPQ as the run-time library) is even easier than compiling
+to the modeling idiosyncrasies of other CPQ frameworks.</li>
+<li>We will make use of new developments in the JavaScript world
+supporting static typing, such as
+<a href="http://www.typescriptlang.org">TypeScript</a> or
+<a href="http://flowtype.org">Flow</a>.</li>
+</ul>
+<p>But notice that the flexibility of the openCPQ approach allows you
+already today to create elegant models very quickly.</p>
+<h2 id="summary">Summary</h2>
+<p>The development of openCPQ was initially motivated by our
+dissatisfaction with the modeling support in existing CPQ frameworks.
+And we think we have found an appealing solution.</p>
+<p>Nevertheless, CPQ frameworks are typically not chosen for their
+modeling merits.  Business people tend to see the modeling as a
+one-time effort, even though models evolve together with their product.
+Runtime issues (the actual configurations, data exchange with other
+systems, ...) are often more important.  Here openCPQ scores with the
+benefits of its browser-based implementation such as speed and offline
+usability.</p>
+
+			<footer>
+				<hr>
+				openCPQ was initiated and published as open-source software by
+				<a href="http://www.webxcerpt.com">webXcerpt Software GmbH</a>.
+				<br>
+				Contact: opencpq (at) opencpq (dot) org
+			</footer>
+		</div>
+	</body>
+</html>

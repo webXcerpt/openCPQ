@@ -1,7 +1,13 @@
 ---
-title: "Why We Started openCPQ"
+date: 2015-03-11
+title: Why We Started openCPQ
+teaser: >
+  The prehistory of openCPQ.  Our experiences with various
+  configuration tools and other technology.
 ---
 
+Why We Started openCPQ
+======================
 *... and why we consider modeling to be a kind of programming.*
 
 At [webXcerpt](http://www.webxcerpt.com) we have been modeling
@@ -133,8 +139,8 @@ that it requires quite some effort to introduce a new abstraction.  You
 have to extend the language, the IDE, and the compiler.
 
 Therefore we think that it makes sense to use a programming language for
-modeling.  This allows the modeler to define abstractions (functions,
-types) by himself without requiring changes to language, IDE, and
+modeling.  This allows modelers to define abstractions (functions,
+types) by themselves without requiring changes to language, IDE, and
 compiler.  The "modeling primitives" are provided as library functions
 and types.
 
