@@ -9,17 +9,17 @@ teaser: >
 The Tool Chain for Building This Website
 ========================================
 
-Since the source code for openCPQ is hosted at Github, it was natural to
-use Github Pages for the openCPQ website.  And of course we want some
+Since the source code for openCPQ is hosted at GitHub, it was natural to
+use GitHub Pages for the openCPQ website.  And of course we want some
 preprocessing for our pages: Convert Markdown to HTML, add a navigation
-bar, and so on.  Github provides Jekyll-based preprocessing for these
+bar, and so on.  GitHub provides Jekyll-based preprocessing for these
 tasks.  The nice thing is that you just commit the "raw" files (+ Jekyll
-configuration and templates) and Github Pages will run Jekyll
+configuration and templates) and GitHub Pages will run Jekyll
 automatically.
 
 But there were two problems:
 - Occasionally we want some custom processing which Jekyll does not
-  provide out of the box.  And of course Github cannot allow us to tweak
+  provide out of the box.  And of course GitHub cannot allow us to tweak
   their Jekyll setup much because that would be a major security risk.
 - We want to check the results before committing pages.  So we have to
   be able to run Jekyll ourselves.  And that requires us to install (and
@@ -51,7 +51,7 @@ So I had a brief look at some of the highest-rated JS-based tools at
 - **Harp** provides quite some functionality out of the box, but seems
   to have no plugin/extensibility concept.  Also does not support "front
   matter", which is convenient for blogs.
-- **HubPress** is oriented Github Pages.  But it seems to concentrate on
+- **HubPress** is oriented GitHub Pages.  But it seems to concentrate on
   an authoring UI.
 
 (Of course I spent only some limited amount of time on each of these
@@ -173,15 +173,15 @@ website preprocessor code.  This is easily achieved by running the
 scripts in `babel-node` instead of `node`.
 
 
-Managing Input and Output in Github
+Managing Input and Output in GitHub
 -----------------------------------
 
 The output files have to go to the `gh-pages` branch of the openCPQ
-repository to be accessible as Github Pages.  The output directory must
+repository to be accessible as GitHub Pages.  The output directory must
 be merged into the root directory of that branch.
 
 And of course we also want to manage our input files (including the
-build script) in Github just as we do it with our source code.  We put
+build script) in GitHub just as we do it with our source code.  We put
 them into subdirectory `_raw` of the `gh-pages` branch.  Since the
 directory name starts with an underscore the raw pages do do not appear
-as Github Pages (but that would not really hurt anyway).
+as GitHub Pages (but that would not really hurt anyway).
