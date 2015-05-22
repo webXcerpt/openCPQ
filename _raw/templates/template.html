@@ -9,46 +9,82 @@
 		<link rel="stylesheet" href="https://maxcdn.bootstrapcdn.com/bootstrap/3.3.4/css/bootstrap-theme.min.css">
 		<script src="https://maxcdn.bootstrapcdn.com/bootstrap/3.3.4/js/bootstrap.min.js"></script>
 	</head>
-	<body>
+	<body style="padding-top: 70px">
+		<nav class="navbar navbar-default navbar-fixed-top">
+			<div class="navbar-header">
+				<button type="button" class="navbar-toggle" data-toggle="collapse" data-target=".navbar-responsive-collapse">
+					<span class="icon-bar"></span>
+					<span class="icon-bar"></span>
+					<span class="icon-bar"></span>
+				</button>
+				<a class="navbar-brand" href="<%= rootUrl %>">
+					<img src="<%= logo %>"
+						 alt="openCPQ logo"
+						 width="68"
+						 height="28">
+				</a>
+			</div>
+			<div class="navbar-collapse collapse navbar-responsive-collapse">
+				<ul class="nav navbar-nav">
+					<% for (var item of navigation) { %>
+					<li<%- item.url === url ? ' class="active"' : '' %>>
+						<a href="<%= item.url %>"
+						   target="<%-
+								   item.url.startsWith(rootUrl)
+								   ? "_self"
+											: "_blank"
+													  %>">
+							<%= item.name %>
+						</a>
+					</li>
+					<% } %>
+				</ul>
+			</div>
+		</nav>
 		<div class="container">
-			<nav class="navbar navbar-default">
-				<div class="navbar-header">
-					<button type="button" class="navbar-toggle" data-toggle="collapse" data-target=".navbar-responsive-collapse">
-						<span class="icon-bar"></span>
-						<span class="icon-bar"></span>
-						<span class="icon-bar"></span>
-					</button>
-					<a class="navbar-brand" href="<%= rootUrl %>">
-						<img src="<%= logo %>"
-							 alt="openCPQ logo"
-							 width="68"
-							 height="28">
-					</a>
+			<div class="row row-offcanvas row-offcanvas-left">
+        
+				<% if (isBlog) { %>
+				<div class="col-xs-6 col-sm-3 sidebar-offcanvas" id="sidebar" role="navigation">
+					<div class="well">
+						<h4>Recent Posts:</h4>
+						<ul class="nav nav-stacked">
+							<% for (var b of blogList.slice(0,10)) { %>
+							<li>
+								<a href="<%= b.url %>">
+									<div>
+										<i><%= b.date.toISOString().substr(0, 10) %></i>
+										<br>
+										<%= b.title %>
+									</div>
+								</a>
+							</li>
+  							<% } %>
+						</ul>
+					</div>
 				</div>
-				<div class="navbar-collapse collapse navbar-responsive-collapse">
-					<ul class="nav navbar-nav">
-						<% for (var item of navigation) { %>
-						<li<%- item.url === url ? ' class="active"' : '' %>>
-							<a href="<%= item.url %>"
-							   target="<%-
-									   item.url.startsWith(rootUrl)
-									   ? "_self"
-									   : "_blank"
-									   %>">
-								<%= item.name %>
-							</a>
-						</li>
-						<% } %>
-					</ul>
+				<div class="col-xs-12 col-sm-9">
+					<i><%= date.toISOString().substr(0, 10) %></i>
+					<%- contents %>
 				</div>
-			</nav>
-			<%- contents %>
-			<footer>
+  				<% } else { %>
+				<div class="container">
+					<%- contents %>
+				</div>
+  				<% } %>
+			</div>
+			<footer style="margin: 10px 0px;">
 				<hr>
-				openCPQ was initiated and published as open-source software by
-				<a href="http://www.webxcerpt.com">webXcerpt Software GmbH</a>.
-				<br>
-				Contact: opencpq (at) opencpq (dot) org
+				<p>
+					openCPQ was initiated and published as open-source software by
+					<a href="http://www.webxcerpt.com">webXcerpt Software GmbH</a>.
+					<br>
+					Contact: <script>
+						var encoded = "b3BlbmNwcUBvcGVuY3BxLm9yZw==";
+						var addr = atob(encoded);
+						document.write("<a href='mailto:" + addr + "'>" + addr + "</a>")
+					</script>
+				</p>
 			</footer>
 		</div>
 	</body>

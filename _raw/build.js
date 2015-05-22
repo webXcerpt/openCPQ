@@ -12,7 +12,6 @@ const minimist		= require('minimist')
 // Configuration
 
 const args = minimist(process.argv.slice(2), {boolean: ["prod"]});
-console.dir(args);
 
 const production = args.prod;
 
@@ -62,21 +61,14 @@ function m_assignURLs(files, metalsmith, done) {
 }
 
 function m_collectBlogs(files, metalsmith, done) {
-	const blogFile = files["blog.md"];
-	// Do nothing if blog.md is not being processed, e.g. upon
-	// "watch"-triggered reprocessing of another file:
-	if (blogFile) {
-		var blogList = [];
-		for (const file of Object.keys(files)) {
-			if (blogRegExp.test(file)) {
-				const {date, title, teaser, url} = files[file];
-				blogList.push({date, title, teaser, url});
-			}
-		}
-
-		blogFile.blogList =
-			blogList.sort((x,y) => y.date.getTime() - x.date.getTime());
-	}
+	for (const file in files)
+		files[file].isBlog = blogRegExp.test(file);
+	const blogList =
+		Object.keys(files)
+		.map(file => files[file])
+		.filter(data => data.isBlog)
+		.sort((x,y) => y.date.getTime() - x.date.getTime());
+	metalsmith.metadata({...metalsmith.metadata(), blogList});
 	done();
 }
 
@@ -118,6 +110,7 @@ const metalsmith = Metalsmith(__dirname)
 	.source(inDir)
 	.destination(outDir)
 	.ignore([
+		"npm-debug.log",
 		"*~", // Emacs backup files
 		".#*", // Emacs auxiliary files (But "watch" still crashes with
 			   // these files, which are symbolic links pointing
