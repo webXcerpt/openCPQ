@@ -7,71 +7,75 @@
 		<link rel="stylesheet" href="https://maxcdn.bootstrapcdn.com/bootstrap/3.3.4/css/bootstrap-theme.min.css">
 		<script src="https://maxcdn.bootstrapcdn.com/bootstrap/3.3.4/js/bootstrap.min.js"></script>
 	</head>
-	<body>
+	<body style="padding-top: 70px">
+		<nav class="navbar navbar-default navbar-fixed-top">
+			<div class="navbar-header">
+				<button type="button" class="navbar-toggle" data-toggle="collapse" data-target=".navbar-responsive-collapse">
+					<span class="icon-bar"></span>
+					<span class="icon-bar"></span>
+					<span class="icon-bar"></span>
+				</button>
+				<a class="navbar-brand" href="https://webxcerpt.github.io/openCPQ/">
+					<img src="https://webxcerpt.github.io/openCPQ/images/openCPQ-logo-425x175.png"
+						 alt="openCPQ logo"
+						 width="68"
+						 height="28">
+				</a>
+			</div>
+			<div class="navbar-collapse collapse navbar-responsive-collapse">
+				<ul class="nav navbar-nav">
+					
+					<li class="active">
+						<a href="https://webxcerpt.github.io/openCPQ/"
+						   target="_self">
+							Home
+						</a>
+					</li>
+					
+					<li>
+						<a href="https://webxcerpt.github.io/openCPQ/doc/tutorial.html"
+						   target="_self">
+							Tutorial
+						</a>
+					</li>
+					
+					<li>
+						<a href="https://webxcerpt.github.io/openCPQ/blog.html"
+						   target="_self">
+							Blog
+						</a>
+					</li>
+					
+					<li>
+						<a href="http://github.com/webXcerpt/openCPQ"
+						   target="_blank">
+							Source
+						</a>
+					</li>
+					
+				</ul>
+			</div>
+		</nav>
 		<div class="container">
-			<nav class="navbar navbar-default">
-				<div class="navbar-header">
-					<button type="button" class="navbar-toggle" data-toggle="collapse" data-target=".navbar-responsive-collapse">
-						<span class="icon-bar"></span>
-						<span class="icon-bar"></span>
-						<span class="icon-bar"></span>
-					</button>
-					<a class="navbar-brand" href="https://webxcerpt.github.io/openCPQ/">
-						<img src="https://webxcerpt.github.io/openCPQ/images/openCPQ-logo-425x175.png"
-							 alt="openCPQ logo"
-							 width="68"
-							 height="28">
-					</a>
-				</div>
-				<div class="navbar-collapse collapse navbar-responsive-collapse">
-					<ul class="nav navbar-nav">
-						
-						<li class="active">
-							<a href="https://webxcerpt.github.io/openCPQ/"
-							   target="_self">
-								Home
-							</a>
-						</li>
-						
-						<li>
-							<a href="https://webxcerpt.github.io/openCPQ/doc/tutorial.html"
-							   target="_self">
-								Tutorial
-							</a>
-						</li>
-						
-						<li>
-							<a href="https://webxcerpt.github.io/openCPQ/blog.html"
-							   target="_self">
-								Blog
-							</a>
-						</li>
-						
-						<li>
-							<a href="http://github.com/webXcerpt/openCPQ"
-							   target="_blank">
-								Source
-							</a>
-						</li>
-						
-					</ul>
-				</div>
-			</nav>
-			<h1 id="opencpq-a-browser-based-product-configuration-framework">openCPQ - A Browser-Based Product-Configuration Framework</h1>
+			<div class="row row-offcanvas row-offcanvas-left">
+        
+				
+				<div class="container">
+					<h1 id="opencpq-a-browser-based-product-configuration-framework">openCPQ - A Browser-Based Product-Configuration Framework</h1>
 <p>With openCPQ you can implement product configurators that run completely
 in the browser.  The traditional approach is to run a configuration
 engine in a server and to use the browser only for displaying the user
 interface.  The browser-based approach has advantages for several
 stakeholders:</p>
 <ul>
-<li>End users need not wait for round-trips to the server after each
-input, which allows them to work more smoothly.</li>
-<li>End users can even run the configurator while disconnected from the
+<li><strong>End users</strong> need not wait for round-trips to the server after each
+input, which allows them to work more smoothly.
+End users can even run the configurator while disconnected from the
 internet.  (This is possible due to HTML5&#39;s Offline Application
 Caching feature.)</li>
-<li>IT operations need not worry about scalability of a configuration
+<li><strong>IT operations</strong> need not worry about scalability of a configuration
 server since they only need to host static web pages.</li>
-<li>System integrators implementing a customer-specific user interface can
+<li><strong>System integrators</strong> implementing a customer-specific user interface can
 easily access the configuration data locally without the complexity of
 requests for remote data.</li>
 </ul>
@@ -81,20 +85,20 @@ approach of representing models as data structures in the configuration
 engine&#39;s database this provides the following advantages to modellers
 and IT operations:</p>
 <ul>
-<li>Models are text files.  So they can be read and modified with text
+<li>Models are <strong>text files</strong>.  So they can be read and modified with text
 editors, some of which even provide special support for JavaScript.</li>
 <li>Furthermore textual models can be managed in state-of-the art
-version-control systems such as Git or Subversion.  A version-control
+<strong>version-control</strong> systems such as Git or Subversion.  A version-control
 system providing HTTP access to its documents (with configurable
 access rights for different kinds of users) can even be used directly
 to host models and other resources for the end users.</li>
 <li>If modelers find themselves doing repetitive work such as implementing
 similar features for several products or components, they can use
 JavaScript functions and classes to define higher-level
-customer-specific concepts on top of the openCPQ API.  This can make
+<strong>customer-specific concepts</strong> on top of the openCPQ API.  This can make
 models much easier to maintain.</li>
 <li>Since openCPQ is a quite thin layer on top of standard web technology,
-it is easy to learn for many persons.</li>
+it is <strong>easy to learn</strong> for many persons.</li>
 </ul>
 <p>Finally, since openCPQ is an open-source project published under the
 liberal
@@ -110,12 +114,21 @@ arise.</li>
 - link to demo (once we have a public one) and example code
 -->
 
-			<footer>
+				</div>
+  				
+			</div>
+			<footer style="margin: 10px 0px;">
 				<hr>
-				openCPQ was initiated and published as open-source software by
-				<a href="http://www.webxcerpt.com">webXcerpt Software GmbH</a>.
-				<br>
-				Contact: opencpq (at) opencpq (dot) org
+				<p>
+					openCPQ was initiated and published as open-source software by
+					<a href="http://www.webxcerpt.com">webXcerpt Software GmbH</a>.
+					<br>
+					Contact: <script>
+						var encoded = "b3BlbmNwcUBvcGVuY3BxLm9yZw==";
+						var addr = atob(encoded);
+						document.write("<a href='mailto:" + addr + "'>" + addr + "</a>")
+					</script>
+				</p>
 			</footer>
 		</div>
 	</body>

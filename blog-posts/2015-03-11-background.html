@@ -7,57 +7,80 @@
 		<link rel="stylesheet" href="https://maxcdn.bootstrapcdn.com/bootstrap/3.3.4/css/bootstrap-theme.min.css">
 		<script src="https://maxcdn.bootstrapcdn.com/bootstrap/3.3.4/js/bootstrap.min.js"></script>
 	</head>
-	<body>
+	<body style="padding-top: 70px">
+		<nav class="navbar navbar-default navbar-fixed-top">
+			<div class="navbar-header">
+				<button type="button" class="navbar-toggle" data-toggle="collapse" data-target=".navbar-responsive-collapse">
+					<span class="icon-bar"></span>
+					<span class="icon-bar"></span>
+					<span class="icon-bar"></span>
+				</button>
+				<a class="navbar-brand" href="https://webxcerpt.github.io/openCPQ/">
+					<img src="https://webxcerpt.github.io/openCPQ/images/openCPQ-logo-425x175.png"
+						 alt="openCPQ logo"
+						 width="68"
+						 height="28">
+				</a>
+			</div>
+			<div class="navbar-collapse collapse navbar-responsive-collapse">
+				<ul class="nav navbar-nav">
+					
+					<li>
+						<a href="https://webxcerpt.github.io/openCPQ/"
+						   target="_self">
+							Home
+						</a>
+					</li>
+					
+					<li>
+						<a href="https://webxcerpt.github.io/openCPQ/doc/tutorial.html"
+						   target="_self">
+							Tutorial
+						</a>
+					</li>
+					
+					<li>
+						<a href="https://webxcerpt.github.io/openCPQ/blog.html"
+						   target="_self">
+							Blog
+						</a>
+					</li>
+					
+					<li>
+						<a href="http://github.com/webXcerpt/openCPQ"
+						   target="_blank">
+							Source
+						</a>
+					</li>
+					
+				</ul>
+			</div>
+		</nav>
 		<div class="container">
-			<nav class="navbar navbar-default">
-				<div class="navbar-header">
-					<button type="button" class="navbar-toggle" data-toggle="collapse" data-target=".navbar-responsive-collapse">
-						<span class="icon-bar"></span>
-						<span class="icon-bar"></span>
-						<span class="icon-bar"></span>
-					</button>
-					<a class="navbar-brand" href="https://webxcerpt.github.io/openCPQ/">
-						<img src="https://webxcerpt.github.io/openCPQ/images/openCPQ-logo-425x175.png"
-							 alt="openCPQ logo"
-							 width="68"
-							 height="28">
-					</a>
+			<div class="row row-offcanvas row-offcanvas-left">
+        
+				
+				<div class="col-xs-6 col-sm-3 sidebar-offcanvas" id="sidebar" role="navigation">
+					<div class="well">
+						<h4>Recent Posts:</h4>
+						<ul class="nav nav-stacked">
+							
+							<li>
+								<a href="https://webxcerpt.github.io/openCPQ/blog-posts/2015-03-11-background.html">
+									<div>
+										<i>2015-03-11</i>
+										<br>
+										Why We Started openCPQ
+									</div>
+								</a>
+							</li>
+  							
+						</ul>
+					</div>
 				</div>
-				<div class="navbar-collapse collapse navbar-responsive-collapse">
-					<ul class="nav navbar-nav">
-						
-						<li>
-							<a href="https://webxcerpt.github.io/openCPQ/"
-							   target="_self">
-								Home
-							</a>
-						</li>
-						
-						<li>
-							<a href="https://webxcerpt.github.io/openCPQ/doc/tutorial.html"
-							   target="_self">
-								Tutorial
-							</a>
-						</li>
-						
-						<li>
-							<a href="https://webxcerpt.github.io/openCPQ/blog.html"
-							   target="_self">
-								Blog
-							</a>
-						</li>
-						
-						<li>
-							<a href="http://github.com/webXcerpt/openCPQ"
-							   target="_blank">
-								Source
-							</a>
-						</li>
-						
-					</ul>
-				</div>
-			</nav>
-			<h1 id="why-we-started-opencpq">Why We Started openCPQ</h1>
+				<div class="col-xs-12 col-sm-9">
+					<i>2015-03-11</i>
+					<h1 id="why-we-started-opencpq">Why We Started openCPQ</h1>
 <p><em>... and why we consider modeling to be a kind of programming.</em></p>
 <p>At <a href="http://www.webxcerpt.com">webXcerpt</a> we have been modeling
 configurable products since 2002, mostly for the telecom industry.  Over
@@ -311,12 +334,21 @@ systems, ...) are often more important.  Here openCPQ scores with the
 benefits of its browser-based implementation such as speed and offline
 usability.</p>
 
-			<footer>
+				</div>
+  				
+			</div>
+			<footer style="margin: 10px 0px;">
 				<hr>
-				openCPQ was initiated and published as open-source software by
-				<a href="http://www.webxcerpt.com">webXcerpt Software GmbH</a>.
-				<br>
-				Contact: opencpq (at) opencpq (dot) org
+				<p>
+					openCPQ was initiated and published as open-source software by
+					<a href="http://www.webxcerpt.com">webXcerpt Software GmbH</a>.
+					<br>
+					Contact: <script>
+						var encoded = "b3BlbmNwcUBvcGVuY3BxLm9yZw==";
+						var addr = atob(encoded);
+						document.write("<a href='mailto:" + addr + "'>" + addr + "</a>")
+					</script>
+				</p>
 			</footer>
 		</div>
 	</body>
