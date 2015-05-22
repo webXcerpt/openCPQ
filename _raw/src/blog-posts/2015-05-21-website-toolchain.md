@@ -1,5 +1,4 @@
 ---
-draft: true
 title: The Tool Chain for Building This Website
 date: 2015-05-21
 teaser: >

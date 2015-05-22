@@ -1,0 +1,270 @@
+<html>
+	<head>
+		<title>The Tool Chain for Building This Website</title>
+		
+		<script src="https://ajax.googleapis.com/ajax/libs/jquery/1.11.2/jquery.min.js"></script>
+		<link rel="stylesheet" href="https://maxcdn.bootstrapcdn.com/bootstrap/3.3.4/css/bootstrap.min.css">
+		<link rel="stylesheet" href="https://maxcdn.bootstrapcdn.com/bootstrap/3.3.4/css/bootstrap-theme.min.css">
+		<script src="https://maxcdn.bootstrapcdn.com/bootstrap/3.3.4/js/bootstrap.min.js"></script>
+	</head>
+	<body style="padding-top: 70px">
+		<nav class="navbar navbar-default navbar-fixed-top">
+			<div class="navbar-header">
+				<button type="button" class="navbar-toggle" data-toggle="collapse" data-target=".navbar-responsive-collapse">
+					<span class="icon-bar"></span>
+					<span class="icon-bar"></span>
+					<span class="icon-bar"></span>
+				</button>
+				<a class="navbar-brand" href="https://webxcerpt.github.io/openCPQ/">
+					<img src="https://webxcerpt.github.io/openCPQ/images/openCPQ-logo-425x175.png"
+						 alt="openCPQ logo"
+						 width="68"
+						 height="28">
+				</a>
+			</div>
+			<div class="navbar-collapse collapse navbar-responsive-collapse">
+				<ul class="nav navbar-nav">
+					
+					<li>
+						<a href="https://webxcerpt.github.io/openCPQ/"
+						   target="_self">
+							Home
+						</a>
+					</li>
+					
+					<li>
+						<a href="https://webxcerpt.github.io/openCPQ/doc/tutorial.html"
+						   target="_self">
+							Tutorial
+						</a>
+					</li>
+					
+					<li>
+						<a href="https://webxcerpt.github.io/openCPQ/blog.html"
+						   target="_self">
+							Blog
+						</a>
+					</li>
+					
+					<li>
+						<a href="http://github.com/webXcerpt/openCPQ"
+						   target="_blank">
+							Source
+						</a>
+					</li>
+					
+				</ul>
+			</div>
+		</nav>
+		<div class="container">
+			<div class="row row-offcanvas row-offcanvas-left">
+        
+				
+				<div class="col-xs-6 col-sm-3 sidebar-offcanvas" id="sidebar" role="navigation">
+					<div class="well">
+						<h4>Recent Posts:</h4>
+						<ul class="nav nav-stacked">
+							
+							<li>
+								<a href="https://webxcerpt.github.io/openCPQ/blog-posts/2015-05-21-website-toolchain.html">
+									<div>
+										<i>2015-05-21</i>
+										<br>
+										The Tool Chain for Building This Website
+									</div>
+								</a>
+							</li>
+  							
+							<li>
+								<a href="https://webxcerpt.github.io/openCPQ/blog-posts/2015-03-11-background.html">
+									<div>
+										<i>2015-03-11</i>
+										<br>
+										Why We Started openCPQ
+									</div>
+								</a>
+							</li>
+  							
+						</ul>
+					</div>
+				</div>
+				<div class="col-xs-12 col-sm-9">
+					<i>2015-05-21</i>
+					<h1 id="the-tool-chain-for-building-this-website">The Tool Chain for Building This Website</h1>
+<p>Since the source code for openCPQ is hosted at GitHub, it was natural to
+use GitHub Pages for the openCPQ website.  And of course we want some
+preprocessing for our pages: Convert Markdown to HTML, add a navigation
+bar, and so on.  GitHub provides Jekyll-based preprocessing for these
+tasks.  The nice thing is that you just commit the &quot;raw&quot; files (+ Jekyll
+configuration and templates) and GitHub Pages will run Jekyll
+automatically.</p>
+<p>But there were two problems:</p>
+<ul>
+<li>Occasionally we want some custom processing which Jekyll does not
+provide out of the box.  And of course GitHub cannot allow us to tweak
+their Jekyll setup much because that would be a major security risk.</li>
+<li>We want to check the results before committing pages.  So we have to
+be able to run Jekyll ourselves.  And that requires us to install (and
+possibly tweak) a Ruby-based tool chain.  In principle there&#39;s nothing
+wrong with Ruby, but we prefer something based on JavaScript and Node
+since we are familiar with these tools.</li>
+</ul>
+<h2 id="processing-framework">Processing Framework</h2>
+<p>One possible approach is to write a node.js script converting the raw
+pages into the final web site.  This requires not that much code since
+one would of course use third-party npm packages for tasks like markdown
+processing or templating.  However you have to learn the APIs of all
+these packages to wire them together properly.  An existing processing
+framework might be an easier approach.</p>
+<p>So I had a brief look at some of the highest-rated JS-based tools at
+<a href="https://www.staticgen.com/">StaticGen</a>:</p>
+<ul>
+<li><strong>Hexo</strong> looks like being too specialized in blogs.  (Furthermore it
+uses a command line interface for managing the input directory
+structure.  I don&#39;t know how often this would have to be used,
+however.)</li>
+<li><strong>Brunch</strong> is a build tool apparently competing with
+Gulp/Grunt/Webpack/...  It might be better at creating static web
+pages but has quite some focus on web applications.</li>
+<li><strong>Metalsmith</strong> is quite bare-bones, but very powerful and extensible.</li>
+<li><strong>Harp</strong> provides quite some functionality out of the box, but seems
+to have no plugin/extensibility concept.  Also does not support &quot;front
+matter&quot;, which is convenient for blogs.</li>
+<li><strong>HubPress</strong> is oriented GitHub Pages.  But it seems to concentrate on
+an authoring UI.</li>
+</ul>
+<p>(Of course I spent only some limited amount of time on each of these
+tools.  So I might have missed some important points.  In particular if
+the tool&#39;s web site primarily advertised one feature, I might have got
+the wrong impression that some other feature is missing or not
+well-supported.)</p>
+<p>Some of these tools have features that we don&#39;t need or even or don&#39;t
+want.  We want to write contents with our favorite editors, not with a
+tool-provided editor.  The same goes for the directory structure of the
+raw files: We simply want to put files in the appropriate places and
+don&#39;t want to learn how to manage the directory hierarchy with some
+tools.  We simply need a transformation from an input directory to an
+output directory.</p>
+<p>On the other hand, some of the provided features were interesting, even
+though they were not on our initial requirements list.  In particular an
+automatic rebuilds and browser reloads upon input-file updates would be
+very useful.</p>
+<p>Of the tools mentioned above I have chosen Metalsmith.  With Metalsmith
+I still had to write my own node.js script.  But there are many
+Metalsmith plugins wrapping third-party npm packages:</p>
+<ul>
+<li>markdown-to-html transformation,</li>
+<li>templating engines,</li>
+<li>watching for input changes and reprocessing the changed files,</li>
+<li>a HTTP server for the created resources,</li>
+<li>...</li>
+</ul>
+<p>This makes it a lot easier to use these packages.  With Metalsmith you
+just define a sequence of plugins.  Metalsmith reads the contents of the
+input directory into a data structure and runs each plugin on it</p>
+<p>It is also trivial to hook into the processing chain:</p>
+<ul>
+<li>Since the chain is set up programmatically in JavaScript, you can,
+e.g., create different chains for test and production modes.</li>
+<li>It is also extremely easy to implement ad-hoc plugins for some custom
+processing.</li>
+</ul>
+<p>Notice that this is very similar to openCPQ, where JavaScript is also
+used to combine components and to implement additional components.</p>
+<p>With Jekyll I did some experiments to figure out how templating in
+markdown files is handled: Are the templates applied to the markdown
+text, resulting in expanded markdown, which is then converted to HTML?
+Or is the markdown-with-templates converted to HTML-with-templates and
+the templates are expanded there?  (I don&#39;t remember the answer.)  With
+Metalsmith you just define the processing chain as you need it.</p>
+<p>Some drawbacks of Metalsmith are:</p>
+<ul>
+<li>Many plugins are scarcely documented.  But since they are usually just
+thin wrappers around third-party packages, it is not too hard to RTFS.</li>
+<li>If at some time we have a huge amount of data, how difficult/easy will
+it be to avoid loading everything into memory at once?</li>
+<li>The plugin API is procedural (modifying an internal state) rather than
+functional (mapping an old state to a new one).  This simplifies
+certain tasks, but other tasks might be easier to achieve with a
+functional approach.  For example, properly maintaining a site map is
+not easy when Metalsmith&#39;s watch plugin reprocesses changed files
+incrementally.  I could imagine that this is easier to achieve with a
+functional API, but I didn&#39;t try this.  In the end, the API style is
+also a matter of taste.</li>
+<li>Even though watching and livereload are not completely reliable when
+there is no 1:1 correspondence between input and output files, the
+feature is nevertheless very helpful.  But I prefer webpack&#39;s approach
+displaying the actual application in a frame and triggering reloads
+from a parent frame.  Therefore with webpack the automatic reload
+feature &quot;survives&quot; a restart of the build process, whereas with
+Metalsmith it doesn&#39;t.</li>
+</ul>
+<p>Another argument in favor of <strong>webpack</strong> would be that we already use it
+for building openCPQ applications.  (And being able to <code>require(...)</code>
+not only JS code is also cool.)  It didn&#39;t appear easy, however, to
+tweak webpack into a static website preprocessor.  A webpack-based
+solution can be found at
+<a href="http://braddenver.com/blog/2015/react-static-site.html">http://braddenver.com/blog/2015/react-static-site.html</a>, but this is
+quite complex.</p>
+<h2 id="templating">Templating</h2>
+<p>We need some templating tool for creating our web pages.  My first idea
+was to use <strong>React</strong> since we already know it from openCPQ.  And React
+is also readily supported by Metalsmith.  However here are the reasons
+why I did not do this:</p>
+<ul>
+<li>React is DOM-oriented rather than text-oriented.  So it is not a good
+tool for templating in markdown files.</li>
+<li>We intend to use React and openCPQ for examples in the documentation.
+It might be confusing if we use the same syntax for preprocessing
+pages.  With a different tool and a different syntax it is probably
+easier to figure out which templates are expanded at which stage.</li>
+</ul>
+<p>For now we are using <em>EJS</em>.  It is not just implemented in JavaScript,
+but also its template language is based on JavaScript, which makes it
+powerful and easy to learn at the same time.  While EJS has built-in
+HTML escaping for <code>&lt;%= ... %&gt;</code> tags, this is not mandatory: Just use
+<code>&lt;%- ... %&gt;</code> instead.</p>
+<p>As any template system, EJS allows to repeatedly emit a pattern filled
+in with different data.  For openCPQ examples we also have the inverse
+task: We want to emit the same data (the example code) with two
+different patterns (once to execute the code and once to run it).  I
+don&#39;t see a straight-forward solution how to implement this with EJS.
+Maybe it is best to implement this functionality as a plugin for the
+markdown processor.  (But since we are not the first ones with the
+requirement that example code should be both executed and displayed, one
+might hope for an existing third-party solution.  Is there something
+reusable?)</p>
+<h2 id="modern-javascript">Modern JavaScript</h2>
+<p>In the openCPQ development we have become used to the modern JavaScript
+features provided by babeljs and we don&#39;t want to miss this in the
+website preprocessor code.  This is easily achieved by running the
+scripts in <code>babel-node</code> instead of <code>node</code>.</p>
+<h2 id="managing-input-and-output-in-github">Managing Input and Output in GitHub</h2>
+<p>The output files have to go to the <code>gh-pages</code> branch of the openCPQ
+repository to be accessible as GitHub Pages.  The output directory must
+be merged into the root directory of that branch.</p>
+<p>And of course we also want to manage our input files (including the
+build script) in GitHub just as we do it with our source code.  We put
+them into subdirectory <code>_raw</code> of the <code>gh-pages</code> branch.  Since the
+directory name starts with an underscore the raw pages do do not appear
+as GitHub Pages (but that would not really hurt anyway).</p>
+
+				</div>
+  				
+			</div>
+			<footer style="margin: 10px 0px;">
+				<hr>
+				<p>
+					openCPQ was initiated and published as open-source software by
+					<a href="http://www.webxcerpt.com">webXcerpt Software GmbH</a>.
+					<br>
+					Contact: <script>
+						var encoded = "b3BlbmNwcUBvcGVuY3BxLm9yZw==";
+						var addr = atob(encoded);
+						document.write("<a href='mailto:" + addr + "'>" + addr + "</a>")
+					</script>
+				</p>
+			</footer>
+		</div>
+	</body>
+</html>
