@@ -9,14 +9,14 @@ engine in a server and to use the browser only for displaying the user
 interface.  The browser-based approach has advantages for several
 stakeholders:
 
-- End users need not wait for round-trips to the server after each
+- **End users** need not wait for round-trips to the server after each
   input, which allows them to work more smoothly.
-- End users can even run the configurator while disconnected from the
+  End users can even run the configurator while disconnected from the
   internet.  (This is possible due to HTML5's Offline Application
   Caching feature.)
-- IT operations need not worry about scalability of a configuration
+- **IT operations** need not worry about scalability of a configuration
   server since they only need to host static web pages.
-- System integrators implementing a customer-specific user interface can
+- **System integrators** implementing a customer-specific user interface can
   easily access the configuration data locally without the complexity of
   requests for remote data.
 
@@ -26,20 +26,20 @@ approach of representing models as data structures in the configuration
 engine's database this provides the following advantages to modellers
 and IT operations:
 
-- Models are text files.  So they can be read and modified with text
+- Models are **text files**.  So they can be read and modified with text
   editors, some of which even provide special support for JavaScript.
 - Furthermore textual models can be managed in state-of-the art
-  version-control systems such as Git or Subversion.  A version-control
+  **version-control** systems such as Git or Subversion.  A version-control
   system providing HTTP access to its documents (with configurable
   access rights for different kinds of users) can even be used directly
   to host models and other resources for the end users.
 - If modelers find themselves doing repetitive work such as implementing
   similar features for several products or components, they can use
   JavaScript functions and classes to define higher-level
-  customer-specific concepts on top of the openCPQ API.  This can make
+  **customer-specific concepts** on top of the openCPQ API.  This can make
   models much easier to maintain.
 - Since openCPQ is a quite thin layer on top of standard web technology,
-  it is easy to learn for many persons.
+  it is **easy to learn** for many persons.
 
 
 
