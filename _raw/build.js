@@ -27,6 +27,11 @@ const navigation = [
 	{name: "Source", url: "http://github.com/webXcerpt/openCPQ"},
 ];
 
+const authors = {
+	hs: "Heribert Schütz",
+	tg: "Tim Geisler",
+};
+
 const blogRegExp = /^blog-posts\/.*\.md$/;
 
 const urlPrefix = production ? "https://webxcerpt.github.io/openCPQ/" : "/";
@@ -60,13 +65,14 @@ function m_extendFileData(files, metalsmith, done) {
 		data.url = file2url(file);
 		if (data.date)
 			data.dateString = data.date.toISOString().substr(0, 10);
+		if (data.author)
+			data.authorName = authors[data.author];
+		files[file].isBlog = blogRegExp.test(file);
 	}
 	done();
 }
 
 function m_collectBlogs(files, metalsmith, done) {
-	for (const file in files)
-		files[file].isBlog = blogRegExp.test(file);
 	const blogList =
 		Object.keys(files)
 		.map(file => files[file])

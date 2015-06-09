@@ -1,5 +1,6 @@
 ---
 date: 2015-03-11
+author: hs
 title: Why We Started openCPQ
 teaser: >
   The prehistory of openCPQ.  Our experiences with various
