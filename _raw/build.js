@@ -54,9 +54,13 @@ function file2url(file) {
 		.replace(/\/index\.html$/, "/");
 }
 
-function m_assignURLs(files, metalsmith, done) {
-	for (const file in files)
-		files[file].url = file2url(file);
+function m_extendFileData(files, metalsmith, done) {
+	for (const file in files) {
+		const data = files[file];
+		data.url = file2url(file);
+		if (data.date)
+			data.dateString = data.date.toISOString().substr(0, 10);
+	}
 	done();
 }
 
@@ -134,7 +138,7 @@ if (!production)
 	}));
 
 metalsmith
-    .use(m_assignURLs)
+    .use(m_extendFileData)
 	.use(m_collectBlogs)
 	.use(m_templates({engine: 'ejs', inPlace: true}))
 	.use(m_markdown({gfm: true}))

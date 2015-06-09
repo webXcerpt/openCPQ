@@ -53,7 +53,7 @@
 							<li>
 								<a href="<%= b.url %>">
 									<div>
-										<i><%= b.date.toISOString().substr(0, 10) %></i>
+										<i><%= b.dateString %></i>
 										<br>
 										<%= b.title %>
 									</div>
@@ -64,7 +64,7 @@
 					</div>
 				</div>
 				<div class="col-xs-12 col-sm-9">
-					<i><%= date.toISOString().substr(0, 10) %></i>
+					<i><%= dateString %></i>
 					<%- contents %>
 				</div>
   				<% } else { %>
