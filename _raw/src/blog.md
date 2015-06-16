@@ -7,7 +7,7 @@ Blog
 
 <% for (var post of blogList) { %>
 ### [<%= post.title %>](<%- post.url %>)
-_<%- post.date.toISOString().substr(0, 10) %>_
+_<%- post.dateString %>, <%- post.authorName %>_
 
 <%- post.teaser %>
 

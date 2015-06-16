@@ -10,6 +10,6 @@ Presentations
 
 <%- post.presenter %>, 
 _[<%- post.venue %>](<%- post.venue_url %>)_,
-<%- post.date.toISOString().substr(0, 10) %>
+<%- post.dateString %>
 
 <% } %>

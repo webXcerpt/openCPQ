@@ -1,6 +1,7 @@
 ---
-title: The Tool Chain for Building This Website
 date: 2015-05-21
+author: hs
+title: The Tool Chain for Building This Website
 teaser: >
   Which tools we selected and how they are similar to openCPQ.
 ---

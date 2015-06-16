@@ -29,7 +29,12 @@ const navigation = [
 	{name: "Source", url: "http://github.com/webXcerpt/openCPQ"},
 ];
 
-const blogRegExp = /^blog-posts(\/|\\).*\.md$/;
+const authors = {
+	hs: "Heribert Schütz",
+	tg: "Tim Geisler",
+};
+
+const blogRegExp = /^blog-posts\/.*\.md$/;
 const demoRegExp = /^demos(\/|\\).*\.md$/;
 const presentationsRegExp = /^presentations(\/|\\).*\.md$/;
 
@@ -58,15 +63,20 @@ function file2url(file) {
 		.replace(/\/index\.html$/, "/");
 }
 
-function m_assignURLs(files, metalsmith, done) {
-	for (const file in files)
-		files[file].url = file2url(file);
+function m_extendFileData(files, metalsmith, done) {
+	for (const file in files) {
+		const data = files[file];
+		data.url = file2url(file);
+		if (data.date)
+			data.dateString = data.date.toISOString().substr(0, 10);
+		if (data.author)
+			data.authorName = authors[data.author];
+		files[file].isBlog = blogRegExp.test(file);
+	}
 	done();
 }
 
 function m_collectBlogs(files, metalsmith, done) {
-	for (const file in files)
-		files[file].isBlog = blogRegExp.test(file);
 	const blogList =
 		Object.keys(files)
 		.map(file => files[file])
@@ -161,7 +171,7 @@ if (!production)
 	}));
 
 metalsmith
-    .use(m_assignURLs)
+    .use(m_extendFileData)
 	.use(m_collectBlogs)
 	.use(m_collectDemos)
 	.use(m_collectPresentations)
