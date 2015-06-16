@@ -77,12 +77,12 @@ function m_extendFileData(files, metalsmith, done) {
 			data.dateString = data.date.toISOString().substr(0, 10);
 		if (data.author)
 			data.authorName = authors[data.author];
-		files[file].type = "standard";
+		data.type = "standard";
 		for (const type in typeRegExps)
 			if (typeRegExps[type].test(unixFile)) {
-				files[file].type = type;
-				var list = groups[type] || (groups[type] = []);
-				list.push(data);
+				data.type = type;
+				var group = groups[type] || (groups[type] = []);
+				group.push(data);
 				break;
 			}
 	}
