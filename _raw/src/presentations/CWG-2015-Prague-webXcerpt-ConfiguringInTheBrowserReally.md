@@ -4,8 +4,8 @@ title: Configuring in the Browser, Really!
 presenter: Tim Geisler and Heribert Schütz
 venue: CWG European Conference Prague 2015, SAP Configuration Workgroup
 venue_url: http://www.configuration-workgroup.com/
-url: https://github.com/webXcerpt/openCPQ/blob/master/doc/presentations/CWG-2015-Prague-webXcerpt-ConfiguringInTheBrowserReally.pdf
-expanded_url: https://github.com/webXcerpt/openCPQ/blob/master/doc/presentations/CWG-2015-Prague-webXcerpt-ConfiguringInTheBrowserReally-expanded.pdf
+pdf_url: https://github.com/webXcerpt/openCPQ/blob/master/doc/presentations/CWG-2015-Prague-webXcerpt-ConfiguringInTheBrowserReally.pdf
+pdf_expanded_url: https://github.com/webXcerpt/openCPQ/blob/master/doc/presentations/CWG-2015-Prague-webXcerpt-ConfiguringInTheBrowserReally-expanded.pdf
 slideshare_url: http://de.slideshare.net/TimGeisler/configuring-in-the-browser-really
 slideshare_embedcode: 9K6aDNehxchkTT
 

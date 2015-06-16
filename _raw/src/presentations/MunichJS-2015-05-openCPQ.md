@@ -4,8 +4,8 @@ title: openCPQ - A React-based Product-Configuration Toolkit
 presenter: Tim Geisler and Heribert Schütz
 venue: MunichJS User Group, JavaScript Meetup
 venue_url: http://www.meetup.com/MunichJS-User-Group/events/221909995/
-url: https://github.com/webXcerpt/openCPQ/raw/master/doc/presentations/MunichJS-2015-05-openCPQ.pdf
-expanded_url: https://github.com/webXcerpt/openCPQ/raw/master/doc/presentations/MunichJS-2015-05-openCPQ-expanded.pdf
+pdf_url: https://github.com/webXcerpt/openCPQ/raw/master/doc/presentations/MunichJS-2015-05-openCPQ.pdf
+pdf_expanded_url: https://github.com/webXcerpt/openCPQ/raw/master/doc/presentations/MunichJS-2015-05-openCPQ-expanded.pdf
 slideshare_url: http://de.slideshare.net/TimGeisler/opencpq-a-reactbased-productconfiguration-toolkit
 slideshare_embedcode: AEwYSTUheWubb1
 

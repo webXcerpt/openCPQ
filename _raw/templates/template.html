@@ -80,9 +80,18 @@
 				<div class="col-xs-12 col-sm-9">
 					<h1><%- title %></h1>
 					<%- presenter %>, 
-					<i><a href="<%- venue_url %>"><%- venue %></a>,
+					<i><a href="<%- venue_url %>" target="_blank"><%- venue %></a></i>,
 					<%= dateString %>
+
+					<h2>Abstract</h2>
 					<%- contents %>
+					
+					<h2>Slides</h2>
+					<ul>
+					<li><a href="<%- pdf_url %>">PDF (for printing)</a></li>
+					<li><a href="<%- pdf_expanded_url %>">PDF (for presenting)</a></li>
+					<li><a href="<%- slideshare_url %>" target="_blank">Slideshare</a></li>
+					</ul>
 					
 					<iframe	src="//de.slideshare.net/slideshow/embed_code/key/<%= slideshare_embedcode %>" 
 						width="425" height="355" frameborder="0" marginwidth="0" marginheight="0" scrolling="no"

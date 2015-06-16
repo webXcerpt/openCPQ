@@ -24,8 +24,8 @@ const navigation = [
 	{name: "Home", file: "index.html"},
 	{name: "Demos", file: "demos.md"},
 	{name: "Tutorial", file: "doc/tutorial.md"},
-	{name: "Blog", file: "blog.md"},
 	{name: "Presentations", file: "presentations.md"},
+	{name: "Blog", file: "blog.md"},
 	{name: "Source", url: "http://github.com/webXcerpt/openCPQ"},
 ];
 
@@ -34,9 +34,9 @@ const authors = {
 	tg: "Tim Geisler",
 };
 
-const blogRegExp = /^blog-posts\/.*\.md$/;
+const blogRegExp = /^blog-posts(\/|\\).*\.md$/;
 const demoRegExp = /^demos(\/|\\).*\.md$/;
-const presentationsRegExp = /^presentations(\/|\\).*\.md$/;
+const presentationRegExp = /^presentations(\/|\\).*\.md$/;
 
 const urlPrefix = production ? "https://webxcerpt.github.io/openCPQ/" : "/";
 
@@ -72,6 +72,8 @@ function m_extendFileData(files, metalsmith, done) {
 		if (data.author)
 			data.authorName = authors[data.author];
 		files[file].isBlog = blogRegExp.test(file);
+		files[file].isDemo = demoRegExp.test(file);
+		files[file].isPresentation = presentationRegExp.test(file);
 	}
 	done();
 }
@@ -87,8 +89,6 @@ function m_collectBlogs(files, metalsmith, done) {
 }
 
 function m_collectDemos(files, metalsmith, done) {
-	for (const file in files)
-		files[file].isDemo = demoRegExp.test(file);
 	const demoList =
 		Object.keys(files)
 		.map(file => files[file])
@@ -98,8 +98,6 @@ function m_collectDemos(files, metalsmith, done) {
 }
 
 function m_collectPresentations(files, metalsmith, done) {
-	for (const file in files)
-		files[file].isPresentation = presentationsRegExp.test(file);
 	const presentationList =
 		Object.keys(files)
 		.map(file => files[file])
@@ -172,12 +170,12 @@ if (!production)
 
 metalsmith
     .use(m_extendFileData)
+//	.use(m_log)
 	.use(m_collectBlogs)
 	.use(m_collectDemos)
 	.use(m_collectPresentations)
 	.use(m_templates({engine: 'ejs', inPlace: true}))
 	.use(m_markdown({gfm: true}))
-//	.use(m_log)
 	.use(m_templates({engine: 'ejs', inPlace: false, default: "template.html"}))
     .use(m_finalMessage);
 
