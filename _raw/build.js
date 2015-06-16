@@ -36,7 +36,7 @@ const authors = {
 
 const groupSpecs = [
 	{type: "blog"			, re: /^blog-posts\/.*\.md$/	, cmp: reverseChronological	},
-	{type: "demo"			, re: /^demos\/.*\.md$/			, cmp: keepOrder			},
+	{type: "demo"			, re: /^demos\/.*\.md$/			, cmp: byURL				},
 	{type: "presentation"	, re: /^presentations\/.*\.md$/	, cmp: reverseChronological	},
 ];
 
@@ -46,7 +46,7 @@ const urlPrefix = production ? "https://webxcerpt.github.io/openCPQ/" : "/";
 // Plugins, Utilities
 
 function reverseChronological(x,y) { return y.date.getTime() - x.date.getTime(); }
-function keepOrder(x,y) { return 0; }
+function byURL(x,y) { return x.url > y.url ? 1 : x.url === y.url ? 0 : -1; }
 
 function m_log(files, metalsmith, done) {
 	console.log(JSON.stringify(
