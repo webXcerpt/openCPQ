@@ -1,6 +1,7 @@
 <html>
 	<head>
 		<title><%= title %></title>
+    	<meta charset="utf-8">
 		<% if (!production) { %>
 		<script src="http://localhost:35729/livereload.js"></script>
 		<% } %>
@@ -66,6 +67,27 @@
 				<div class="col-xs-12 col-sm-9">
 					<i><%= date.toISOString().substr(0, 10) %></i>
 					<%- contents %>
+				</div>
+  				<% } else if (isDemo) { %>
+				<div class="col-xs-12 col-sm-9">
+					<h1><%= title %></h1> 
+					<%- contents %>
+					<h2>Running the Configurator in the Web</h2>
+
+					The configurator can be started from <a href="<%= life_url %>" target="_blank"><%= life_url %></a>.
+				</div>
+  				<% } else if (isPresentation) { %>
+				<div class="col-xs-12 col-sm-9">
+					<h1><%- title %></h1>
+					<%- presenter %>, 
+					<i><a href="<%- venue_url %>"><%- venue %></a>,
+					<%= date.toISOString().substr(0, 10) %>
+					<%- contents %>
+					
+					<iframe	src="//de.slideshare.net/slideshow/embed_code/key/<%= slideshare_embedcode %>" 
+						width="425" height="355" frameborder="0" marginwidth="0" marginheight="0" scrolling="no"
+						style="border:1px solid #CCC; border-width:1px; margin-bottom:5px; max-width: 100%;" allowfullscreen>
+					</iframe>
 				</div>
   				<% } else { %>
 				<div class="container">

@@ -22,12 +22,16 @@ const logo = "images/openCPQ-logo-425x175.png";
 
 const navigation = [
 	{name: "Home", file: "index.html"},
+	{name: "Demos", file: "demos.md"},
 	{name: "Tutorial", file: "doc/tutorial.md"},
 	{name: "Blog", file: "blog.md"},
+	{name: "Presentations", file: "presentations.md"},
 	{name: "Source", url: "http://github.com/webXcerpt/openCPQ"},
 ];
 
-const blogRegExp = /^blog-posts\/.*\.md$/;
+const blogRegExp = /^blog-posts(\/|\\).*\.md$/;
+const demoRegExp = /^demos(\/|\\).*\.md$/;
+const presentationsRegExp = /^presentations(\/|\\).*\.md$/;
 
 const urlPrefix = production ? "https://webxcerpt.github.io/openCPQ/" : "/";
 
@@ -69,6 +73,29 @@ function m_collectBlogs(files, metalsmith, done) {
 		.filter(data => data.isBlog)
 		.sort((x,y) => y.date.getTime() - x.date.getTime());
 	metalsmith.metadata({...metalsmith.metadata(), blogList});
+	done();
+}
+
+function m_collectDemos(files, metalsmith, done) {
+	for (const file in files)
+		files[file].isDemo = demoRegExp.test(file);
+	const demoList =
+		Object.keys(files)
+		.map(file => files[file])
+		.filter(data => data.isDemo);
+	metalsmith.metadata({...metalsmith.metadata(), demoList});
+	done();
+}
+
+function m_collectPresentations(files, metalsmith, done) {
+	for (const file in files)
+		files[file].isPresentation = presentationsRegExp.test(file);
+	const presentationList =
+		Object.keys(files)
+		.map(file => files[file])
+		.filter(data => data.isPresentation)
+		.sort((x,y) => y.date.getTime() - x.date.getTime());
+	metalsmith.metadata({...metalsmith.metadata(), presentationList});
 	done();
 }
 
@@ -136,6 +163,8 @@ if (!production)
 metalsmith
     .use(m_assignURLs)
 	.use(m_collectBlogs)
+	.use(m_collectDemos)
+	.use(m_collectPresentations)
 	.use(m_templates({engine: 'ejs', inPlace: true}))
 	.use(m_markdown({gfm: true}))
 //	.use(m_log)
