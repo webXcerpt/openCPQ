@@ -34,9 +34,9 @@ const authors = {
 	tg: "Tim Geisler",
 };
 
-const blogRegExp = /^blog-posts(\/|\\).*\.md$/;
-const demoRegExp = /^demos(\/|\\).*\.md$/;
-const presentationRegExp = /^presentations(\/|\\).*\.md$/;
+const blogRegExp = /^blog-posts\/.*\.md$/;
+const demoRegExp = /^demos\/.*\.md$/;
+const presentationRegExp = /^presentations\/.*\.md$/;
 
 const urlPrefix = production ? "https://webxcerpt.github.io/openCPQ/" : "/";
 
@@ -66,14 +66,15 @@ function file2url(file) {
 function m_extendFileData(files, metalsmith, done) {
 	for (const file in files) {
 		const data = files[file];
-		data.url = file2url(file);
+		const unixFile = file.replace(/\\/g, "/");
+		data.url = file2url(unixFile);
 		if (data.date)
 			data.dateString = data.date.toISOString().substr(0, 10);
 		if (data.author)
 			data.authorName = authors[data.author];
-		files[file].isBlog = blogRegExp.test(file);
-		files[file].isDemo = demoRegExp.test(file);
-		files[file].isPresentation = presentationRegExp.test(file);
+		files[file].isBlog = blogRegExp.test(unixFile);
+		files[file].isDemo = demoRegExp.test(unixFile);
+		files[file].isPresentation = presentationRegExp.test(unixFile);
 	}
 	done();
 }
