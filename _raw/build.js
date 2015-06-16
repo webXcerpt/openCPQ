@@ -34,18 +34,19 @@ const authors = {
 	tg: "Tim Geisler",
 };
 
-const typeRegExps = {
-	blog: /^blog-posts\/.*\.md$/,
-	demo: /^demos\/.*\.md$/,
-	presentation: /^presentations\/.*\.md$/,
-};
-
-const typeIsDateSorted = type => type !== "demo";
+const groupSpecs = [
+	{type: "blog"			, re: /^blog-posts\/.*\.md$/	, cmp: reverseChronological	},
+	{type: "demo"			, re: /^demos\/.*\.md$/			, cmp: keepOrder			},
+	{type: "presentation"	, re: /^presentations\/.*\.md$/	, cmp: reverseChronological	},
+];
 
 const urlPrefix = production ? "https://webxcerpt.github.io/openCPQ/" : "/";
 
 // ----------------------------------------------------------------------
 // Plugins, Utilities
+
+function reverseChronological(x,y) { return y.date.getTime() - x.date.getTime(); }
+function keepOrder(x,y) { return 0; }
 
 function m_log(files, metalsmith, done) {
 	console.log(JSON.stringify(
@@ -78,17 +79,16 @@ function m_extendFileData(files, metalsmith, done) {
 		if (data.author)
 			data.authorName = authors[data.author];
 		data.type = "standard";
-		for (const type in typeRegExps)
-			if (typeRegExps[type].test(unixFile)) {
+		for (const {type, re} of groupSpecs)
+			if (re.test(unixFile)) {
 				data.type = type;
 				var group = groups[type] || (groups[type] = []);
 				group.push(data);
 				break;
 			}
 	}
-	for (const type in groups)
-		if (typeIsDateSorted(type))
-			groups[type].sort((x,y) => y.date.getTime() - x.date.getTime());
+	for (const {type, cmp} of groupSpecs)
+		groups[type].sort((console.log(type, cmp), cmp));
 	metalsmith.metadata({...metalsmith.metadata(), groups});
 	done();
 }
