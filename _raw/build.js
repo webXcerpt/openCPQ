@@ -68,7 +68,7 @@ function file2url(file) {
 }
 
 function m_extendFileData(files, metalsmith, done) {
-	const lists = {};
+	const groups = {};
 	for (const file in files) {
 		const data = files[file];
 		const unixFile = file.replace(/\\/g, "/");
@@ -81,15 +81,15 @@ function m_extendFileData(files, metalsmith, done) {
 		for (const type in typeRegExps)
 			if (typeRegExps[type].test(unixFile)) {
 				files[file].type = type;
-				var list = lists[type] || (lists[type] = []);
+				var list = groups[type] || (groups[type] = []);
 				list.push(data);
 				break;
 			}
 	}
-	for (const type in lists)
+	for (const type in groups)
 		if (typeIsDateSorted(type))
-			lists[type].sort((x,y) => y.date.getTime() - x.date.getTime());
-	metalsmith.metadata({...metalsmith.metadata(), lists});
+			groups[type].sort((x,y) => y.date.getTime() - x.date.getTime());
+	metalsmith.metadata({...metalsmith.metadata(), groups});
 	done();
 }
 

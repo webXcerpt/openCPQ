@@ -5,7 +5,7 @@ title: Presentations
 Presentations
 =============
 
-<% for (var post of lists.presentation) { %>
+<% for (var post of groups.presentation) { %>
 ### [<%= post.title %>](<%- post.url %>)
 
 <%- post.presenter %>, 

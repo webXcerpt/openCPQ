@@ -5,7 +5,7 @@ title: Blog
 Blog
 ====
 
-<% for (var post of lists.blog) { %>
+<% for (var post of groups.blog) { %>
 ### [<%= post.title %>](<%- post.url %>)
 _<%- post.dateString %>, <%- post.authorName %>_
 
