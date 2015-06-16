@@ -1,0 +1,138 @@
+<html>
+	<head>
+		<title>Optical-Networks Configurator Demo</title>
+    	<meta charset="utf-8">
+		
+		<script src="https://ajax.googleapis.com/ajax/libs/jquery/1.11.2/jquery.min.js"></script>
+		<link rel="stylesheet" href="https://maxcdn.bootstrapcdn.com/bootstrap/3.3.4/css/bootstrap.min.css">
+		<link rel="stylesheet" href="https://maxcdn.bootstrapcdn.com/bootstrap/3.3.4/css/bootstrap-theme.min.css">
+		<script src="https://maxcdn.bootstrapcdn.com/bootstrap/3.3.4/js/bootstrap.min.js"></script>
+	</head>
+	<body style="padding-top: 70px">
+		<nav class="navbar navbar-default navbar-fixed-top">
+			<div class="navbar-header">
+				<button type="button" class="navbar-toggle" data-toggle="collapse" data-target=".navbar-responsive-collapse">
+					<span class="icon-bar"></span>
+					<span class="icon-bar"></span>
+					<span class="icon-bar"></span>
+				</button>
+				<a class="navbar-brand" href="https://webxcerpt.github.io/openCPQ/">
+					<img src="https://webxcerpt.github.io/openCPQ/images/openCPQ-logo-425x175.png"
+						 alt="openCPQ logo"
+						 width="68"
+						 height="28">
+				</a>
+			</div>
+			<div class="navbar-collapse collapse navbar-responsive-collapse">
+				<ul class="nav navbar-nav">
+					
+					<li>
+						<a href="https://webxcerpt.github.io/openCPQ/"
+						   target="_self">
+							Home
+						</a>
+					</li>
+					
+					<li>
+						<a href="https://webxcerpt.github.io/openCPQ/demos.html"
+						   target="_self">
+							Demos
+						</a>
+					</li>
+					
+					<li>
+						<a href="https://webxcerpt.github.io/openCPQ/doc/tutorial.html"
+						   target="_self">
+							Tutorial
+						</a>
+					</li>
+					
+					<li>
+						<a href="https://webxcerpt.github.io/openCPQ/presentations.html"
+						   target="_self">
+							Presentations
+						</a>
+					</li>
+					
+					<li>
+						<a href="https://webxcerpt.github.io/openCPQ/blog.html"
+						   target="_self">
+							Blog
+						</a>
+					</li>
+					
+					<li>
+						<a href="http://github.com/webXcerpt/openCPQ"
+						   target="_blank">
+							Source
+						</a>
+					</li>
+					
+				</ul>
+			</div>
+		</nav>
+		<div class="container">
+			<div class="row row-offcanvas row-offcanvas-left">
+        
+				
+				<div class="col-xs-12 col-sm-9">
+					<h1>Optical-Networks Configurator Demo</h1> 
+					<p>The hypothetical company OptoKom SE sells equipment for optical networks, e.g. optical switches.</p>
+<h2 id="configuration-rules">Configuration Rules</h2>
+<p>For the demo configurator, assume the following:</p>
+<ul>
+<li>There are two products, OptoSwitch 4 and OptoSwitch 16.</li>
+<li>OptoSwitch 4 provides 4 slots, which can be equipped with boards. OptoSwitch 16 provides 16 slots.</li>
+<li>There are single-width boards and double-width boards (which occupy two adjacent slots).</li>
+<li>A double-width board can only be equipped into &quot;odd&quot; slot numbers in OptoSwitch 16.</li>
+<li>Boards can have electrical interfaces or 
+a number of ports of certain types which can be equipped with transceivers of the same type.</li>
+<li>A module-carrier board can be equipped with modules,
+which in turn have electrical interfaces or can be equipped with transceivers.</li>
+<li>The optical switches can be mounted into racks.
+The height units used by the optical switches have to be respected.</li>
+<li>Racks contain additional fan trays which depend on the heat dissipation of the contained devices.</li>
+<li>Racks can contain an uninteruptible power supply (UPS). The dimensioning of the UPS depends on the used power.</li>
+</ul>
+<h2 id="configuration-modes">Configuration Modes</h2>
+<p>Three different modes of configuration should be implemented:</p>
+<ul>
+<li>Configuration of single products.</li>
+<li>Configuration of racks, which contain products and additional rack equipment.</li>
+<li>Configuration of a solution consisting of equipped racks, a network-management system, and additional service.
+The configuration should be facilitated with some top-level parameters.  </li>
+</ul>
+<h2 id="maintenance-of-the-configurator">Maintenance of the Configurator</h2>
+<p>The product models are maintained by three different roles:</p>
+<ul>
+<li>The openCPQ modeling expert models the structure of the configurator and the structure of each product.
+JavaScript and openCPQ knowledge is required, as well as some understanding of the configuration process and the products.
+This part of the configurator changes only when new products are introduced or products are changed heavily.</li>
+<li>The product manager maintains nearly-tabular data for the components (boards, modules, and transceivers).
+This nearly-tabular data is represented in JSON format (in file <code>resources/components.json</code>). This part of the configurator might change every month.
+It might be imported from a PDM system.</li>
+<li>The basic-data manager maintains materials with descriptions and prices in tabular form (as tab-separated values in file <code>resources/materials.tsv</code>).
+This data can change daily and should be loaded at each start of the configurator. It might be imported from an ERP system.</li>
+</ul>
+
+					<h2>Running the Configurator in the Web</h2>
+
+					The configurator can be started from <a href="http://opencpq.webxcerpt.com/examples/optical-transport/" target="_blank">http://opencpq.webxcerpt.com/examples/optical-transport/</a>.
+				</div>
+  				
+			</div>
+			<footer style="margin: 10px 0px;">
+				<hr>
+				<p>
+					openCPQ was initiated and published as open-source software by
+					<a href="http://www.webxcerpt.com">webXcerpt Software GmbH</a>.
+					<br>
+					Contact: <script>
+						var addr = atob("b3BlbmNwcUBvcGVuY3BxLm9yZw==");
+						document.write("<a href='mailto:" + addr + "'>" + addr + "</a>")
+					</script>
+				</p>
+			</footer>
+		</div>
+	</body>
+</html>
