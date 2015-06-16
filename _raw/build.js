@@ -34,9 +34,13 @@ const authors = {
 	tg: "Tim Geisler",
 };
 
-const blogRegExp = /^blog-posts\/.*\.md$/;
-const demoRegExp = /^demos\/.*\.md$/;
-const presentationRegExp = /^presentations\/.*\.md$/;
+const typeRegExps = {
+	blog: /^blog-posts\/.*\.md$/,
+	demo: /^demos\/.*\.md$/,
+	presentation: /^presentations\/.*\.md$/,
+};
+
+const typeIsDateSorted = type => type !== "demo";
 
 const urlPrefix = production ? "https://webxcerpt.github.io/openCPQ/" : "/";
 
@@ -64,6 +68,7 @@ function file2url(file) {
 }
 
 function m_extendFileData(files, metalsmith, done) {
+	const lists = {};
 	for (const file in files) {
 		const data = files[file];
 		const unixFile = file.replace(/\\/g, "/");
@@ -72,39 +77,19 @@ function m_extendFileData(files, metalsmith, done) {
 			data.dateString = data.date.toISOString().substr(0, 10);
 		if (data.author)
 			data.authorName = authors[data.author];
-		files[file].isBlog = blogRegExp.test(unixFile);
-		files[file].isDemo = demoRegExp.test(unixFile);
-		files[file].isPresentation = presentationRegExp.test(unixFile);
+		files[file].type = "standard";
+		for (const type in typeRegExps)
+			if (typeRegExps[type].test(unixFile)) {
+				files[file].type = type;
+				var list = lists[type] || (lists[type] = []);
+				list.push(data);
+				break;
+			}
 	}
-	done();
-}
-
-function m_collectBlogs(files, metalsmith, done) {
-	const blogList =
-		Object.keys(files)
-		.map(file => files[file])
-		.filter(data => data.isBlog)
-		.sort((x,y) => y.date.getTime() - x.date.getTime());
-	metalsmith.metadata({...metalsmith.metadata(), blogList});
-	done();
-}
-
-function m_collectDemos(files, metalsmith, done) {
-	const demoList =
-		Object.keys(files)
-		.map(file => files[file])
-		.filter(data => data.isDemo);
-	metalsmith.metadata({...metalsmith.metadata(), demoList});
-	done();
-}
-
-function m_collectPresentations(files, metalsmith, done) {
-	const presentationList =
-		Object.keys(files)
-		.map(file => files[file])
-		.filter(data => data.isPresentation)
-		.sort((x,y) => y.date.getTime() - x.date.getTime());
-	metalsmith.metadata({...metalsmith.metadata(), presentationList});
+	for (const type in lists)
+		if (typeIsDateSorted(type))
+			lists[type].sort((x,y) => y.date.getTime() - x.date.getTime());
+	metalsmith.metadata({...metalsmith.metadata(), lists});
 	done();
 }
 
@@ -172,9 +157,6 @@ if (!production)
 metalsmith
     .use(m_extendFileData)
 //	.use(m_log)
-	.use(m_collectBlogs)
-	.use(m_collectDemos)
-	.use(m_collectPresentations)
 	.use(m_templates({engine: 'ejs', inPlace: true}))
 	.use(m_markdown({gfm: true}))
 	.use(m_templates({engine: 'ejs', inPlace: false, default: "template.html"}))

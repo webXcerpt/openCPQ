@@ -45,12 +45,13 @@
 		<div class="container">
 			<div class="row row-offcanvas row-offcanvas-left">
         
-				<% if (isBlog) { %>
+				<% switch (type) {
+				   case "blog": %>
 				<div class="col-xs-6 col-sm-3 sidebar-offcanvas" id="sidebar" role="navigation">
 					<div class="well">
 						<h4>Recent Posts:</h4>
 						<ul class="nav nav-stacked">
-							<% for (var b of blogList.slice(0,10)) { %>
+							<% for (var b of lists.blog.slice(0,10)) { %>
 							<li>
 								<a href="<%= b.url %>">
 									<div>
@@ -68,7 +69,8 @@
 					<i><%= dateString %>, <%= authorName %></i>
 					<%- contents %>
 				</div>
-  				<% } else if (isDemo) { %>
+  				<% break;
+				   case "demo": %>
 				<div class="col-xs-12 col-sm-9">
 					<h1><%= title %></h1> 
 					<%- contents %>
@@ -76,7 +78,8 @@
 
 					The configurator can be started from <a href="<%= life_url %>" target="_blank"><%= life_url %></a>.
 				</div>
-  				<% } else if (isPresentation) { %>
+  				<% break;
+				   case "presentation": %>
 				<div class="col-xs-12 col-sm-9">
 					<h1><%- title %></h1>
 					<%- presenter %>, 
@@ -98,11 +101,13 @@
 						style="border:1px solid #CCC; border-width:1px; margin-bottom:5px; max-width: 100%;" allowfullscreen>
 					</iframe>
 				</div>
-  				<% } else { %>
+  				<% break;
+				   default: %>
 				<div class="container">
 					<%- contents %>
 				</div>
-  				<% } %>
+  				<% break;
+				   } %>
 			</div>
 			<footer style="margin: 10px 0px;">
 				<hr>
