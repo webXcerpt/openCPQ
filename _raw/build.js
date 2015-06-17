@@ -124,6 +124,15 @@ function m_extendFileData(files, metalsmith, done) {
 	done();
 }
 
+function m_crlf_line_ending(files, metalsmith, done) {
+	for (const file in files)
+		if (/.html$/.test(file)) {
+			const data = files[file];
+			data.contents = data.contents.toString().replace(/\r?\n|\r/g, "\r\n");
+		}
+	done();
+}
+
 function m_initialMessage(files, metalsmith, done) {
 	console.log(`Input files:`);
 	for (const file in files)
@@ -191,6 +200,7 @@ metalsmith
 	.use(m_templates({engine: 'ejs', inPlace: true}))
 	.use(m_markdown({gfm: true}))
 	.use(m_templates({engine: 'ejs', inPlace: false, default: "template.html"}))
+	.use(m_crlf_line_ending)
     .use(m_finalMessage);
 
 if (!production)
