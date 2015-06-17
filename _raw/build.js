@@ -68,6 +68,26 @@ function file2url(file) {
 		.replace(/\/index\.html$/, "/");
 }
 
+function expandAuthors(author) {
+	const authorList = []
+	function emit(author) {
+		return authorList.push(authors[author] || author);
+	}
+	if (author == undefined)
+		; // do nothing
+	else if (author instanceof Array)
+		author.forEach(emit);
+	else
+		emit(author);
+	const n = authorList.length;
+	switch (n) {
+		case 0 : return undefined;
+		case 1 : return authorList[0];
+		case 2 : return `${authorList[0]} and ${authorList[1]}`;
+		default: return `${authorList.slice(0, n-1).join(", ")}, and ${authorList[n-1]}`;
+	}
+}
+
 function m_extendFileData(files, metalsmith, done) {
 	const groups = {};
 	for (const file in files) {
@@ -76,8 +96,8 @@ function m_extendFileData(files, metalsmith, done) {
 		data.url = file2url(unixFile);
 		if (data.date)
 			data.dateString = data.date.toISOString().substr(0, 10);
-		if (data.author)
-			data.authorName = authors[data.author];
+		data.author = expandAuthors(data.author);
+		data.presenter = expandAuthors(data.presenter);
 		data.type = "standard";
 		for (const {type, re} of groupSpecs)
 			if (re.test(unixFile)) {
@@ -88,7 +108,7 @@ function m_extendFileData(files, metalsmith, done) {
 			}
 	}
 	for (const {type, cmp} of groupSpecs)
-		groups[type].sort((console.log(type, cmp), cmp));
+		groups[type].sort(cmp);
 	metalsmith.metadata({...metalsmith.metadata(), groups});
 	done();
 }
