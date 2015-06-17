@@ -126,7 +126,7 @@ function m_extendFileData(files, metalsmith, done) {
 
 function m_crlf_line_ending(files, metalsmith, done) {
 	for (const file in files)
-		if (/.html$/.test(file)) {
+		if (/\.html$/.test(file)) {
 			const data = files[file];
 			data.contents = data.contents.toString().replace(/\r?\n|\r/g, "\r\n");
 		}
