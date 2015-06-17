@@ -80,6 +80,8 @@ many Metalsmith plugins wrapping third-party npm packages:
 - templating engines,
 - watching for input changes and reprocessing the changed files,
 - an HTTP server for viewing the output files (with livereload),
+  <br>
+  [**Update:** The Browsersync plugin is even more comfortable to use.]
 - ...
 
 This makes it a lot easier to use these packages.  With Metalsmith you
@@ -123,6 +125,10 @@ Some (minor) drawbacks of Metalsmith are:
   triggering reloads from a parent frame is even better: With webpack
   the automatic reload feature "survives" a restart of the build
   process, whereas with Metalsmith it doesn't.
+  <br>
+  [**Update:** With the Browsersync plugin cross references work well,
+  albeit at the cost that the entire site is rebuilt very frequently.
+  However, this is not a problem with our small site.]
 
 Another argument in favor of **webpack** would be that we are already
 using it for building openCPQ applications.  (And being able to

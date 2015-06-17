@@ -39,7 +39,8 @@ and IT operations:
   **customer-specific concepts** on top of the openCPQ API.  This can make
   models much easier to maintain.
 - Since openCPQ is a quite thin layer on top of standard web technology,
-  it is **easy to learn** for many persons.
+  it is **easy to learn** for anyone with a little JavaScript web
+  programming background.
 
 
 

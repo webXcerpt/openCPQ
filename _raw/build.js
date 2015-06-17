@@ -1,11 +1,10 @@
 "use strict";
 
 const Metalsmith	= require("metalsmith");
+const m_browserSync	= require('metalsmith-browser-sync');
 const m_drafts		= require('metalsmith-drafts');
 const m_markdown	= require('metalsmith-markdown');
 const m_templates	= require('metalsmith-templates');
-const m_serve		= require('metalsmith-serve');
-const m_watch		= require('metalsmith-watch');
 
 const minimist		= require('minimist')
 const URIjs			= require('URIjs');
@@ -158,7 +157,6 @@ Remove them manually as needed.
 const metalsmith = Metalsmith(__dirname)
 	.clean(!production)
 	.metadata({
-		production,
 		rootUrl: urlPrefix,
 		logo: file2url(logo),
 		navigation: navigation.map(
@@ -173,9 +171,7 @@ const metalsmith = Metalsmith(__dirname)
 	.ignore([
 		"npm-debug.log",
 		"*~", // Emacs backup files
-		".#*", // Emacs auxiliary files (But "watch" still crashes with
-			   // these files, which are symbolic links pointing
-			   // nowhere.  Ignoring happens too late.)
+		".#*", // Emacs auxiliary files
 	])
     .use(m_initialMessage);
 
@@ -183,16 +179,7 @@ if (production)
 	metalsmith.use(m_drafts());
 
 if (!production)
-	metalsmith.use(m_watch({
-		livereload: true,
-		paths: {
-			// Rebuild a file when it changes:
-			"${source}/**/*": true,
-
-			// Rebuild everything when the template changes:
-			"templates/template.html": "**/*",
-		}
-	}));
+	metalsmith.use(m_browserSync({server: outDir, files: ["**/*"]}));
 
 metalsmith
     .use(m_extendFileData)
@@ -201,12 +188,7 @@ metalsmith
 	.use(m_markdown({gfm: true}))
 	.use(m_templates({engine: 'ejs', inPlace: false, default: "template.html"}))
 	.use(m_crlf_line_ending)
-    .use(m_finalMessage);
-
-if (!production)
-	metalsmith.use(m_serve({verbose: true}));
-
-metalsmith
+	.use(m_finalMessage)
 	.build(err => {
 		if (err)
 			throw err;
