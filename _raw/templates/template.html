@@ -18,8 +18,8 @@
 					<span class="icon-bar"></span>
 					<span class="icon-bar"></span>
 				</button>
-				<a class="navbar-brand" href="<%= rootUrl %>">
-					<img src="<%= logo %>"
+				<a class="navbar-brand" href="<%= mkRelative(rootUrl + "index.html") %>">
+					<img src="<%= mkRelative(logo) %>"
 						 alt="openCPQ logo"
 						 width="68"
 						 height="28">
@@ -29,7 +29,7 @@
 				<ul class="nav navbar-nav">
 					<% for (var item of navigation) { %>
 					<li<%- item.url === url ? ' class="active"' : '' %>>
-						<a href="<%= item.url %>"
+						<a href="<%= mkRelative(item.url) %>"
 						   target="<%-
 								   item.url.startsWith(rootUrl)
 								   ? "_self"
@@ -53,7 +53,7 @@
 						<ul class="nav nav-stacked">
 							<% for (var b of groups.blog.slice(0,10)) { %>
 							<li>
-								<a href="<%= b.url %>">
+								<a href="<%= mkRelative(b.url) %>">
 									<div>
 										<i><%= b.dateString %>, <%= b.author %></i>
 										<br>
@@ -96,7 +96,7 @@
 					<li><a href="<%- slideshare_url %>" target="_blank">Slideshare</a></li>
 					</ul>
 					
-					<iframe	src="//de.slideshare.net/slideshow/embed_code/key/<%= slideshare_embedcode %>" 
+					<iframe	src="https://de.slideshare.net/slideshow/embed_code/key/<%= slideshare_embedcode %>" 
 						width="425" height="355" frameborder="0" marginwidth="0" marginheight="0" scrolling="no"
 						style="border:1px solid #CCC; border-width:1px; margin-bottom:5px; max-width: 100%;" allowfullscreen>
 					</iframe>

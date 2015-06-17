@@ -6,7 +6,9 @@ const m_markdown	= require('metalsmith-markdown');
 const m_templates	= require('metalsmith-templates');
 const m_serve		= require('metalsmith-serve');
 const m_watch		= require('metalsmith-watch');
+
 const minimist		= require('minimist')
+const URIjs			= require('URIjs');
 
 // ----------------------------------------------------------------------
 // Configuration
@@ -39,14 +41,16 @@ const groupSpecs = [
 	{type: "demo"			, re: /^demos\/.*\.md$/			, cmp: byURL				},
 	{type: "presentation"	, re: /^presentations\/.*\.md$/	, cmp: reverseChronological	},
 ];
-
-const urlPrefix = production ? "https://webxcerpt.github.io/openCPQ/" : "/";
-
 // ----------------------------------------------------------------------
 // Plugins, Utilities
 
 function reverseChronological(x,y) { return y.date.getTime() - x.date.getTime(); }
 function byURL(x,y) { return x.url > y.url ? 1 : x.url === y.url ? 0 : -1; }
+
+// Actually the precise value of urlPrefix should not matter since all
+// internal links in the output should use relative URLs.  It must,
+// however, be an absolute URL ending with a slash.
+const urlPrefix = "https://webxcerpt.github.io/openCPQ/";
 
 function m_log(files, metalsmith, done) {
 	console.log(JSON.stringify(
@@ -63,9 +67,8 @@ function m_log(files, metalsmith, done) {
 // Convert a source file path (relative to inDir) to the URL at which
 // the generated file will be available.
 function file2url(file) {
-	return (urlPrefix + file)
-		.replace(/\.md$/, ".html")
-		.replace(/\/index\.html$/, "/");
+	return URIjs(file).absoluteTo(urlPrefix).toString()
+		.replace(/\.md$/, ".html");
 }
 
 function expandAuthors(author) {
@@ -93,7 +96,15 @@ function m_extendFileData(files, metalsmith, done) {
 	for (const file in files) {
 		const data = files[file];
 		const unixFile = file.replace(/\\/g, "/");
-		data.url = file2url(unixFile);
+		const url = file2url(unixFile);
+		data.url = url;
+		data.mkRelative = u => {
+			const rel = URIjs(u).relativeTo(url).toString();
+			if (rel === "" && u.endsWith("/"))
+				// need to fix URIjs result:
+				return ".";
+			return rel;
+		}
 		if (data.date)
 			data.dateString = data.date.toISOString().substr(0, 10);
 		data.author = expandAuthors(data.author);

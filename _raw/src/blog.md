@@ -6,7 +6,7 @@ Blog
 ====
 
 <% for (var post of groups.blog) { %>
-### [<%= post.title %>](<%- post.url %>)
+### [<%= post.title %>](<%- mkRelative(post.url) %>)
 _<%- post.dateString %>, <%- post.author %>_
 
 <%- post.teaser %>
