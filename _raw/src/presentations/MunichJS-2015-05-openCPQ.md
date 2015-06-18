@@ -8,6 +8,7 @@ pdf_url: https://github.com/webXcerpt/openCPQ/raw/master/doc/presentations/Munic
 pdf_expanded_url: https://github.com/webXcerpt/openCPQ/raw/master/doc/presentations/MunichJS-2015-05-openCPQ-expanded.pdf
 slideshare_url: http://de.slideshare.net/TimGeisler/opencpq-a-reactbased-productconfiguration-toolkit
 slideshare_embedcode: AEwYSTUheWubb1
+youtube_embedcode: 6lKjRcYWees
 
 ---
 
