@@ -9,6 +9,7 @@ pdf_expanded_url: https://github.com/webXcerpt/openCPQ/blob/master/doc/presentat
 slideshare_url: http://de.slideshare.net/TimGeisler/configuring-in-the-browser-really
 slideshare_embedcode: 9K6aDNehxchkTT
 youtube_embedcode:
+demo: optical-networks
 
 ---
 

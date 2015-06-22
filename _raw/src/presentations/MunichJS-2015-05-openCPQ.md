@@ -9,6 +9,7 @@ pdf_expanded_url: https://github.com/webXcerpt/openCPQ/raw/master/doc/presentati
 slideshare_url: http://de.slideshare.net/TimGeisler/opencpq-a-reactbased-productconfiguration-toolkit
 slideshare_embedcode: AEwYSTUheWubb1
 youtube_embedcode: 6lKjRcYWees
+demo: optical-networks
 
 ---
 

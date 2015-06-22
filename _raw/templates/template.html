@@ -91,6 +91,9 @@
 					<li><a href="<%- pdf_url %>">PDF (for printing)</a></li>
 					<li><a href="<%- pdf_expanded_url %>">PDF (for presenting)</a></li>
 					<li><a href="<%- slideshare_url %>" target="_blank">Slideshare</a></li>
+					<% if (demo != "") { %>
+                	<li><a href="../demos/<%= demo %>.html">Demo shown in presentation</a></li>
+					<% } %>
 					</ul>
 					
 					<iframe	src="https://de.slideshare.net/slideshow/embed_code/key/<%= slideshare_embedcode %>" 
