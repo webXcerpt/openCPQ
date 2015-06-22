@@ -91,7 +91,7 @@
 					<li><a href="<%- pdf_url %>">PDF (for printing)</a></li>
 					<li><a href="<%- pdf_expanded_url %>">PDF (for presenting)</a></li>
 					<li><a href="<%- slideshare_url %>" target="_blank">Slideshare</a></li>
-					<% if (demo != "") { %>
+					<% if (demo) { %>
                 	<li><a href="../demos/<%= demo %>.html">Demo shown in presentation</a></li>
 					<% } %>
 					</ul>
@@ -100,7 +100,7 @@
 						width="425" height="355" frameborder="0" marginwidth="0" marginheight="0" scrolling="no"
 						style="border:1px solid #CCC; border-width:1px; margin-bottom:5px; max-width: 100%;" allowfullscreen>
 					</iframe>
-					<% if (youtube_embedcode != "") { %>
+					<% if (youtube_embedcode) { %>
                 	<iframe width="425" height="355" src="https://youtube.com/embed/<%= youtube_embedcode %>" frameborder="0" allowfullscreen></iframe>
 					<% } %>
 				</div>
