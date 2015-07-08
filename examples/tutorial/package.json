@@ -2,8 +2,8 @@
   "name": "opencpq-tutorial",
   "description": "A simple demo for learning openCPQ.",
   "scripts": {
-    "start": "webpack-dev-server --progress --watch",
-    "prod": "webpack --progress --production"
+    "start": "node_modules/.bin/webpack-dev-server --progress --watch",
+    "prod": "node_modules/.bin/webpack --progress --production"
   },
   "devDependencies": {
     "appcache-webpack-plugin": "^0.1.1",
@@ -11,6 +11,7 @@
     "babel-loader": "^5.0.0",
     "css-loader": "^0.10.1",
     "file-loader": "^0.8.1",
+    "glob": "^5.0.13",
     "less": "^2.5.0",
     "less-loader": "^2.2.0",
     "minimist": "^1.1.1",
