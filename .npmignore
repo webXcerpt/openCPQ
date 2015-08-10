@@ -1,0 +1,10 @@
+.editorconfig
+.git
+.gitignore
+.npmignore
+doc
+examples
+gulpfile.js
+node_modules
+README.md
+src

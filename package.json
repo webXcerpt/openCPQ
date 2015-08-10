@@ -1,11 +1,13 @@
 {
   "name": "opencpq",
-  "description": "A React.js-based product-configuration framework",
+  "description": "A library for in-browser product-configuration",
   "version": "0.0.1",
   "keywords": [
     "configuration",
+    "product configuration",
     "CPQ",
-    "react"
+    "react",
+    "react-component"
   ],
   "repository": {
     "type": "git",
@@ -14,12 +16,25 @@
   "homepage": "http://opencpq.org/",
   "bugs": "https://github.com/webXcerpt/openCPQ/issues",
   "license": "MIT",
+  "scripts": {
+    "compile": "./node_modules/.bin/gulp",
+    "prepublish": "npm run compile"
+  },
+  "main": "dst/index.js",
   "peerDependencies": {
-    "babel-core": "^5.0.8",
-    "babel-loader": "^5.0.0",
     "browser-filesaver": "^1.0.0",
     "react": "^0.13.1",
     "react-bootstrap": "^0.20.1",
     "react-widgets": "^2.4.1"
+  },
+  "devDependencies": {
+    "gulp": "^3.9.0",
+    "gulp-babel": "^5.2.0",
+    "gulp-chain": "^1.0.3",
+    "gulp-if": "^1.2.5",
+    "gulp-json-editor": "^2.2.1",
+    "gulp-sourcemaps": "^1.5.2",
+    "lazypipe": "^1.0.1",
+    "rimraf": "^2.4.2"
   }
 }
