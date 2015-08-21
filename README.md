@@ -1,5 +1,5 @@
 # openCPQ
-A browser-based product-configuration framework
+A library for in-browser product-configuration
 
 - Demos:
   - A configurator for optical-transports products:
