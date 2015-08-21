@@ -32,7 +32,6 @@
     "gulp-babel": "^5.2.0",
     "gulp-chain": "^1.0.3",
     "gulp-if": "^1.2.5",
-    "gulp-json-editor": "^2.2.1",
     "gulp-sourcemaps": "^1.5.2",
     "lazypipe": "^1.0.1",
     "rimraf": "^2.4.2"
