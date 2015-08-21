@@ -2,7 +2,7 @@
 A browser-based product-configuration framework
 
 - Demos:
-  - A Configurator for optical-transports products:
+  - A configurator for optical-transports products:
     [code](https://github.com/webXcerpt/openCPQ-example-optical-transport),
     [live demo](http://opencpq.webxcerpt.com/examples/optical-transport/)
   - A demo of the components pre-defined in openCPQ and some
