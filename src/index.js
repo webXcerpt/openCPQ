@@ -24,6 +24,7 @@ module.exports = {
 	...require("./lib/op"),
 	...require("./lib/workbench"),
 	...require("./lib/root"),
+	...require("./lib/embeddedRoot"),
 	...require("./lib/visualization"),
 	...require("./lib/tabbed-area"),
 	...require("./lib/accordion"),
