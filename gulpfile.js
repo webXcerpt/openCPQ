@@ -1,4 +1,5 @@
 var gulp		= require('gulp');
+var watch		= require('gulp-watch');
 var gulpif		= require('gulp-if');
 var sourcemaps	= require('gulp-sourcemaps');
 var babel		= require('gulp-babel');
@@ -11,9 +12,11 @@ gulp.task('clean', function(cb) {
 	rimraf(outDir, cb);
 });
 
-gulp.task('default', ['clean'], function () {
-    return gulp
-		.src('src/**/*')
+function transform(doWatch) {
+	var pipeline = gulp.src('src/**/*');
+	if (doWatch)
+		pipeline = pipeline.pipe(watch('src/**/*'));
+	pipeline = pipeline
         .pipe(gulpif(
 			function(file) { return file.path.endsWith(".js"); },
 			chain(function(stream) {
@@ -24,4 +27,13 @@ gulp.task('default', ['clean'], function () {
 			})()
 		))
         .pipe(gulp.dest(outDir));
+    return pipeline;
+}
+
+gulp.task('default', ['clean'], function () {
+    return transform(false);
+});
+
+gulp.task('watch', ['clean'], function() {
+	return transform(true);
 });
