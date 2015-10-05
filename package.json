@@ -1,7 +1,7 @@
 {
   "name": "opencpq",
   "description": "A library for in-browser product-configuration",
-  "version": "0.1.2",
+  "version": "0.1.3",
   "keywords": [
     "configuration",
     "product configuration",
