@@ -21,14 +21,14 @@ class TOC {
 	}
 	render() {
 		var children = this._children;
-		return children.length === 0 ? undefined : <ul>{[
-			for ({fragment, heading, child} of children) <li>
+		return children.length === 0 ? undefined : <ul>{children.map(
+			({fragment, heading, child}) => <li>
 				<div>
 					<a href={"#"+fragment}>{heading}</a>
 					{child.render()}
 				</div>
 			</li>
-		]}</ul>;
+		)}</ul>;
 	}
 }
 

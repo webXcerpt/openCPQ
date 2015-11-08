@@ -24,9 +24,10 @@ class Problems {
 		return this._problemList.map(fn);
 	}
 	render() {
-		var rows = [
-			for ({level, msg, fragment} of this._problemList)
-				if (level !== "info")
+		var rows = this._problemList
+			.filter(({level}) => level !== "info")
+			.map(
+				({level, msg, fragment}) =>
 					<tr>
 						<td className={`problem-msg problem-${level}`}>
 							<Glyphicon glyph={glyphmap[level]}/>
@@ -34,7 +35,7 @@ class Problems {
 							<a href={"#" + fragment}>{msg}</a>
 						</td>
 					</tr>
-		]
+			);
 		// TODO: Add <col> elements
 		return <Table className="problems"><tbody>
 			{

@@ -98,7 +98,7 @@ function CSelect(rawCases) {
 				mode: "error"
 			};
 		var {mode, messages = []} = currentCase;
-		messages = [for (m of messages) problems.add(m)];
+		messages = messages.map(m => problems.add(m));
 		var detailNode = currentCase.type.makeNode({...ctx, value: detail, updateTo: updateDetail});
 		return new SelectNode({cases, caseName, currentCase, userSelected, retract, mode, messages, detailNode, updateCase});
 	});
@@ -120,9 +120,10 @@ class SelectNode extends Node {
 		var menu = renderWithValidation(
 			<ButtonGroup>
 				<DropdownButton title={currentCase.label} className={`select-select select-mode-${mode}`}>
-					{[for ({name, label, mode} of cases)
-						<MenuItem className={`select-option option-mode-${mode}`} eventKey={name} onSelect={updateCase}>{label}</MenuItem>
-					 ]}
+					{cases.map(
+						({name, label, mode}) =>
+							<MenuItem className={`select-option option-mode-${mode}`} eventKey={name} onSelect={updateCase}>{label}</MenuItem>
+					)}
 				</DropdownButton>
 				{confirmOrRetractButton(userSelected, () => updateCase(currentCase.name), retract)}
 			</ButtonGroup>,

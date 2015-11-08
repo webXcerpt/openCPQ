@@ -46,14 +46,14 @@ class TableNode extends Node {
 		return <Table className="table">
 			<colgroup>
 				<col className="col-buttons"/>
-				{[for ({name} of columnLabels) <col className={`col-${name}`} />]}
+				{columnLabels.map(({name}) => <col className={`col-${name}`} />)}
 			</colgroup>
 			<thead>
 				<tr>
 					<th>
 						<Button className="dim" onClick={() => splice(0, 0, undefined)}>+</Button>
 					</th>
-					{[for ({label} of columnLabels) <th>{label}</th>]}
+					{columnLabels.map(({label}) => <th>{label}</th>)}
 				</tr>
 			</thead>
 			<tbody>

@@ -4,7 +4,8 @@ var {View} = require("./workbench");
 var {CSideEffect} = require("./util");
 
 function escapeAttr(v) {
-	return `${v}`.replace('"', '&quot;', "g");
+	// `${v}` instead of ("" + v) crashes babel 6.1.2
+	return ("" + v).replace('"', '&quot;', "g");
 }
 
 class SVGImage {

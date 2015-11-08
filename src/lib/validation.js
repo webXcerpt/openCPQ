@@ -17,11 +17,10 @@ function CValidate(testFn, type = CUnit()) {
 }
 
 function renderValidation(messages) {
-	return <div className="validate">{
-		[for ({level, msg, fragment} of messages)
+	return <div className="validate">{messages.map(
+		({level, msg, fragment}) =>
 			<div className={`validate-${level}`}><a id={fragment}/><Glyphicon glyph={glyphmap[level]}/>{" "}{msg}</div>
-		]
-	}</div>;
+	)}</div>;
 }
 
 function renderWithValidation(inner, messages) {
