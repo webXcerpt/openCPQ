@@ -40,9 +40,8 @@ var EmbeddedRoot = React.createClass({
 		const {embeddingAPI} = this.props;
 		embeddingAPI.inward = config => delay(() => {
 			if (!deepEqual(this.state.config, config))
-				this.state.config = config;
+				this.setState({config});
 		});
-		// ### remove embeddingAPI.inward upon unload?
 		return {config: embeddingAPI.config};
 	},
 	render() {
@@ -50,38 +49,22 @@ var EmbeddedRoot = React.createClass({
 		const ctx = {
 			...initialCtxProvider(),
 			value: this.state.config,
-			updateTo: newValue => this.setState({config: newValue}),
+			updateTo: newValue => {
+				embeddingAPI.outwardValue && embeddingAPI.outwardValue(newValue);
+			},
 		};
 		var node = type.makeNode(ctx);
-		delay(() => embeddingAPI.outward(ctx));
+		// "outward" is deprecated, provide "outwardCtx" in the embedding API
+		// instead.
+		delay(() => embeddingAPI.outward && embeddingAPI.outward(ctx));
+		delay(() => embeddingAPI.outwardCtx && embeddingAPI.outwardCtx(ctx));
 		return node.render();
 	},
 });
 
-function parseQueryPair(pair) {
-	const i = pair.indexOf("=");
-	if (i < 0)
-		throw "'=' missing in query pair";
-	return {
-		name: decodeURIComponent(pair.substring(0, i)),
-		value: decodeURIComponent(pair.substring(i + 1))
-	};
-}
-
-function parseQuery(query) {
-	return query.split("&").map(parseQueryPair);
-}
-
 function findEmbeddingAPI() {
-	try {
-		const search = window.location.search;
-		if (!search.startsWith("?"))
-			throw "missing or unexpected query";
-		const tag = parseQuery(search.substring(1)).find(p => p.name === "tag").value;
-		return window.parent.getOpenCPQEmbeddingAPI(tag);
-	} catch(e) {
-		return null;
-	}
+	const {frameElement} = window;
+	return frameElement && frameElement.openCPQEmbeddingAPI;
 }
 
 function embed(type, embeddingAPI, initialCtxProvider, htmlElement) {
