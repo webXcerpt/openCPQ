@@ -135,6 +135,13 @@ class SelectNode extends Node {
 			{detail == undefined ? undefined : <div className="select-detail">{detail}</div>}
 		</div>;
 	}
+	renderResult() {
+		var {currentCase, detailNode} = this.__options;
+		return <div className="openCPQ-result-select">
+			<span className="select-option">{currentCase ? currentCase.label : "(missing)"}</span>
+			{detailNode ? <div className="select-detail">{detailNode.renderResult()}</div> : undefined}
+		</div>;
+	}
 }
 
 // Coding and using "unanswered" could be shown in a modelling demo.
@@ -176,6 +183,9 @@ function CEither(rawOptions = {}, thenType, elseType) {
 }
 
 class EitherNode extends Node {
+	get value() {
+		return this.__options.choice;
+	}
 	render() {
 		var {disabled, userSelected, retract, choice, detailNode, updateChoice} = this.__options;
 		var choice = <span>
@@ -193,8 +203,12 @@ class EitherNode extends Node {
 			{detail}
 		</div>;
 	}
-	get value() {
-		return this.__options.choice;
+	renderResult() {
+		var {choice, detailNode} = this.__options;
+		return <div className="openCPQ-result-either">
+			<span className="choice">{choice ? this.__options.yes || "yes" : this.__options.no || "no"}</span>
+			{detailNode ? <div className="detail">{detailNode.renderResult()}</div> : undefined}
+		</div>;
 	}
 }
 

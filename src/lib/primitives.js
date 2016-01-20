@@ -18,6 +18,9 @@ function makeSimpleType(name, nodeClass) {
 }
 
 class PrimitiveValueNode extends Node {
+	renderResult() {
+		return <span className="openCPQ-result-primitive">{this.value.toString()}</span>;
+	}
 }
 
 class StringNode extends PrimitiveValueNode {
@@ -87,7 +90,7 @@ class IntegerNode extends StringNode {
 }
 var CInteger = makeSimpleType("integer", IntegerNode);
 
-class DateNode extends Node {
+class DateNode extends PrimitiveValueNode {
 	get value() {
 		var {defaultValue, value} = this.__options;
 		return value || (typeof defaultValue === 'string' ? new Date(defaultValue) : defaultValue);
@@ -113,7 +116,7 @@ class DateNode extends Node {
 var CDate = makeSimpleType("date", DateNode);
 
 // FIXME: defaultValue handling
-class TimeNode extends Node {
+class TimeNode extends PrimitiveValueNode {
 	get value() {
 		var {defaultValue, value} = this.__options;
 		return value || (typeof defaultValue === 'string' ? new Date(defaultValue) : defaultValue);
@@ -155,11 +158,19 @@ class BooleanNode extends PrimitiveValueNode {
 			{confirmOrRetractButton(userSelected, () => updateTo(this.value), retract, "xsmall")}
 		</span>;
 	}
+	renderResult(){
+		return <span>{
+			this.value ? this.__options.yes || "yes" : this.__options.no || "no"
+		}</span>;
+	}
 }
 var CBoolean = makeSimpleType("boolean", BooleanNode);
 
 class UnitNode extends Node {
 	render() {
+		return undefined;
+	}
+	renderResult() {
 		return undefined;
 	}
 }

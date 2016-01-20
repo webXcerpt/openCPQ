@@ -16,6 +16,11 @@ class HtmlNode extends Node {
 	render() {
 		return this._html;
 	}
+	renderResult() {
+		// appropriate if the HTML text is a hint for the configurator,
+		// but not if the HTML text should go into the output as well.
+		return undefined;
+	}
 }
 
 module.exports = {

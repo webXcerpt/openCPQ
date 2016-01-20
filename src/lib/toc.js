@@ -47,6 +47,9 @@ class TOCNode extends Node {
 		var {fragment, node} = this.__options
 		return <span><a id={fragment}></a>{node.render()}</span>;
 	}
+	renderResult() {
+		return this.__options.node.renderResult();
+	}
 }
 
 module.exports = {VTOC, TOC, CTOCEntry};

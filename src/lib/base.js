@@ -12,10 +12,13 @@ class Type {
 
 class Node {
 	constructor(options) {
-		this.__options = options;
+		this.__options = options || {};
 	}
 	render() {
-		return <div>### rendering not implemented ###</div>;
+		return <div className="unimplemented">### rendering not implemented for {this.constructor.name} ###</div>;
+	}
+	renderResult() {
+		return <div className="openCPQ-result-unimplemented">### result rendering not implemented for {this.constructor.name} ###</div>;
 	}
 }
 

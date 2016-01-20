@@ -22,6 +22,9 @@ class WorkbenchNode extends Node {
 		var {views, render, node} = this.__options;
 		return render(node, views);
 	}
+	renderResult() {
+		return renderResult(this.__options.node);
+	}
 }
 
 module.exports = {View, CWorkbench};

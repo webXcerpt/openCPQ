@@ -85,6 +85,37 @@ class TableNode extends Node {
 			</tbody>
 		</Table>;
 	}
+	renderResult() {
+		var {columnLabels, rows, list, splice} = this.__options;
+		return <Table className="openCPQ-result-table">
+			<colgroup>
+				{columnLabels.map(({name}) => <col className={`col-${name}`} />)}
+			</colgroup>
+			<thead>
+				<tr>
+					{columnLabels.map(({label}) => <th>{label}</th>)}
+				</tr>
+			</thead>
+			<tbody>
+				{rows.length === 0 ?
+				 <tr>
+				 	<td colSpan={columnLabels.length}>
+				 		<div className="validate validate-info">(no entries)</div>
+					</td>
+				 </tr> :
+				 rows.map((row, i) => {
+					return <tr>
+						{columnLabels.map(({name}) => {
+							var member = row.member(name);
+							var field = member == undefined ? undefined : member.renderResult();
+							return <td>{field}</td>;
+						})}
+					</tr>;
+				 }
+				)}
+			</tbody>
+		</Table>;
+	}
 }
 
 function ccolumn(name, label) {

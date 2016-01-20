@@ -62,6 +62,11 @@ class GroupNode extends Node {
 			{this.mapMembers(({node}) => node == undefined ? undefined : node.render())}
 		</div>;
 	}
+	renderResult() {
+		return <ul className="openCPQ-result-group">
+			{this.mapMembers(({node}) => <li>{node.renderResult()}</li>)}
+		</ul>;
+	}
 }
 
 module.exports = {CGroup, cmember, cUnlabelledMember, GroupNode, preprocessMembers};
