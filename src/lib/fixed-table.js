@@ -29,9 +29,9 @@ function CFixedTable(columnsSpec, rows) {
 // TODO output a row cell only if there is a matching column
 
 class FixedTableNode extends Node {
-	render(asResult) {
+	render() {
 		var {columns, rows} = this.__options;
-		return <table className={(asResult ? "openCPQ-result-" : "") + "fixedTable"}>
+		return <table className="fixedTable"}>
 			<colgroup>
 				<col className="col-heading" />
 				{columns.map(({name}) => <col className={`col-${name}`} />)}
@@ -48,7 +48,6 @@ class FixedTableNode extends Node {
 							var member = row.inner.member(name);
 							var field =
 								member == undefined ? undefined :
-								asResult ? member.renderResult() :
 								member.render();
 							return <td>{field}</td>
 						})}
@@ -57,9 +56,8 @@ class FixedTableNode extends Node {
 			</tbody>
 		</table>;
 	}
-	renderResult() {
-		this.render(true);
-	}
+	get columns() { return this.__options.columns; }
+	get rows() { return this.__options.rows; }
 }
 
 function crow(name, label, cells) {

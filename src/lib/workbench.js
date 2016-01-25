@@ -18,12 +18,10 @@ function CWorkbench(viewsFn, render, type) {
 }
 
 class WorkbenchNode extends Node {
+	get inner() { return this.__options.node; }
 	render() {
 		var {views, render, node} = this.__options;
 		return render(node, views);
-	}
-	renderResult() {
-		return renderResult(this.__options.node);
 	}
 }
 

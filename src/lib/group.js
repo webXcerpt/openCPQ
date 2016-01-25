@@ -57,15 +57,11 @@ class GroupNode extends Node {
 	member(name) {
 		return this._indexedMembers[name];
 	}
+	get members() { return this._members; }
 	render() {
 		return <div className="group">
 			{this.mapMembers(({node}) => node == undefined ? undefined : node.render())}
 		</div>;
-	}
-	renderResult() {
-		return <ul className="openCPQ-result-group">
-			{this.mapMembers(({node}) => <li>{node.renderResult()}</li>)}
-		</ul>;
 	}
 }
 

@@ -17,11 +17,7 @@ function makeSimpleType(name, nodeClass) {
 	});
 }
 
-class PrimitiveValueNode extends Node {
-	renderResult() {
-		return <span className="openCPQ-result-primitive">{this.value.toString()}</span>;
-	}
-}
+class PrimitiveValueNode extends Node {}
 
 class StringNode extends PrimitiveValueNode {
 	get text() {
@@ -168,9 +164,6 @@ var CBoolean = makeSimpleType("boolean", BooleanNode);
 
 class UnitNode extends Node {
 	render() {
-		return undefined;
-	}
-	renderResult() {
 		return undefined;
 	}
 }

@@ -19,9 +19,7 @@ class PanelNode extends Node {
 	render() {
 		return <Panel {...this.__options}>{this._inner.render()}</Panel>;
 	}
-	renderResult() {
-		return this._inner.renderResult();
-	}
+	get inner() { return this._inner; }
 }
 
 module.exports = {CPanel, PanelNode};

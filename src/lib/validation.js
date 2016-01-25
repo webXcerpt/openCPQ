@@ -53,9 +53,6 @@ class ValidationNode extends Node {
 	render() {
 		return renderWithValidation(this._innerNode.render(), this._messages);
 	}
-	renderResult() {
-		return this._innerNode.renderResult();
-	}
 }
 
 function CValidationMessages(messages) {
@@ -71,9 +68,6 @@ class ValidationMessagesNode extends Node {
 	}
 	render() {
 		return renderValidation(this._messages);
-	}
-	renderResult() {
-		return undefined;
 	}
 }
 

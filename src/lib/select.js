@@ -115,6 +115,8 @@ class SelectNode extends Node {
 		var {cases, caseName} = this.__options;
 		return cases.find(c => c.name == caseName).label;
 	}
+	get currentCase() { return this.__options.currentCase; }
+	get detail() { return  this.__options.detailNode; }
 	render() {
 		var {cases, caseName, currentCase, userSelected, retract, mode, messages, detailNode, updateCase} = this.__options;
 		var menu = renderWithValidation(
@@ -133,13 +135,6 @@ class SelectNode extends Node {
 		return <div>
 			{menu}
 			{detail == undefined ? undefined : <div className="select-detail">{detail}</div>}
-		</div>;
-	}
-	renderResult() {
-		var {currentCase, detailNode} = this.__options;
-		return <div className="openCPQ-result-select">
-			<span className="select-option">{currentCase ? currentCase.label : "(missing)"}</span>
-			{detailNode ? <div className="select-detail">{detailNode.renderResult()}</div> : undefined}
 		</div>;
 	}
 }
@@ -183,9 +178,9 @@ function CEither(rawOptions = {}, thenType, elseType) {
 }
 
 class EitherNode extends Node {
-	get value() {
-		return this.__options.choice;
-	}
+	get choice() { return this.__options.choice; }
+	get value() { return this.choice; }
+	get detail() { return  this.__options.detailNode; }
 	render() {
 		var {disabled, userSelected, retract, choice, detailNode, updateChoice} = this.__options;
 		var choice = <span>
@@ -201,13 +196,6 @@ class EitherNode extends Node {
 		return <div>
 			{choice}
 			{detail}
-		</div>;
-	}
-	renderResult() {
-		var {choice, detailNode} = this.__options;
-		return <div className="openCPQ-result-either">
-			<span className="choice">{choice ? this.__options.yes || "yes" : this.__options.no || "no"}</span>
-			{detailNode ? <div className="detail">{detailNode.renderResult()}</div> : undefined}
 		</div>;
 	}
 }

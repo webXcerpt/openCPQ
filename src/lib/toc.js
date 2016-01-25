@@ -43,12 +43,10 @@ function CTOCEntry(name, headingFn, type) {
 }
 
 class TOCNode extends Node {
+	get inner() { return this.__options.node; }
 	render() {
 		var {fragment, node} = this.__options
 		return <span><a id={fragment}></a>{node.render()}</span>;
-	}
-	renderResult() {
-		return this.__options.node.renderResult();
 	}
 }
 

@@ -29,12 +29,6 @@ class LabeledNode extends Node {
 			<div className="labeled-data">{this.inner.render()}</div>
 		</div>;
 	}
-	renderResult() {
-		return <div className="openCPQ-result-labeled">
-			<span className="labeled-label">{this._label}:</span>
-			<div className="labeled-data">{this.inner.renderResult()}</div>
-		</div>;
-	}
 }
 
 module.exports = {CLabeled, LabeledNode};

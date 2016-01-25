@@ -53,8 +53,7 @@ var EmbeddedRoot = React.createClass({
 				embeddingAPI.outwardValue && embeddingAPI.outwardValue(newValue);
 			},
 		};
-		var node = type.makeNode(ctx);
-		ctx.node = node;
+		const node = type.makeNode(ctx);
 		// "outward" is deprecated, provide "outwardCtx" in the embedding API
 		// instead.
 		delay(() => embeddingAPI.outward && embeddingAPI.outward(ctx));
