@@ -31,7 +31,7 @@ function CFixedTable(columnsSpec, rows) {
 class FixedTableNode extends Node {
 	render() {
 		var {columns, rows} = this.__options;
-		return <table className="fixedTable"}>
+		return <table className="fixedTable">
 			<colgroup>
 				<col className="col-heading" />
 				{columns.map(({name}) => <col className={`col-${name}`} />)}
