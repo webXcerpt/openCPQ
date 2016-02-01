@@ -112,8 +112,7 @@ class SelectNode extends Node {
 		return this.caseName;
 	}
 	get label() {
-		var {cases, caseName} = this.__options;
-		return cases.find(c => c.name == caseName).label;
+		return this.__options.currentCase.label;
 	}
 	get currentCase() { return this.__options.currentCase; }
 	get detail() { return  this.__options.detailNode; }
