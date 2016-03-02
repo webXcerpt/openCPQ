@@ -1,7 +1,8 @@
-var React = require("react");
+import React from "react";
+import {serialize, deserialize} from "./serialize";
 
-function delay(fn) {
-	setTimeout(fn, 1);
+function deserialize_top(config) {
+	return config === undefined ? undefined : deserialize(config);
 }
 
 // for JSON-style values
@@ -35,43 +36,94 @@ function deepEqual(x, y) {
 	}
 }
 
-var EmbeddedRoot = React.createClass({
+const EmbeddedRoot = React.createClass({
+	componentWillMount() {
+		// TODO can't this be simplified?
+		this.props.emitStateAccess(() => this.state, state => this.setState(state));
+	},
 	getInitialState() {
-		const {embeddingAPI} = this.props;
-		embeddingAPI.inward = config => delay(() => {
-			if (!deepEqual(this.state.config, config))
-				this.setState({config});
-		});
-		return {config: embeddingAPI.config};
+		return {config: this.props.config};
 	},
 	render() {
-		const {type, embeddingAPI, initialCtxProvider} = this.props;
+		const {type, send, initialCtxProvider, makeResult} = this.props;
 		const ctx = {
 			...initialCtxProvider(),
 			value: this.state.config,
-			updateTo: newValue => {
-				embeddingAPI.outwardValue && embeddingAPI.outwardValue(newValue);
-			},
+			updateTo: newValue => send("value", serialize(newValue))
 		};
 		const node = type.makeNode(ctx);
-		// "outward" is deprecated, provide "outwardCtx" in the embedding API
-		// instead.
-		delay(() => embeddingAPI.outward && embeddingAPI.outward(ctx));
-		delay(() => embeddingAPI.outwardCtx && embeddingAPI.outwardCtx(ctx));
+		send("results", makeResult(node, ctx));
 		return node.render();
 	},
 });
 
-function findEmbeddingAPI() {
-	const {frameElement} = window;
-	return frameElement && frameElement.openCPQEmbeddingAPI;
+function embed(type, initialCtxProvider, makeResult, mountPoint) {
+	const embedder = window.parent;
+	let tag = undefined;
+	let embedderOrigin = "*";
+
+	function send(action, args) {
+		const message = {url: document.URL, tag, action, args};
+		embedder.postMessage(message, embedderOrigin);
+	}
+
+	let setState;
+	let getState;
+
+	window.addEventListener("message", ({source, data}) => {
+		const {url, tag: new_tag, action, args} = data;
+		try {
+			if (source !== embedder)
+				throw "Received message from unknown window.";
+			if (url !== document.URL)
+				throw `Unexpected URL in received message: ${url}.`;
+			if (action === "init") {
+				if (tag !== undefined)
+					throw `Attempt to re-initialize configurator.`;
+				tag = new_tag;
+				embedderOrigin = args.embedderOrigin;
+			}
+			else {
+				if (tag === undefined)
+					throw `First message should initialize the configurator.`;
+			}
+			if (new_tag !== tag)
+				throw `Unexpected tag in message: ${new_tag}; expected: ${tag}.`;
+		} catch(e) {
+			alert(
+				`Ignoring unexpected message received by configurator ` +
+				`${document.URL}:\n${e}`
+			);
+			return;
+		}
+
+		switch (action) {
+			case "init":
+				React.render(
+					<EmbeddedRoot {...{
+							type,
+							config: deserialize_top(args.config),
+							send,
+							initialCtxProvider,
+							makeResult,
+							emitStateAccess: (getter, setter) => {
+								getState = getter;
+								setState = setter;
+							},
+					}}/>,
+					mountPoint
+				);
+				break;
+			case "value":
+				if (!deepEqual(args, getState().config))
+					setState({config: deserialize_top(args)});
+				break;
+			default:
+				alert(`Unexpected action in message: ${action}`)
+		}
+	});
+
+	send("ready");
 }
 
-function embed(type, embeddingAPI, initialCtxProvider, htmlElement) {
-	React.render(
-		<EmbeddedRoot {...{type, embeddingAPI, initialCtxProvider}}/>,
-		htmlElement
-	);
-}
-
-module.exports = {EmbeddedRoot, findEmbeddingAPI, embed};
+module.exports = {embed};
