@@ -1,81 +1,153 @@
 import React from "react";
 import {serialize, deserialize} from "./serialize";
+import {ButtonToolbar, ButtonGroup, Button, DropdownButton, MenuItem, Glyphicon} from 'react-bootstrap';
 
 function deserialize_top(config) {
 	return config === undefined ? undefined : deserialize(config);
 }
 
-// for JSON-style values
-function deepEqual(x, y) {
-	if (x === y)
-		return true;
-	if (x == null || y == null)
-		return false;
-	const c = x.constructor;
-	if (y.constructor !== c)
-		return false;
-	switch (c) {
-	case Array: {
-		const l = x.length;
-		if (y.length != l)
-			return false;
-		for (var i = 0; i < l; i++)
-			if (!deepEqual(x[i], y[i]))
-				return false;
+class EmbeddedRoot extends React.Component {
+	constructor(props) {
+		super(props);
+		this.state = {
+			config: this.props.config,
+			past: null,
+			future: null,
+		};
 	}
-	case Object: {
-		for (const i in x)
-			if (!(i in y && deepEqual(x[i], y[i])))
-				return false;
-		for (const i in y)
-			if (!(i in x))
-				return false;
+	render() {
+		const {type, initialCtxProvider} = this.props;
+		const {config, past, future} = this.state;
+		const ctx = {
+			...initialCtxProvider(),
+			value: config,
+			updateTo: newValue => this.setConfig(newValue),
+		};
+		const node = type.makeNode(ctx);
+		return (
+			<div style={{
+				height: "100%",
+				display: "flex",
+				flexDirection: "column"
+			}}>
+				<div style={{
+					minHeight: "10px",
+					borderWidthTop: "0px",
+					borderBottom: "1px solid #CCC",
+					borderWidthLeft: "0px",
+					borderWidthRight: "0px",
+					flex: "1 1 auto",
+					display: "inline-flex",
+				}}>
+					{node.render()}
+				</div>
+				<footer style={{
+					flex: "0 0 auto",
+					margin: "0px 5px",
+				}}>
+					<ButtonToolbar>
+						<ButtonGroup>
+							<Button className="navbar-btn" onClick={() => this.do_ok(node, ctx)} bsStyle="primary">OK</Button>
+							{
+								// Poor man's confirmation dialog if there have been changes
+								past
+								?	<DropdownButton className="navbar-btn" dropup title="Close">
+										<MenuItem onSelect={() => this.do_ok(node, ctx)}>Pass back configuration</MenuItem>
+										<MenuItem onSelect={() => this.do_close()}>Discard configuration</MenuItem>
+									</DropdownButton>
+								: <Button className="navbar-btn" onClick={() => this.do_close()}>Close</Button>
+							}
+						</ButtonGroup>
+						<Button className="navbar-btn" disabled={config == null} onClick={() => this.do_clear()}><Glyphicon glyph="remove"/> Clear</Button>
+						<ButtonGroup>
+							<Button className="navbar-btn" disabled={!past} onClick={() => this.do_undo_all()}><Glyphicon glyph="fast-backward"/> Undo All</Button>
+							<Button className="navbar-btn" disabled={!past} onClick={() => this.do_undo()}><Glyphicon glyph="step-backward"/> Undo</Button>
+							<Button className="navbar-btn" disabled={!future} onClick={() => this.do_redo()}><Glyphicon glyph="step-forward" /> Redo</Button>
+							<Button className="navbar-btn" disabled={!future} onClick={() => this.do_redo_all()}><Glyphicon glyph="fast-forward" /> Redo All</Button>
+						</ButtonGroup>
+					</ButtonToolbar>
+				</footer>
+			</div>
+		);
 	}
-	default:
-		return false;
+	setConfig(newConfig) {
+		const {config, past} = this.state;
+		this.setState({
+			config: newConfig,
+			past: {car: config, cdr: past},
+			future: null,
+		})
+	}
+	do_ok(node, ctx) {
+		const {sendToEmbedder, makeResult} = this.props;
+		sendToEmbedder("close", {
+			value: serialize(this.state.config),
+			...makeResult(node, ctx),
+		});
+	}
+	do_close() {
+		const {sendToEmbedder} = this.props;
+		sendToEmbedder("close");
+	}
+	do_clear() {
+		this.setConfig(undefined);
+	}
+	do_undo_all() {
+		var {config, past, future} = this.state;
+		while (past) {
+			future = {car: config, cdr: future},
+			config = past.car;
+			past = past.cdr;
+		}
+		this.setState({config, past, future})
+	}
+	do_undo() {
+		const {config, past, future} = this.state;
+		if (past)
+			this.setState({
+				config: past.car,
+				past: past.cdr,
+				future: {car: config, cdr: future},
+			});
+	}
+	do_redo() {
+		const {config, past, future} = this.state;
+		if (future)
+			this.setState({
+				config: future.car,
+				past: {car: config, cdr: past},
+				future: future.cdr,
+			});
+	}
+	do_redo_all() {
+		var {config, past, future} = this.state;
+		while (future) {
+			past = {car: config, cdr: past};
+			config = future.car;
+			future = future.cdr;
+		}
+		this.setState({config, past, future})
 	}
 }
 
-const EmbeddedRoot = React.createClass({
-	componentWillMount() {
-		// TODO can't this be simplified?
-		this.props.emitStateAccess(() => this.state, state => this.setState(state));
-	},
-	getInitialState() {
-		return {config: this.props.config};
-	},
-	render() {
-		const {type, send, initialCtxProvider, makeResult} = this.props;
-		const ctx = {
-			...initialCtxProvider(),
-			value: this.state.config,
-			updateTo: newValue => send("value", serialize(newValue))
-		};
-		const node = type.makeNode(ctx);
-		send("results", makeResult(node, ctx));
-		return node.render();
-	},
-});
-
 function embed(type, initialCtxProvider, makeResult, mountPoint) {
+	// Using initialURL avoids problems with changing fragment identifiers in document.URL.
+	const initialURL = document.URL.replace(/#.*/, '');
 	const embedder = window.parent;
 	let tag = undefined;
 	let embedderOrigin = "*";
 
-	function send(action, args) {
-		const message = {url: document.URL, tag, action, args};
+	function sendToEmbedder(action, args) {
+		const message = {url: initialURL, tag, action, args};
 		embedder.postMessage(message, embedderOrigin);
 	}
-
-	let setState;
-	let getState;
 
 	window.addEventListener("message", ({source, data}) => {
 		const {url, tag: new_tag, action, args} = data;
 		try {
 			if (source !== embedder)
 				throw "Received message from unknown window.";
-			if (url !== document.URL)
+			if (url !== initialURL)
 				throw `Unexpected URL in received message: ${url}.`;
 			if (action === "init") {
 				if (tag !== undefined)
@@ -92,7 +164,7 @@ function embed(type, initialCtxProvider, makeResult, mountPoint) {
 		} catch(e) {
 			alert(
 				`Ignoring unexpected message received by configurator ` +
-				`${document.URL}:\n${e}`
+				`${initialURL}:\n${e}`
 			);
 			return;
 		}
@@ -101,29 +173,22 @@ function embed(type, initialCtxProvider, makeResult, mountPoint) {
 			case "init":
 				React.render(
 					<EmbeddedRoot {...{
+							// TODO Remove some of these attributes?
 							type,
 							config: deserialize_top(args.config),
-							send,
+							sendToEmbedder,
 							initialCtxProvider,
 							makeResult,
-							emitStateAccess: (getter, setter) => {
-								getState = getter;
-								setState = setter;
-							},
 					}}/>,
 					mountPoint
 				);
-				break;
-			case "value":
-				if (!deepEqual(args, getState().config))
-					setState({config: deserialize_top(args)});
 				break;
 			default:
 				alert(`Unexpected action in message: ${action}`)
 		}
 	});
 
-	send("ready");
+	sendToEmbedder("ready");
 }
 
 module.exports = {embed};
