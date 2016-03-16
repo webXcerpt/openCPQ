@@ -11,13 +11,37 @@ class EmbeddedRoot extends React.Component {
 		super(props);
 		this.state = {
 			config: this.props.config,
+			configValid: this.props.configValid,
 			past: null,
 			future: null,
 		};
 	}
 	render() {
 		const {type, initialCtxProvider} = this.props;
-		const {config, past, future} = this.state;
+		const {config, configValid, past, future} = this.state;
+		if (!configValid) {
+			const startOver = () => this.setState({
+				config: undefined,
+				configValid: true,
+			})
+			return <div style={{margin: "10px"}}>
+				<h1 style={{color: "red"}}>Invalid Configuration</h1>
+				<p>
+					This configurator has received invalid configuration data.
+				</p>
+				<p>
+					You can
+					{} <button onClick={() => this.do_close()}>close</button> {}
+					this configurator and solve the problem outside.
+				</p>
+				<p>
+					Or you can start over with an
+					{} <button onClick={startOver}>empty configuration</button>.
+				</p>
+				<p>Received configuration:</p>
+				<pre>{config}</pre>
+			</div>;
+		}
 		const ctx = {
 			...initialCtxProvider(),
 			value: config,
@@ -170,19 +194,30 @@ function embed(type, initialCtxProvider, makeResult, mountPoint) {
 		}
 
 		switch (action) {
-			case "init":
+			case "init": {
+				let config, configValid;
+				try {
+					config = deserialize_top(args.config);
+					configValid = true;
+				}
+				catch (e) {
+					config = args.config.toString();
+					configValid = false;
+				}
 				React.render(
 					<EmbeddedRoot {...{
 							// TODO Remove some of these attributes?
 							type,
-							config: deserialize_top(args.config),
+							config,
+							configValid,
 							sendToEmbedder,
 							initialCtxProvider,
 							makeResult,
-					}}/>,
-					mountPoint
-				);
+						}}/>,
+						mountPoint
+					);
 				break;
+			}
 			default:
 				alert(`Unexpected action in message: ${action}`)
 		}
