@@ -25,6 +25,7 @@ const navigation = [
 	{name: "Home", file: "index.html"},
 	{name: "Demos", file: "demos.md"},
 	{name: "Tutorial", file: "doc/tutorial.md"},
+	{name: "Embedding", file: "doc/embedding/embedding-openCPQ-configurators.md"},
 	{name: "Presentations", file: "presentations.md"},
 	{name: "Blog", file: "blog.md"},
 	{name: "Source", url: "http://github.com/webXcerpt/openCPQ"},

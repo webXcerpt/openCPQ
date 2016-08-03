@@ -1,11 +1,15 @@
+---
+title: Embedding
+---
+
 Embedding *openCPQ* Configurators
 =================================
 
-*Note that this is a general discussion how to embed openCPQ-based
+*Note: This document discusses the architecture of embedding openCPQ-based
 configurators in other applications.
 For specific examples see
 [here](https://github.com/webXcerpt/openCPQ-odoo) (embedding into Odoo) and
-[here](openCPQ-embedding-demo.html) (a minimal embedding).*
+[here](https://github.com/webXcerpt/openCPQ-example-optical-transport#an-embedding-application) (a minimal embedding).*
 
 
 Introduction
@@ -125,7 +129,9 @@ This is for the following reasons:
   to notify the embedder about configuration changes.
 - The embedder client can save an updated configuration in a transaction
   together with other data.
-  The embedder client may also decide to discard a configuration update.
+  The embedder client might even decide to discard a configuration update.
+- With this approach there is no need for the configurator to authenticate at
+  the server and thus no need to receive and to manage credentials.
 
 
 ### Communication Mechanism
@@ -171,6 +177,27 @@ is opaque to the embedder.
 Furthermore a `"close"` message may contain additional data derived from the
 configuration such as a price or a textual representation to be used in business
 documents.
+
+
+### Secure Messaging
+
+The cross-window messaging mechanism allows the sender of a message to specify
+that the message should only be delivered if the target window contains a
+document from a particular origin.  Similarly an incoming message is accompanied
+by the URL of the sending document, which allows the receiver to ignore the
+message if it is not from the expected document.
+
+Since the embedding application knows the configurator's URL, it can
+easily make use of these security mechanisms.  In contrast to this, on
+the configurator side we cannot check if a message comes from the
+"expected" embedding application (unless we hard-wired the embedder URL
+in the configurator code, which would make the configurator harder to
+manage).  As long as the configurator does not manipulate persistent
+data and only communicates to its parent window (as recommended in
+section "Communication Counterpart"), this should not be a security
+problem from the configurator perspective.  If, however, the
+configurator directly manipulates data on the server, more extensive
+security mechanisms are needed.
 
 
 ### User Interface
