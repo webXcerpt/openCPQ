@@ -398,7 +398,7 @@ expression above, we add the following element to the `CGroup([...])`:
             ccase("black"),
             ccase("white")
         ]))
-    : null,
+        : null,
 ```
 
 There are a few things to explain here:
