@@ -1,0 +1,19 @@
+
+       Browser
+       +--------------+     +------------+
+       |              |     |            |
+       |  Enterprise  |     | Enterprise |
+       |              |     |            |
+       |  Application |<--->| Application|
+       |              |     |            |
+       |    Client    |     |   Server   |
+       |              |     |            |
+       |              |     +------------+
+       |Iframe        |
+       |+------------+|
+       ||            ||
+       ||Configurator||
+       ||            ||
+       |+------------+|
+       |              |
+       +--------------+
