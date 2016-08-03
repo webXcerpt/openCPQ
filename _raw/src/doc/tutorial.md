@@ -287,7 +287,7 @@ by `node`.
 
 
 
-### Two Tips
+### Two Hints
 
 For a more convenient development experience, you can run
 
@@ -491,7 +491,18 @@ existence of `value.text` before using the string value.
 
 The state of a `CString` is undefined or a string.
 
-### Constraints, Validation
+
+### Conditional Menu Entries
+
+*[To be written]*
+
+
+### Explicit Constraints and Validation
+
+*[To be written]*
+
+
+### Output: Bill of Materials, Prices, etc.
 
 *[To be written]*
 
