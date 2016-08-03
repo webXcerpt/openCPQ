@@ -11,14 +11,13 @@ Prerequisites
 
 ### Skills
 
-*openCPQ* applications are written in JavaScript.  While you need not be
-a JavaScript expert, you are expected to have some basic understanding
-of the language.  For convenience, we are using features from the new
-JavaScript standard ECMAScript 6 and a few more new features supported
-by [*Babel*](http://babeljs.io).  These features might be new to you,
-but you can look them up as you go.  (Even if you don't know JavaScript
-right now, it might be worthwhile to learn.  It's useful for many
-things, not just for *openCPQ*.)
+*openCPQ* applications are written in JavaScript.  While you need not be a
+JavaScript expert, you are expected to have some basic understanding of the
+language.  (Even if you don't know JavaScript right now, it might be worthwhile
+to learn.  It's useful for many things, not just for *openCPQ*.)  For
+convenience, we are using modern JavaScript features from ECMAScript 2015/2016
+and a few more new features supported by [*Babel*](http://babeljs.io). These
+features might be new to you, but you can look them up as you go.
 
 We also use a few popular tools and libraries from the JavaScript
 ecosystem.  This tutorial aims to provide all the steps necessary to get
@@ -29,14 +28,13 @@ knowing about those tools is useful beyond *openCPQ*.)
 
 ### Software
 
-*openCPQ* applications need some preprocessing before they can be
-executed.  We are using tools based on nodejs for this.  You need to
-have the JavaScript interpreter `node` and the related package manager
-`npm` installed on your machine.  While the versions from nodejs.org
-should work, we are using the versions from iojs.org.  Make sure that
-the `bin` directory of the downloaded and unpacked iojs distribution is
-listed in your `PATH` environment variable, so that the programs `node`
-and `npm` will be found by your system.
+*openCPQ* applications need some preprocessing before they can be executed.  We
+are using tools from the [node.js](http://nodejs.org) ecosystem for this.  You
+need to have the JavaScript interpreter `node` and the related package manager
+`npm` installed.  (The examples of this tutorial are known to work with version
+6.3.1 of node.js.)  Make sure that the `bin` directory of the downloaded and
+unpacked node.js distribution is listed in your `PATH` environment variable, so
+that the programs `node` and `npm` will be found by your system.
 
 
 Getting started
@@ -50,18 +48,23 @@ In an empty folder run the command
 npm init
 ```
 
-to set up a `package.json` file, which will hold configuration for your
-app.  You can answer each of the questions asked by `npm init` by just
-hitting the return key.  The default answers are ok for now.
+to set up a `package.json` file, which will hold some configuration for
+your app.  You can answer each of the questions asked by `npm init` by
+just hitting the enter/return key.  The default answers are ok for now.
 
 
 ### Dependencies
 
-Now install *openCPQ* and third-party utilities:
+Now install *openCPQ* and third-party packages:
 
 ```sh
-npm install --save-dev opencpq@0.1.2 webpack@^1.8.4 webpack-dev-server@^1.8.0 babel-loader@^5.0.0 css-loader@^0.10.1 file-loader@^0.8.1 less-loader@^2.2.0 style-loader@^0.10.1 url-loader@^0.5.6 babel-core@^5.1.2 bootstrap@^3.3.5 babel-plugin-object-assign@^1.2.1
+npm install --save-dev opencpq@0.1.2 webpack@^1.8.4 webpack-dev-server@^1.8.0 babel-loader@^5.0.0 css-loader@^0.10.1 file-loader@^0.8.1 less-loader@^2.2.0 style-loader@^0.10.1 url-loader@^0.5.6 babel-core@^5.1.2 bootstrap@^3.3.5 less@^2.3.1 browser-filesaver@^1.0.0 react@^0.13.1 react-bootstrap@^0.20.1 react-widgets@^2.4.1 babel-plugin-object-assign@^1.2.1
 ```
+
+(`npm` may try to compile some C++ code for the indirectly used packages
+`bufferutil` and `utf-8-validate` using the `gyp` tool.  This may fail
+and produce error messages.  You can ignore these messages since these
+packages are optional.)
 
 A quick overview of the installed packages:
 - `opencpq` is the *openCPQ* library.
@@ -69,16 +72,18 @@ A quick overview of the installed packages:
   application.  (If you are familiar with another packaging tool such as
   browserify and prefer to use that, this should work as well.  Notice
   that we are using CommonJS-style modules and will migrate to
-  ECMAScript-6-style modules.  This needs to be supported by your
-  packager.)
-- The packages `...-loader` are used by *webpack* to handle files of
+  ECMAScript-6 modules.  This needs to be supported by your packager.)
+- The packages `...-loader` will be used by *webpack* to handle files of
   certain types.
 - `babel-core` contains the JavaScript preprocessor *Babel*, which
   converts JavaScript with modern features into more traditional
   JavaScript so that it is understood by current (or even older)
   browsers.
 - From `bootstrap` we are primarily using the CSS styling for the UI
-  components of our application.
+  components of our application. `less` is used to convert the styling
+  from the higher-level language "less" to CSS syntax.
+- `react` is a UI library heavily used by openCPQ.  `react-bootstrap`
+  and `react-widgets` provide UI components.
 - `babel-plugin-object-assign` is not used directly but only by other
   packages.  For technical reasons it must nevertheless be installed
   explicitly here.
@@ -90,13 +95,14 @@ particular, this tutorial has been written for the given version of
 
 The option `--save-dev` makes sure that the packages are not only
 installed in the subfolder `node_modules`, but that the package names
-and versions are also saved as "dependencies".  (Actually the packages
-are "development dependencies", indicating that you only need them while
-you are developing your application but not when you will run it.)  If
-you manage your application in a version-control system, you can exclude
-the (huge) `node_modules` folder from version control.  After a fresh
-checkout of the project folder from version control, you can simply run
-`npm install` to install all the dependencies.
+and versions are also saved as "dependencies" in the file
+`package.json`.  (Actually the packages are "development dependencies",
+indicating that you only need them while you are developing your
+application but not when you will run it.)  If you manage your
+application in a version-control system, you can exclude the (huge)
+`node_modules` folder from version control.  After a fresh checkout of
+the project folder from version control, you can simply run `npm
+install` to install all the dependencies.
 
 
 Hello World
@@ -121,18 +127,18 @@ In your project folder, create a file `index.html` with this content:
 ..., a file `index.js` with this content:
 
 ```jsx
-var React = require("react");
+import React from "react";
 
-var {
+import {
     CWorkbench,
     CGroup, cmember,
     CSelect, ccase, cdefault, unansweredCase,
     CString,
     renderTree, rootPath,
     Problems,
-} = require("opencpq");
+} from "opencpq";
 
-var model = CGroup([
+const model = CGroup([
     cmember("size", "Size", CSelect([
         ccase("XXS"),
         ccase("XS"),
@@ -151,7 +157,7 @@ var model = CGroup([
     cmember("text", "Text to print on your T-shirt:", CString()),
 ])
 
-var workbench = CWorkbench(
+const workbench = CWorkbench(
     ctx => ({}),
     innerNode => (
         <div>
@@ -184,7 +190,7 @@ var path = require("path");
 module.exports = {
     target: "web",
     entry: [
-        "!file?name=index.html&context=.!./index.html",
+        "!file?name=index.html!./index.html",
         "./index.js",
     ],
     output: {
@@ -194,7 +200,7 @@ module.exports = {
     },
     module: {
         loaders: [
-            { test: /\.js$/, loader: "babel?stage=0" },
+            { test: /\.js$/, exclude: /node_modules/, loader: "babel?stage=0" },
             { test: /\.json$/, loader: "json" },
             { test: /\.css$/, loader: "style!css" },
             { test: /\.less$/, loader: "style!css!less" },
@@ -220,57 +226,65 @@ can see a simple T-shirt configurator.
 
 ### What's Going On?
 
-The *webpack* configuration (which is actually JavaScript code, giving
-you, when needed, all the power of a programming language for setting up
-complex configurations) says:
-- It's a configuration for the web.
+The *webpack* configuration in `webpack.config.js` (which is actually
+JavaScript code, giving you, when needed, all the power of a programming
+language for setting up complex configurations) says:
+- It's an application to be run in web browsers.
 - The output should include your files
   - `index.html` (as a separate file, named `index.html` again) and
   - `index.js` and everything required by it recursively (packed into a
     "bundle" by default).
-- The generated output should go to subfolder "dst".  The files should
-  be packaged into file "bundle.js".  Include some "path information" in
-  the bundle, which may become helpful for investigating problems.
-- Use particular handlers (the "loaders" which we installed earlier) for
-  particular kinds of files.
+- The generated output should go to subfolder `dst`.  Bundled files
+  should be packaged into file `bundle.js`.  Include some path
+  information (that is, names and location of the original files) in the
+  bundle, which may become helpful for investigating problems.
+- Use certain handlers (the "loaders" which we installed earlier) for
+  preprocessing and bundling certain file types.
 - Include debugging support in the bundle, in particular a mapping from
   the preprocessed and bundled code back to the respective source code.
   This will be used by JavaScript debuggers in web browsers to show you
   the original source code.
 
-The HTML file does little more than loading the packaged JavaScript code
-from "bundle.js".
+The HTML file `index.html` does little more than loading the packaged
+JavaScript code from `bundle.js`.
 
-The JavaScript file contains the actual configurator and some
+The JavaScript file `index.js` contains the actual configurator and some
 boilerplate code:
-- The most important part of the JavaScript code is the definition of
-  the variable `model`.  It contains the configurator model.  Here the
-  model is a group (`CGroup([...])`) with three members
-  (`cmember(...)`):
+- At the core of the JavaScript code is the definition of the variable
+  `model`.  It contains the configurator logic.  Here the model is a
+  group `CGroup([...])` with three members `cmember(...)`:
   - A menu (`CSelect([...])`) with items (`ccase(...)`) for the
-    available sizes.  Size "M" is marked as the default.
+    available sizes.  Size "M" is marked as the default choice.
   - A menu for the available colors.  The first case is tagged as
     "unanswered" so that users will be notified if they did not yet
     select a color.
-  - Two input fields for text that should be printed on the front side
-    and on the back side, respectively.
+  - An input field for text that should be printed on the T-shirt.
 - `cmember` takes three arguments: An internal name of the member, a
   label for the UI, and a model for the member.
-- Variable `workbench` holds the "workbench" (`CWorkbench(...)`), that
-  is, the overall page content.  (In this simple example it consists
-  only of a toolbar and the configuration UI.)  For now we ignore the
-  details, except for the fact that the model is passed to the
-  workbench.
+- Variable `workbench` holds the "workbench", that is, the overall page
+  content.  (In this simple example it consists only of the toolbar and
+  the actual configuration UI.)  For now we ignore the details, except
+  for the fact that the model is passed as an argument to the workbench.
 - Finally `renderTree` attaches the workbench to the `<body>` element of
-  the HTML.  Again, we ignore the technical details for now.
+  the HTML page.  Again, we ignore the technical details for now.
 
-Notice that we are using
-"[arrow functions](https://developer.mozilla.org/en-US/docs/Web/JavaScript/Reference/Functions/Arrow_functions)"
+We are using
+[arrow functions](https://developer.mozilla.org/en-US/docs/Web/JavaScript/Reference/Functions/Arrow_functions)
 from ECMAScript 6.  We use them mostly because of their concise notation
-and usually don't care about the subtle difference between "classic"
-functions (introduced by the keyword `function`) and arrow functions
-regarding the keyword `this`.  (Anyway the treatment of `this` in arrow
-functions is considered to be the more natural one.)
+and usually don't care about the subtle difference regarding the keyword
+`this` between "classic" functions (introduced by the keyword
+`function`) and arrow functions.  (Anyway the treatment of `this` in
+arrow functions is considered to be the more natural one.)  We are also
+using ECMAScript-6 syntax for
+[importing modules](https://developer.mozilla.org/en-US/docs/Web/JavaScript/Reference/Statements/import).
+
+In `index.js` we can actually use all the new JavaScript syntax
+supported by *Babel*, including the experimental features.  The latter
+are enabled by the option `stage=0` for the *Babel* loader in the
+*webpack* configuration.  But notice that in `webpack.config.js` we are
+restricted to the more traditional JavaScript syntax supported directly
+by `node`.
+
 
 
 ### Two Tips
@@ -281,7 +295,7 @@ For a more convenient development experience, you can run
 node_modules/.bin/webpack-dev-server --progress --watch
 ```
 
-in your project folder.  (Not in the "dst" subfolder!)
+in your project folder.  (**Not** in the `dst` subfolder!)
 - The webpack development server will directly serve the generated
   output to
   [http://localhost:8080/index.html](http://localhost:8080/index.html)
@@ -289,8 +303,8 @@ in your project folder.  (Not in the "dst" subfolder!)
 - The development server observes your source file (but not the webpack
   configuration!) and re-builds whenever a file changes.  If you open
   [http://localhost:8080/webpack-dev-server/index.html](http://localhost:8080/webpack-dev-server/index.html),
-  your configurator will be embedded in a utility application that
-  reloads the configurator whenever it changes.
+  your configurator will be embedded in a helper application that
+  reloads the configurator after each re-build.
 
 To reduce the amount of typing and the complexity of commands to
 memorize you can replace the "scripts" section of `package.json` by
@@ -307,29 +321,29 @@ separate the properties of an object, but not after the last property of
 an object.  And use quotes around property names.  JSON parsers are
 pickier than JavaScript parsers.)
 
-Now you can use `npm run build` for a one-time build into `./dst` and
-`npm run dev-server` to start the development server.
+Now you can use `npm run dev-server` to start the development server or
+`npm run build` for a one-time build into `./dst`.
 
 
 ### Using the Configurator
 
-
 In your browser you find the two menus and the text area corresponding
 to the three questions that a user has to answer.
 
-Some things to note:
-- The default value "M" has been selected for the size.
+Things to note in the configurator:
+- The default value "M" has been pre-selected as the size.
 - Each input widget has to its right a greyed-out button containing
   either a check mark or a cross mark.  (The button becomes fully visible
   if you move the mouse cursor over it.)
   - If the current value has been explicitly provided by the user, the
-    button contains a cross mark.  Clicking the button will remove the
-    user choice and replace it with the default value.
-  - If the input has not been provided by the user (and therefore
-    contains the default value), the button contains a check mark.
-    Clicking the button tells the configurator that the user accepts the
-    default, that is, the current default value will be used as the
-    explicit user choice.
+    button contains a cross mark.  Clicking the button will retract the
+    user input and replace it with the default value.
+  - If the user has not yet provided input or has retracted a previous
+    input, the button contains a check mark.  Clicking the button tells
+    the configurator that the user accepts the default.  That is, the
+    current default value will be used as the explicit user choice.
+
+And a few notes about the tool bar:
 - You can use the "undo" and "redo" buttons for undoing and redoing your
   editing actions.
 - The "reset" button retracts all user inputs and sets the configuration
@@ -338,17 +352,17 @@ Some things to note:
 - The buttons "save", "restore", "import", and "export" are essentially
   placeholders for an integration of your configurator in a backend
   system.  In your current configurator
-  - "Save" will store your current configuration state in browser-local
+  - "save" will store your current configuration state in browser-local
     storage and "restore" will retrieve the stored state from there.
     Notice that the stored state survives closing and opening the
-    configurator page.  (This dummy implementation can only hold a
-    single configuration state.  A backend integration would of course
-    support managing multiple states.
+    configurator page.  This dummy implementation can only hold a single
+    configuration state.  A backend integration would of course support
+    managing multiple states.
   - "export" allows you to download the current configuration state as a
-    JSON file.  With "import" you can set the configuration state to a
+    JSON file.  With "import" you can set the configuration to a state
     exported previously to some file.  (The file-selection widget is
-    used by the "import" button.  In case of an "export" the user will
-    be asked for a download destination as usual.)
+    used by imports only.  In case of an "export" the user will be asked
+    for a download destination as usual.)
 
 
 Refining the Configurator
@@ -395,17 +409,18 @@ There are a few things to explain here:
 - The context is an object with several properties.  Here we use the
   property `value`, which contains the group's current configuration
   state as a JSON object.  For conciseness we use ECMAScript-6
-  [destructuring])[https://developer.mozilla.org/en-US/docs/Web/JavaScript/Reference/Operators/Destructuring_assignment]
+  [destructuring](https://developer.mozilla.org/en-US/docs/Web/JavaScript/Reference/Operators/Destructuring_assignment)
   for the function parameter: The formal parameter `{value = {}}` sets
   the local variable `value` to the `value` property of the context
   passed as an argument.  If the context's `value` property is undefined
-  (which happens at the beginning of the configuration process), the
-  local `value` will be set to an empty object `{}`.
+  (which happens particularly at the beginning of the configuration
+  process), the local `value` will be set to an empty object `{}`.
 - In JavaScript and other languages a
   "[conditional expression](https://developer.mozilla.org/en/docs/Web/JavaScript/Reference/Operators/Conditional_Operator)"
-  `x ? y : z` is evaluated like this: If `x` evaluates to `true` (or a
-  value considered `true` when used as a boolean), then `y` is evaluated
-  to give the value of the conditional expression.  Otherwise `z`
+  `x ? y : z` is evaluated like this: If `x` evaluates to `true` (or
+  some value considered `true` when used as a boolean), then `y` is
+  evaluated to give the value of the conditional expression.  Otherwise
+  `z` is used.
 - We test the value's `text` property holding the text to print.  If
   that property exists and does not only consist of whitespace, then we
   return the `cmember(...)` element from before.  Otherwise we return
@@ -425,7 +440,7 @@ add another element
             ccase(6, "6 cm"),
             ccase(7, "7 cm"),
         ]))
-    : null,
+        : null,
 ```
 
 to the array given to `CGroup([...]`.  But we want to write the
@@ -476,7 +491,13 @@ existence of `value.text` before using the string value.
 
 The state of a `CString` is undefined or a string.
 
-### A First Constraint 
+### Constraints, Validation
+
+*[To be written]*
+
+
+<!--
+### A First Constraint
 
 We also want to sell black and white T-shirts.  Adding two more cases to
 the selection of T-shirt colors is trivial.  But we want to make sure
@@ -486,7 +507,7 @@ We add the following auxiliary function `onlyIf1` to `index.js`:
 
 ```js
 function onlyIf1(condition, explanation, case_) {
-	return condition ? case_ : {...case_, mode: "error", messages: [{level: "error", msg: explanation}]};
+    return condition ? case_ : {...case_, mode: "error", messages: [{level: "error", msg: explanation}]};
 }
 ```
 
@@ -494,161 +515,5 @@ Before we look at the function implementation we have a look at how it
 is used.
 
 
-
-#### black/white shirts; avoid shirtColor === textColor
-
-
-----------------------------------------------------------------------
-
-----------------------------------------------------------------------
-
-# OLD TUTORIAL
-
-If you have cloned the openCPQ repository the directory
-[examples/tutorial](http://github.com/openCPQ/openCPQ/tree/master/examples/tutorial)
-will contain a simple openCPQ application with a basic project setup:
-
-- package.json: configuration for `npm` and other utilities
-- index.html: the HTML file to view
-- style.css: some styling
-- step-*n*.js: the models, i.e., the configuration logic for the various
-  steps of this tutorial
-- webpack.config.js: configuration for `webpack`
-
-The following directory entries will be created automatically:
-
-- node_modules/: a subdirectory holding opencpq and other modules it
-  depends on
-- bundle.js: a JavaScript file composed of the step
-
-`cd` into the examples/tutorial directory.  Then run
-
-```
-npm install
-```
-
-to install openCPQ and other required packages (as declared in
-package.json) in the subdirectory node_modules.  Make sure that the
-binaries `webpack` and `webpack-dev-server` are in your path.
-
-Finally, in the same directory run
-
-```
-npm start
-```
-
-This will call `webpack` to build the application in memory and to serve
-it at [`http://localhost:8080/webpack-dev-server/`](http://localhost:8080/webpack-dev-server/).
-
-Point your browser to that address and if all went well you see a very
-simple configurator for a book case.
-
-Instead of running `webpack` in development-server mode, you can also
-just compile the project by
-
-```
-npm run prod
-```
-
-into the `./dist` directory.  Then simply open the file
-`./dist/index.html` with your browser via its `file:` url.
-
-However, using `webpack` in development-server mode provides the
-convenience of automatically recompiling and refreshing the browser page
-whenever you edit the code.
-
-
-The First Example: A Book-Case
-------------------------------
-
-Now let's have a look at `step-1.js`, actually at the definition of the
-`model` variable.  (Consider the rest of the file as boilerplate code
-for now.  We will come back to this later.)
-
-<!-- TODO
-Should I explain what a model is?  Or can we expect the reader to know
-this?
-
-Avoid confusion with ERP materials.
--->
-
-The model consists of several parameters: The material, dimensions, and
-a number of shelves.  They are passed to `CGroup` as an array of
-`cmember` invocations.  `cmember` takes
-
-- a name of the group member for internal usage,
-- a label of the member to be displayed in the user interface,
-- and a "widget" to hold the actual parameter value.
-
-The widget for entering numbers is `CInteger`.  Here a default value is
-provided as an option parameter.
-
-The `CSelect` widget translates to a dropdown menu with the selectable
-cases passed as an array of `ccase` invocations.  Like `cmember`,
-`ccase` takes an argument for naming the case internally and a label to
-appear in the user interface.  Your internal names might be the
-identifiers from your CRM system.  The default case is marked by wrapping it
-with `cdefault(...)`.  (Without this marking, the first case would be
-used as the default.)
-
-Now try to enter some values in the browser and notice two things:
-
-- When you enter some non-numeric value into one of the integer input
-  fields, you will get an error message.
-- If you have entered some data, the respective input field is extended
-  with a button for retracting the value.  If you click that button, the
-  default value is restored and the retract button disappears.  Note
-  that the retract button does not disappear when you just change the
-  input back to its initial value.  openCPQ keeps track which values
-  were provided explicitly and which ones were just default values.
-
-The toolbar provides buttons for undoing and redoing your edits and for
-resetting the entire configuration.
-
-<!-- TODO
-Explain the other toolbar buttons (leave some out).
--->
-
-With the export button you can download a JSON representation of your
-current configuration and with the "Choose File" and import buttons you
-can upload such a JSON file again.
-
-In the JSON data you see
-
-- that it uses the internal names to identify group members and
-  selection cases and
-- that it only contains entries for those group members that have been
-  set explicitly.
-
-Furthermore notice that the material (if you have selected one
-explicitly) is not given as just the internal identifier but rather as
-an object `{"$case": ...}`.  The reason for this will become clear in
-the next section.
-
-
-### A Bit More Complexity
-
-While the given materials are the common ones, you want to offer the
-possibility to enter other materials as well.  For this you extend the
-material selection with a case "other", and a text field for entering
-the material name:
-
-```
-ccase("other", "Other Material", CString())
-```
-
-Don't forget to declare the variable `CString` in the destructuring
-assignment near the beginning of the file.
-
-If your webpack process is still running (and does not report an error),
-your browser API should refresh automatically.  Now you can select the
-"Other Material" in the 
-
-
-<!-- TODO
-- validation
-- conditional group members, disallowed selection cases
-- configuration result (BOM)
-- multiple products
-  - material on top-level is inherited but overridable
+... black/white shirts; avoid shirtColor === textColor
 -->

@@ -75,141 +75,453 @@
         
 				
 				<div class="container">
-					<h1 id="opencpq-tutorial">openCPQ Tutorial</h1>
-<!-- TODO
-What existing knowledge to expect from the reader?
-- JS, including new features
-- popular utilities for web applications such as node, npm, babel,
-  gulp
-  - react?
-- anything about CPQ, modeling, ...?
--->
+					<h1 id="tutorial">Tutorial</h1>
+<h2 id="prerequisites">Prerequisites</h2>
+<h3 id="skills">Skills</h3>
+<p><em>openCPQ</em> applications are written in JavaScript.  While you need not be a
+JavaScript expert, you are expected to have some basic understanding of the
+language.  (Even if you don&#39;t know JavaScript right now, it might be worthwhile
+to learn.  It&#39;s useful for many things, not just for <em>openCPQ</em>.)  For
+convenience, we are using modern JavaScript features from ECMAScript 2015/2016
+and a few more new features supported by <a href="http://babeljs.io"><em>Babel</em></a>. These
+features might be new to you, but you can look them up as you go.</p>
+<p>We also use a few popular tools and libraries from the JavaScript
+ecosystem.  This tutorial aims to provide all the steps necessary to get
+the examples running, but you might need to consult the respective
+documentation when you&#39;re working on your own application.  (Again,
+knowing about those tools is useful beyond <em>openCPQ</em>.)</p>
+<h3 id="software">Software</h3>
+<p><em>openCPQ</em> applications need some preprocessing before they can be executed.  We
+are using tools from the <a href="http://nodejs.org">node.js</a> ecosystem for this.  You
+need to have the JavaScript interpreter <code>node</code> and the related package manager
+<code>npm</code> installed.  (The examples of this tutorial are known to work with version
+6.3.1 of node.js.)  Make sure that the <code>bin</code> directory of the downloaded and
+unpacked node.js distribution is listed in your <code>PATH</code> environment variable, so
+that the programs <code>node</code> and <code>npm</code> will be found by your system.</p>
 <h2 id="getting-started">Getting started</h2>
-<h3 id="global-software-requirements">Global Software Requirements</h3>
-<p>For using openCPQ and for running the example code of this tutorial you
-need to have certain utilities from the nodejs ecosystem installed.  Get
-the npm package manager from <a href="http://npmjs.com">npmjs.com</a>.  Then use
-npm to install the JavaScript preprocessor <a href="http://babeljs.io">babel</a>
-and the build utility <a href="http://gulpjs.com">gulp</a>:</p>
-<pre><code>npm install --global babel gulp
-</code></pre><p>While openCPQ requires babel for compiling new JavaScript features into
-a JavaScript version understood by older browsers, you may replace gulp
-with another build tool.</p>
-<h3 id="the-project-directory">The Project Directory</h3>
-<p>If you have cloned the openCPQ repository the directory
-<a href="http://github.com/openCPQ/openCPQ/tree/master/examples/tutorial">examples/tutorial</a>
-will contain a simple openCPQ application with a basic project setup:</p>
+<h3 id="the-project-folder">The Project Folder</h3>
+<p>In an empty folder run the command</p>
+<pre><code class="lang-sh">npm init
+</code></pre>
+<p>to set up a <code>package.json</code> file, which will hold some configuration for
+your app.  You can answer each of the questions asked by <code>npm init</code> by
+just hitting the enter/return key.  The default answers are ok for now.</p>
+<h3 id="dependencies">Dependencies</h3>
+<p>Now install <em>openCPQ</em> and third-party packages:</p>
+<pre><code class="lang-sh">npm install --save-dev opencpq@0.1.2 webpack@^1.8.4 webpack-dev-server@^1.8.0 babel-loader@^5.0.0 css-loader@^0.10.1 file-loader@^0.8.1 less-loader@^2.2.0 style-loader@^0.10.1 url-loader@^0.5.6 babel-core@^5.1.2 bootstrap@^3.3.5 less@^2.3.1 browser-filesaver@^1.0.0 react@^0.13.1 react-bootstrap@^0.20.1 react-widgets@^2.4.1 babel-plugin-object-assign@^1.2.1
+</code></pre>
+<p>(<code>npm</code> may try to compile some C++ code for the indirectly used packages
+<code>bufferutil</code> and <code>utf-8-validate</code> using the <code>gyp</code> tool.  This may fail
+and produce error messages.  You can ignore these messages since these
+packages are optional.)</p>
+<p>A quick overview of the installed packages:</p>
 <ul>
-<li>package.json: configuration for <code>npm</code> and other utilities</li>
-<li>gulpfile.js: configuration for <code>gulp</code></li>
-<li>index.html: the HTML file to view</li>
-<li>style.css: some styling</li>
-<li>step-<em>n</em>.js: the models, i.e., the configuration logic for the various
-steps of this tutorial</li>
+<li><code>opencpq</code> is the <em>openCPQ</em> library.</li>
+<li><code>webpack</code> and <code>webpack-dev-server</code> will be used to package up your
+application.  (If you are familiar with another packaging tool such as
+browserify and prefer to use that, this should work as well.  Notice
+that we are using CommonJS-style modules and will migrate to
+ECMAScript-6 modules.  This needs to be supported by your packager.)</li>
+<li>The packages <code>...-loader</code> will be used by <em>webpack</em> to handle files of
+certain types.</li>
+<li><code>babel-core</code> contains the JavaScript preprocessor <em>Babel</em>, which
+converts JavaScript with modern features into more traditional
+JavaScript so that it is understood by current (or even older)
+browsers.</li>
+<li>From <code>bootstrap</code> we are primarily using the CSS styling for the UI
+components of our application. <code>less</code> is used to convert the styling
+from the higher-level language &quot;less&quot; to CSS syntax.</li>
+<li><code>react</code> is a UI library heavily used by openCPQ.  <code>react-bootstrap</code>
+and <code>react-widgets</code> provide UI components.</li>
+<li><code>babel-plugin-object-assign</code> is not used directly but only by other
+packages.  For technical reasons it must nevertheless be installed
+explicitly here.</li>
 </ul>
-<p>The following directory entries will be created automatically:</p>
-<ul>
-<li>node_modules/: a subdirectory holding opencpq and other modules it
-depends on</li>
-<li>bundle.js: a JavaScript file composed of the step</li>
-</ul>
-<p><code>cd</code> into the examples/tutorial directory.  Then run</p>
-<pre><code>npm install
-</code></pre><p>to install openCPQ and other required packages (as declared in
-package.json) in the subdirectory node_modules.</p>
-<p>Finally, in the same directory run</p>
-<pre><code>gulp
-</code></pre><p>without specifying a task name.  The default task will</p>
-<ul>
-<li>combine JavaScript code from the application and libraries into a file
-<code>bundle.js</code>, which is referenced by the HTML file <code>index.html</code>,</li>
-<li>repeat this whenever one of the included files changes, and</li>
-<li>start a web server at <code>http://localhost:8080/</code>.</li>
-</ul>
-<p>Point your browser to <a href="http://localhost:8080/"><code>http://localhost:8080/</code></a> and if
-all went well you see a very simple configurator for a book case.</p>
-<p>It is not really necessary that gulp starts a web server.  You can also
-open <code>index.html</code> with your browser via its <code>file:</code> url.  However, the
-server provides a convenience for developers: It tells your browser to
-refresh a page whenever it is updated.  For this to work, your browser
-must support <a href="http://livereload.com">livereload</a>.</p>
-<!-- TODO
-Out-of the box
--->
-<h2 id="the-first-example-a-book-case">The First Example: A Book-Case</h2>
-<p>Now let&#39;s have a look at <code>step-1.js</code>, actually at the definition of the
-<code>model</code> variable.  (Consider the rest of the file as boilerplate code
-for now.  We will come back to this later.)</p>
-<!-- TODO
-Should I explain what a model is?  Or can we expect the reader to know
-this?
+<p>You may omit the version numbers (<code>@...</code>) to get the latest versions of
+the packages.  But using them reduces incompatibility risks.  In
+particular, this tutorial has been written for the given version of
+<em>openCPQ</em>.</p>
+<p>The option <code>--save-dev</code> makes sure that the packages are not only
+installed in the subfolder <code>node_modules</code>, but that the package names
+and versions are also saved as &quot;dependencies&quot; in the file
+<code>package.json</code>.  (Actually the packages are &quot;development dependencies&quot;,
+indicating that you only need them while you are developing your
+application but not when you will run it.)  If you manage your
+application in a version-control system, you can exclude the (huge)
+<code>node_modules</code> folder from version control.  After a fresh checkout of
+the project folder from version control, you can simply run <code>npm
+install</code> to install all the dependencies.</p>
+<h2 id="hello-world">Hello World</h2>
+<p>In your project folder, create a file <code>index.html</code> with this content:</p>
+<pre><code class="lang-html">&lt;!DOCTYPE html&gt;
+&lt;html&gt;
+&lt;head&gt;
+  &lt;meta charset=&quot;UTF-8&quot;&gt;
+  &lt;title&gt;openCPQ Tutorial&lt;/title&gt;
+&lt;/head&gt;
 
-Avoid confusion with ERP materials.
--->
-<p>The model consists of several parameters: The material, dimensions, and
-a number of shelves.  They are passed to <code>CGroup</code> as an array of
-<code>cmember</code> invocations.  <code>cmember</code> takes</p>
+&lt;body&gt;
+  &lt;script src=&quot;bundle.js&quot;&gt;&lt;/script&gt;
+&lt;/body&gt;
+&lt;/html&gt;
+</code></pre>
+<p>..., a file <code>index.js</code> with this content:</p>
+<pre><code class="lang-jsx">import React from &quot;react&quot;;
+
+import {
+    CWorkbench,
+    CGroup, cmember,
+    CSelect, ccase, cdefault, unansweredCase,
+    CString,
+    renderTree, rootPath,
+    Problems,
+} from &quot;opencpq&quot;;
+
+const model = CGroup([
+    cmember(&quot;size&quot;, &quot;Size&quot;, CSelect([
+        ccase(&quot;XXS&quot;),
+        ccase(&quot;XS&quot;),
+        ccase(&quot;S&quot;),
+        cdefault(ccase(&quot;M&quot;)),
+        ccase(&quot;L&quot;),
+        ccase(&quot;XL&quot;),
+        ccase(&quot;XXL&quot;),
+    ])),
+    cmember(&quot;color&quot;, &quot;Color&quot;, CSelect([
+        unansweredCase(&quot;Select Color&quot;),
+        ccase(&quot;red&quot;),
+        ccase(&quot;green&quot;),
+        ccase(&quot;blue&quot;),
+    ])),
+    cmember(&quot;text&quot;, &quot;Text to print on your T-shirt:&quot;, CString()),
+])
+
+const workbench = CWorkbench(
+    ctx =&gt; ({}),
+    innerNode =&gt; (
+        &lt;div&gt;
+            &lt;h1&gt;Configure Your T-Shirt&lt;/h1&gt;
+            {innerNode.render()}
+        &lt;/div&gt;
+    ),
+    model
+);
+
+renderTree(
+    workbench,
+    undefined,
+    () =&gt; ({
+        path: rootPath,
+        problems: new Problems(),
+    }),
+    document.getElementsByTagName(&quot;body&quot;)[0]
+);
+</code></pre>
+<p>..., and a file <code>webpack.config.js</code> with this content:</p>
+<pre><code class="lang-js">&quot;use strict&quot;;
+
+var webpack = require(&quot;webpack&quot;);
+var path = require(&quot;path&quot;);
+
+module.exports = {
+    target: &quot;web&quot;,
+    entry: [
+        &quot;!file?name=index.html!./index.html&quot;,
+        &quot;./index.js&quot;,
+    ],
+    output: {
+        path: path.resolve(&quot;dst&quot;),
+        filename: &quot;bundle.js&quot;,
+        pathinfo: true,
+    },
+    module: {
+        loaders: [
+            { test: /\.js$/, exclude: /node_modules/, loader: &quot;babel?stage=0&quot; },
+            { test: /\.json$/, loader: &quot;json&quot; },
+            { test: /\.css$/, loader: &quot;style!css&quot; },
+            { test: /\.less$/, loader: &quot;style!css!less&quot; },
+            { test: /\.(eot|gif|svg|ttf|woff2?)(\?.*)?$/, loader: &quot;url?limit=10000&quot; },
+            { test: /\.png$/, loader: &quot;url-loader?mimetype=image/png&amp;limit=10000&quot; },
+        ]
+    },
+    debug: true,
+    devtool: &quot;source-map&quot;,
+};
+</code></pre>
+<p>Finally run this command:</p>
+<pre><code class="lang-sh">node_modules/.bin/webpack --progress --production
+</code></pre>
+<p>This should create a subfolder <code>dst</code> containing a copy of your file
+<code>index.html</code>.  Point your browser to that file.  If all went well, you
+can see a simple T-shirt configurator.</p>
+<h3 id="what-s-going-on-">What&#39;s Going On?</h3>
+<p>The <em>webpack</em> configuration in <code>webpack.config.js</code> (which is actually
+JavaScript code, giving you, when needed, all the power of a programming
+language for setting up complex configurations) says:</p>
 <ul>
-<li>a name of the group member for internal usage,</li>
-<li>a label of the member to be displayed in the user interface,</li>
-<li>and a &quot;widget&quot; to hold the actual parameter value.</li>
+<li>It&#39;s an application to be run in web browsers.</li>
+<li>The output should include your files<ul>
+<li><code>index.html</code> (as a separate file, named <code>index.html</code> again) and</li>
+<li><code>index.js</code> and everything required by it recursively (packed into a
+&quot;bundle&quot; by default).</li>
 </ul>
-<p>The widget for entering numbers is <code>CInteger</code>.  Here a default value is
-provided as an option parameter.</p>
-<p>The <code>CSelect</code> widget translates to a dropdown menu with the selectable
-cases passed as an array of <code>ccase</code> invocations.  Like <code>cmember</code>,
-<code>ccase</code> takes an argument for naming the case internally and a label to
-appear in the user interface.  Your internal names might be the
-identifiers from your CRM system.  The default case is marked by wrapping it
-with <code>cdefault(...)</code>.  (Without this marking, the first case would be
-used as the default.)</p>
-<p>Now try to enter some values in the browser and notice two things:</p>
+</li>
+<li>The generated output should go to subfolder <code>dst</code>.  Bundled files
+should be packaged into file <code>bundle.js</code>.  Include some path
+information (that is, names and location of the original files) in the
+bundle, which may become helpful for investigating problems.</li>
+<li>Use certain handlers (the &quot;loaders&quot; which we installed earlier) for
+preprocessing and bundling certain file types.</li>
+<li>Include debugging support in the bundle, in particular a mapping from
+the preprocessed and bundled code back to the respective source code.
+This will be used by JavaScript debuggers in web browsers to show you
+the original source code.</li>
+</ul>
+<p>The HTML file <code>index.html</code> does little more than loading the packaged
+JavaScript code from <code>bundle.js</code>.</p>
+<p>The JavaScript file <code>index.js</code> contains the actual configurator and some
+boilerplate code:</p>
 <ul>
-<li>When you enter some non-numeric value into one of the integer input
-fields, you will get an error message.</li>
-<li>If you have entered some data, the respective input field is extended
-with a button for retracting the value.  If you click that button, the
-default value is restored and the retract button disappears.  Note
-that the retract button does not disappear when you just change the
-input back to its initial value.  openCPQ keeps track which values
-were provided explicitly and which ones were just default values.</li>
+<li>At the core of the JavaScript code is the definition of the variable
+<code>model</code>.  It contains the configurator logic.  Here the model is a
+group <code>CGroup([...])</code> with three members <code>cmember(...)</code>:<ul>
+<li>A menu (<code>CSelect([...])</code>) with items (<code>ccase(...)</code>) for the
+available sizes.  Size &quot;M&quot; is marked as the default choice.</li>
+<li>A menu for the available colors.  The first case is tagged as
+&quot;unanswered&quot; so that users will be notified if they did not yet
+select a color.</li>
+<li>An input field for text that should be printed on the T-shirt.</li>
 </ul>
-<p>The toolbar provides buttons for undoing and redoing your edits and for
-resetting the entire configuration.</p>
-<!-- TODO
-Explain the other toolbar buttons (leave some out).
--->
-<p>With the export button you can download a JSON representation of your
-current configuration and with the &quot;Choose File&quot; and import buttons you
-can upload such a JSON file again.</p>
-<p>In the JSON data you see</p>
+</li>
+<li><code>cmember</code> takes three arguments: An internal name of the member, a
+label for the UI, and a model for the member.</li>
+<li>Variable <code>workbench</code> holds the &quot;workbench&quot;, that is, the overall page
+content.  (In this simple example it consists only of the toolbar and
+the actual configuration UI.)  For now we ignore the details, except
+for the fact that the model is passed as an argument to the workbench.</li>
+<li>Finally <code>renderTree</code> attaches the workbench to the <code>&lt;body&gt;</code> element of
+the HTML page.  Again, we ignore the technical details for now.</li>
+</ul>
+<p>We are using
+<a href="https://developer.mozilla.org/en-US/docs/Web/JavaScript/Reference/Functions/Arrow_functions">arrow functions</a>
+from ECMAScript 6.  We use them mostly because of their concise notation
+and usually don&#39;t care about the subtle difference regarding the keyword
+<code>this</code> between &quot;classic&quot; functions (introduced by the keyword
+<code>function</code>) and arrow functions.  (Anyway the treatment of <code>this</code> in
+arrow functions is considered to be the more natural one.)  We are also
+using ECMAScript-6 syntax for
+<a href="https://developer.mozilla.org/en-US/docs/Web/JavaScript/Reference/Statements/import">importing modules</a>.</p>
+<p>In <code>index.js</code> we can actually use all the new JavaScript syntax
+supported by <em>Babel</em>, including the experimental features.  The latter
+are enabled by the option <code>stage=0</code> for the <em>Babel</em> loader in the
+<em>webpack</em> configuration.  But notice that in <code>webpack.config.js</code> we are
+restricted to the more traditional JavaScript syntax supported directly
+by <code>node</code>.</p>
+<h3 id="two-tips">Two Tips</h3>
+<p>For a more convenient development experience, you can run</p>
+<pre><code class="lang-sh">node_modules/.bin/webpack-dev-server --progress --watch
+</code></pre>
+<p>in your project folder.  (<strong>Not</strong> in the <code>dst</code> subfolder!)</p>
 <ul>
-<li>that it uses the internal names to identify group members and
-selection cases and</li>
-<li>that it only contains entries for those group members that have been
-set explicitly.</li>
+<li>The webpack development server will directly serve the generated
+output to
+<a href="http://localhost:8080/index.html">http://localhost:8080/index.html</a>
+without using the output folder.</li>
+<li>The development server observes your source file (but not the webpack
+configuration!) and re-builds whenever a file changes.  If you open
+<a href="http://localhost:8080/webpack-dev-server/index.html">http://localhost:8080/webpack-dev-server/index.html</a>,
+your configurator will be embedded in a helper application that
+reloads the configurator after each re-build.</li>
 </ul>
-<p>Furthermore notice that the material (if you have selected one
-explicitly) is not given as just the internal identifier, but rather as
-an object <code>{&quot;$case&quot;: ...}</code>.  The reason for this will become clear in
-the next section.</p>
-<h3 id="a-bit-more-complexity">A Bit More Complexity</h3>
-<p>While the given materials are the common ones, you want to offer the
-possibility to enter other materials as well.  For this you extend the
-material selection with a case &quot;other&quot;, and a text field for entering
-the material name:</p>
-<pre><code>ccase(&quot;other&quot;, &quot;Other Material&quot;, CString())
-</code></pre><p>Don&#39;t forget to declare the variable <code>CString</code> in the destructuring
-assignment near the beginning of the file.</p>
-<p>If your gulp process is still running (and does not report an error),
-your browser API should refresh automatically.  Now you can select the
-&quot;Other Material&quot; in the </p>
-<!-- TODO
-- validation
-- conditional group members, disallowed selection cases
-- configuration result (BOM)
-- multiple products
-  - material on top-level is inherited but overridable
+<p>To reduce the amount of typing and the complexity of commands to
+memorize you can replace the &quot;scripts&quot; section of <code>package.json</code> by</p>
+<pre><code class="lang-json">  &quot;scripts&quot;: {
+    &quot;dev-server&quot;: &quot;node_modules/.bin/webpack-dev-server --progress --watch&quot;,
+    &quot;build&quot;: &quot;node_modules/.bin/webpack --progress --production&quot;
+  },
+</code></pre>
+<p>(Be careful about the JSON syntax here.  In particular use commas to
+separate the properties of an object, but not after the last property of
+an object.  And use quotes around property names.  JSON parsers are
+pickier than JavaScript parsers.)</p>
+<p>Now you can use <code>npm run dev-server</code> to start the development server or
+<code>npm run build</code> for a one-time build into <code>./dst</code>.</p>
+<h3 id="using-the-configurator">Using the Configurator</h3>
+<p>In your browser you find the two menus and the text area corresponding
+to the three questions that a user has to answer.</p>
+<p>Things to note in the configurator:</p>
+<ul>
+<li>The default value &quot;M&quot; has been pre-selected as the size.</li>
+<li>Each input widget has to its right a greyed-out button containing
+either a check mark or a cross mark.  (The button becomes fully visible
+if you move the mouse cursor over it.)<ul>
+<li>If the current value has been explicitly provided by the user, the
+button contains a cross mark.  Clicking the button will retract the
+user input and replace it with the default value.</li>
+<li>If the user has not yet provided input or has retracted a previous
+input, the button contains a check mark.  Clicking the button tells
+the configurator that the user accepts the default.  That is, the
+current default value will be used as the explicit user choice.</li>
+</ul>
+</li>
+</ul>
+<p>And a few notes about the tool bar:</p>
+<ul>
+<li>You can use the &quot;undo&quot; and &quot;redo&quot; buttons for undoing and redoing your
+editing actions.</li>
+<li>The &quot;reset&quot; button retracts all user inputs and sets the configuration
+back to the initial default state.  Even a &quot;reset&quot; action can be
+undone and redone.</li>
+<li>The buttons &quot;save&quot;, &quot;restore&quot;, &quot;import&quot;, and &quot;export&quot; are essentially
+placeholders for an integration of your configurator in a backend
+system.  In your current configurator<ul>
+<li>&quot;save&quot; will store your current configuration state in browser-local
+storage and &quot;restore&quot; will retrieve the stored state from there.
+Notice that the stored state survives closing and opening the
+configurator page.  This dummy implementation can only hold a single
+configuration state.  A backend integration would of course support
+managing multiple states.</li>
+<li>&quot;export&quot; allows you to download the current configuration state as a
+JSON file.  With &quot;import&quot; you can set the configuration to a state
+exported previously to some file.  (The file-selection widget is
+used by imports only.  In case of an &quot;export&quot; the user will be asked
+for a download destination as usual.)</li>
+</ul>
+</li>
+</ul>
+<h2 id="refining-the-configurator">Refining the Configurator</h2>
+<h3 id="conditional-group-members">Conditional Group Members</h3>
+<p>We want to allow users to select whether the text printed on the T-shirt
+should be black or white.  This is easy to achieve by adding a new group
+member:</p>
+<pre><code class="lang-js">    cmember(&quot;textColor&quot;, &quot;Text Color&quot;, CSelect([
+        unansweredCase(&quot;Select Text Color&quot;),
+        ccase(&quot;black&quot;),
+        ccase(&quot;white&quot;)
+    ])),
+</code></pre>
+<p>Notice that without an explicit default case the first one (black)
+becomes the default automatically.</p>
+<p>However, we don&#39;t want to bother users with this choice if they have not
+selected any text to print.  We can achieve this by making the
+&quot;textColor&quot; member conditional.  Instead of the <code>cmember(...)</code>
+expression above, we add the following element to the <code>CGroup([...])</code>:</p>
+<pre><code class="lang-js">    ({value = {}}) =&gt;
+        value.text &amp;&amp; value.text.trim().length &gt; 0
+        ? cmember(&quot;textColor&quot;, &quot;Text Color&quot;, CSelect([
+            unansweredCase(&quot;Select Text Color&quot;),
+            ccase(&quot;black&quot;),
+            ccase(&quot;white&quot;)
+        ]))
+    : null,
+</code></pre>
+<p>There are a few things to explain here:</p>
+<ul>
+<li>An element of the array passed to <code>CGroup</code> may be a function.  (We are
+using an arrow function here.  See above for some notes on arrow
+functions.)  In this case the function will be invoked with the
+group&#39;s &quot;context&quot; to determine the actual group member.</li>
+<li>The context is an object with several properties.  Here we use the
+property <code>value</code>, which contains the group&#39;s current configuration
+state as a JSON object.  For conciseness we use ECMAScript-6
+<a href="https://developer.mozilla.org/en-US/docs/Web/JavaScript/Reference/Operators/Destructuring_assignment">destructuring</a>
+for the function parameter: The formal parameter <code>{value = {}}</code> sets
+the local variable <code>value</code> to the <code>value</code> property of the context
+passed as an argument.  If the context&#39;s <code>value</code> property is undefined
+(which happens particularly at the beginning of the configuration
+process), the local <code>value</code> will be set to an empty object <code>{}</code>.</li>
+<li>In JavaScript and other languages a
+&quot;<a href="https://developer.mozilla.org/en/docs/Web/JavaScript/Reference/Operators/Conditional_Operator">conditional expression</a>&quot;
+<code>x ? y : z</code> is evaluated like this: If <code>x</code> evaluates to <code>true</code> (or
+some value considered <code>true</code> when used as a boolean), then <code>y</code> is
+evaluated to give the value of the conditional expression.  Otherwise
+<code>z</code> is used.</li>
+<li>We test the value&#39;s <code>text</code> property holding the text to print.  If
+that property exists and does not only consist of whitespace, then we
+return the <code>cmember(...)</code> element from before.  Otherwise we return
+<code>null</code>.</li>
+<li>An element of the array passed to <code>CGroup</code> may also be <code>null</code> or
+<code>undefined</code>.  In this case it is simply ignored by the group.</li>
+</ul>
+<p>Now we also want to offer multiple sizes for the printed text.  Again,
+this makes sense only if we have some text to print.  We could simply
+add another element</p>
+<pre><code class="lang-js">    ({value = {}}) =&gt;
+        value.text &amp;&amp; value.text.trim().length &gt; 0
+        ? cmember(&quot;textSize&quot;, &quot;Text Size:&quot;, CSelect([
+            ccase(5, &quot;5 cm&quot;),
+            ccase(6, &quot;6 cm&quot;),
+            ccase(7, &quot;7 cm&quot;),
+        ]))
+        : null,
+</code></pre>
+<p>to the array given to <code>CGroup([...]</code>.  But we want to write the
+condition only once for better code maintainability.  We can do this by
+combining the two elements for text color and size into a single one:</p>
+<pre><code class="lang-js">    ({value = {}}) =&gt;
+        value.text &amp;&amp; value.text.trim().length &gt; 0
+        ? [
+            cmember(&quot;textColor&quot;, &quot;Text Color:&quot;, CSelect([
+                unansweredCase(&quot;Select Text Color&quot;),
+                ccase(&quot;black&quot;),
+                ccase(&quot;white&quot;)
+            ])),
+            cmember(&quot;textSize&quot;, &quot;Text Size:&quot;, CSelect([
+                ccase(5, &quot;5 cm&quot;),
+                ccase(6, &quot;6 cm&quot;),
+                ccase(7, &quot;7 cm&quot;),
+            ]))
+        ]
+        : null,
+</code></pre>
+<p>Notes:</p>
+<ul>
+<li>The function returns an array if some non-whitespace text is given.</li>
+<li>If a member of a <code>CGroup</code> evaluates to a list, all the members of this
+list are taken into account.</li>
+</ul>
+<p>Overall the argument passed to <code>CGroup</code> is processed recursively as
+follows:</p>
+<ul>
+<li>If it is an array, process each element in turn.</li>
+<li>If it is a function, invoke that function passing the group&#39;s context
+(with a <code>value</code> property holding the configuration state for the
+group) as the parameter.  Process the return value of the function
+invocation again.</li>
+<li>If it is <code>null</code> or <code>undefined</code>, ignore it.</li>
+<li>Otherwise add the argument (typically a <code>cmember(...)</code> expression) to
+the list of items displayed by the group.</li>
+</ul>
+<p>The state of a group is represented as a simple JavaScript/JSON object
+with properties corresponding to the internal member names from the
+<code>cmember(...)</code> expressions.  A property may be missing or undefined if
+it is unconfigured.  Similarly the entire group state may be undefined
+if is completely unconfigured.  (That&#39;s why we provided the default <code>{}</code>
+for the <code>value</code> in the context argument and why we checked for the
+existence of <code>value.text</code> before using the string value.</p>
+<p>The state of a <code>CString</code> is undefined or a string.</p>
+<h3 id="constraints-validation">Constraints, Validation</h3>
+<p><em>[To be written]</em></p>
+<!--
+### A First Constraint
+
+We also want to sell black and white T-shirts.  Adding two more cases to
+the selection of T-shirt colors is trivial.  But we want to make sure
+that we don't print black on black or white on white.
+
+We add the following auxiliary function `onlyIf1` to `index.js`:
+
+```js
+function onlyIf1(condition, explanation, case_) {
+    return condition ? case_ : {...case_, mode: "error", messages: [{level: "error", msg: explanation}]};
+}
+```
+
+Before we look at the function implementation we have a look at how it
+is used.
+
+
+... black/white shirts; avoid shirtColor === textColor
 -->
 
 				</div>
