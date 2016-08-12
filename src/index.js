@@ -1,7 +1,7 @@
 import "babel-polyfill";
 import React from "react";
 import ReactDOM from "react-dom";
-import {CGroup, CSelect, CText, CNumeric} from "./opencpq.js"
+import {CGroup, CSelect, CPrimitive} from "./opencpq.js"
 import renderer from "./renderers/ugly-renderer.js";
 
 /*
@@ -14,9 +14,9 @@ const tShirt = config`[
   | XL
   | XXL
   | custom: Custom [
-    - length: Length ${new Numeric()}
-    - waist: Waist ${new Numeric()}
-    - armLength: Arm Length ${new Numeric()}
+    - length: Length ${CPrimitive(...)}
+    - waist: Waist ${CPrimitive(...)}
+    - armLength: Arm Length ${CPrimitive(...)}
     ]
   )
 - color: Color ${CSelect(...)}
@@ -50,9 +50,9 @@ const tShirt = CGroup([
     {tag: "XL"},
     {tag: "XXL"},
     {tag: "custom", props: {label: "Custom"}, detail: CGroup([
-      {tag: "length", props: {label: "Length (cm)"}, detail: CNumeric()},
-      {tag: "waist", props: {label: "Waist (cm)"}, detail: CNumeric()},
-      {tag: "armLength", props: {label: "Arm Length (cm)"}, detail: CNumeric()},
+      {tag: "length", props: {label: "Length (cm)"}, detail: CPrimitive()},
+      {tag: "waist", props: {label: "Waist (cm)"}, detail: CPrimitive()},
+      {tag: "armLength", props: {label: "Arm Length (cm)"}, detail: CPrimitive()},
     ])},
   ])},
   {
@@ -68,7 +68,7 @@ const tShirt = CGroup([
       }))
     )
   },
-  {tag: "text", props: {label: "Print Text"}, detail: CText()},
+  {tag: "text", props: {label: "Print Text"}, detail: CPrimitive()},
   ctx => cref(ctx, "text").value && [
     {
       tag: "textColor",

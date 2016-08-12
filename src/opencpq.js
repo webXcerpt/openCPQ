@@ -408,6 +408,3 @@ export function CPrimitive(options) {
 export function CUnit(options) {
   return ctx => new UnitNode(ctx, options);
 }
-
-export const CText = CPrimitive;
-export const CNumeric = CPrimitive;
