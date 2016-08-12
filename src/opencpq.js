@@ -411,21 +411,3 @@ export function CUnit(options) {
 
 export const CText = CPrimitive;
 export const CNumeric = CPrimitive;
-
-// TODO Do we really need this? Is this too specific?  Is it hacky?
-// Should it go to app code?
-export function cref(ctx, name) {
-  let found = false;
-  let value = undefined;
-  for (let node = ctx.node; !found && node; node = node.parent) {
-    node.accept({
-      visitGroup(node) {
-        if (node.hasMember(name)) {
-          found = true;
-          value = node.member(name).node;
-        }
-      }
-    });
-  }
-  return value;
-}

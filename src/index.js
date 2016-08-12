@@ -1,7 +1,7 @@
 import "babel-polyfill";
 import React from "react";
 import ReactDOM from "react-dom";
-import {CGroup, CSelect, CText, CNumeric, cref} from "./opencpq.js"
+import {CGroup, CSelect, CText, CNumeric} from "./opencpq.js"
 import renderer from "./renderers/ugly-renderer.js";
 
 /*
@@ -23,6 +23,22 @@ const tShirt = config`[
 - ...
 ]`;
 */
+
+export function cref(ctx, name) {
+  let found = false;
+  let value = undefined;
+  for (let node = ctx.node; !found && node; node = node.parent) {
+    node.accept({
+      visitGroup(node) {
+        if (node.hasMember(name)) {
+          found = true;
+          value = node.member(name).node;
+        }
+      }
+    });
+  }
+  return value;
+}
 
 const tShirt = CGroup([
   {tag: "size", props: {label: "Size"}, detail: CSelect([
