@@ -9,6 +9,7 @@ const modeColors = {
 }
 
 export default {
+
   visitGroup({members}) {
     console.log("render group");
     return (
@@ -25,6 +26,7 @@ export default {
       </dl>
     );
   },
+
   visitSelect({choices, isUserInput, choice, fullChoice: {resolvedMode}, detail, choose, unset}) {
     console.log("render select");
     return (
@@ -59,6 +61,7 @@ export default {
       </div>
     );
   },
+
   visitPrimitive({value = "", updateTo}) {
     console.log("render primitive");
     return (
@@ -69,10 +72,12 @@ export default {
       />
     );
   },
+
   visitUnit() {
     console.log("render unit");
     return null;
   },
+
   visitConfig() {
     console.log("render config");
     return (
@@ -81,4 +86,5 @@ export default {
       </span>
     );
   },
+
 };
