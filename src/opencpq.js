@@ -46,17 +46,10 @@ export class ConfigNode {
   }
 
   accept(visitor) {
-    console.log("accept 0");
-    for (const name of this._options.visitorNames) {
-      console.log("accept 1", name);
-      const visit = visitor[name];
-      console.log("accept 2", visit);
-      if (visit) {
-        console.log("accept 3: visitor found");
-        return visit.call(visitor, this);
-      }
-    }
-    console.log("accept 4: no visitor found");
+    console.log("accept visitor:", visitor);
+    const name = this._options.visitorNames.find(n => visitor.hasOwnProperty(n));
+    console.log("accept name:", name);
+    return name && visitor[name](this);
   }
 }
 
