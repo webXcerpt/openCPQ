@@ -87,7 +87,6 @@ class Configurator extends React.Component {
           tShirt({
             value: this.state.config,
             updateTo(newValue) {
-              console.log(JSON.stringify(newValue, null, 2))
               setConfig(newValue);
             }
           })
