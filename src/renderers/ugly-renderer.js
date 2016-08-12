@@ -11,7 +11,6 @@ const modeColors = {
 export default {
 
   visitGroup({members}) {
-    console.log("render group");
     return (
       <dl>
         {
@@ -28,7 +27,6 @@ export default {
   },
 
   visitSelect({choices, isUserInput, choice, fullChoice: {resolvedMode}, detail, choose, unset}) {
-    console.log("render select");
     return (
       <div>
         <span>
@@ -39,7 +37,6 @@ export default {
           >
             {
               choices.map(({tag, resolvedMode, props: {label = tag} = {}}) => {
-                console.log("render choice", tag);
                 return (
                   resolvedMode === "hidden" ? null :
                   <option
@@ -57,13 +54,12 @@ export default {
             <button onClick={unset}>unset</button>
           }
         </span>
-        {console.log("render sel. detail"), detail && detail.accept(this)}
+        {detail && detail.accept(this)}
       </div>
     );
   },
 
   visitPrimitive({value = "", updateTo}) {
-    console.log("render primitive");
     return (
       <input
         type="text"
@@ -74,12 +70,10 @@ export default {
   },
 
   visitUnit() {
-    console.log("render unit");
     return null;
   },
 
   visitConfig() {
-    console.log("render config");
     return (
       <span style={{color: "red", fontWeight: "bold", border: "2px solid red"}}>
         (renderer missing)

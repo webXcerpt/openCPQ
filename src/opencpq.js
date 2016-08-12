@@ -8,10 +8,8 @@ import I from "immutable";
 const EVALUATING = ["EVALUATING"];
 
 function checkCache(holder, prop) {
-  console.log("checkCache", holder, prop);
   if (holder.hasOwnProperty(prop)) {
     if (holder[prop] === EVALUATING) {
-      debugger;
       throw new Error("circular dependency");
     }
     return true;
@@ -46,9 +44,7 @@ export class ConfigNode {
   }
 
   accept(visitor) {
-    console.log("accept visitor:", visitor);
     const name = this._options.visitorNames.find(n => visitor.hasOwnProperty(n));
-    console.log("accept name:", name);
     return name && visitor[name](this);
   }
 }
@@ -108,7 +104,6 @@ export class GroupNode extends ConfigNode {
   }
 
   hasMember(tag) {
-    console.log("GN hasMember", tag, this._membersByTag);
     return this._membersByTag.hasOwnProperty(tag);
   }
 
@@ -124,13 +119,10 @@ export class GroupNode extends ConfigNode {
 }
 
 function resolveMode(ctx, choice) {
-  console.log("resolveMode", choice);
   if (checkCache(choice, "resolvedMode")) {
-    console.log("resolveMode, cached");
     return choice.resolvedMode;
   }
   const {mode} = choice;
-  console.log("resolveMode, not cached, mode:", mode);
   return choice.resolvedMode =
     mode === undefined ? "normal":
     mode instanceof Function ? mode(ctx) :
@@ -145,13 +137,10 @@ modes.forEach((mode, i) => modeIndices[mode] = i);
 // TODO Make findBestChoice overridable in the SelectNode options?
 // TODO And/or make it globally injectable?  Use a visitor?
 function findBestChoice(ctx, choices) {
-  console.log("findBestChoice");
   let i = modes.length;
   let bestChoice = undefined;
   choices.forEach(choice => {
-    console.log("findBestChoice, choice.tag:", choice.tag);
     const j = modeIndices[resolveMode(ctx, choice)];
-    console.log("findBestChoice, modes[j]:", modes[j]);
     if (j < i) {
       i = j;
       bestChoice = choice;
@@ -228,7 +217,6 @@ export class SelectNode extends ConfigNode {
   get fullChoice() {
     const {choice} = this;
     const fullChoice = this._choicesByTag[choice];
-    console.log("fullChoice:", choice, fullChoice);
     resolveMode(this._ctx, fullChoice);
     return fullChoice;
   }
@@ -429,22 +417,15 @@ export const CNumeric = CPrimitive;
 export function cref(ctx, name) {
   let found = false;
   let value = undefined;
-  console.log("cref 0", ctx);
   for (let node = ctx.node; !found && node; node = node.parent) {
-    console.log("cref 1", node);
     node.accept({
       visitGroup(node) {
-        console.log("cref 2", node);
         if (node.hasMember(name)) {
-          console.log("cref 3: found", node.member(name).node);
           found = true;
           value = node.member(name).node;
         }
-        console.log("cref 4");
       }
     });
-    console.log("cref 5; found:", found);
   }
-  console.log("cref not found", name);
   return value;
 }
