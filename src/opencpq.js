@@ -1,22 +1,24 @@
 import I from "immutable";
 
-// Nodes are not eagerly constructed upon construction of their parent nodes,
-// but lazily when they are first accessed.  The property where a parent node
-// holds a child node is temporarily set to the marker object `EVALUATING` while
-// the child node is being evaluated.  This allows to detect circular
+// Various values are constructed lazily when they are first accessed.  The
+// property for the value is temporarily set to the marker object `EVALUATING`
+// while the value is being evaluated.  This allows to detect circular
 // dependencies.
 const EVALUATING = ["EVALUATING"];
 
-function checkCache(holder, prop) {
+function cache(holder, prop, calc) {
   if (holder.hasOwnProperty(prop)) {
-    if (holder[prop] === EVALUATING) {
+    const value = holder[prop];
+    if (value === EVALUATING) {
       throw new Error("circular dependency");
     }
-    return true;
+    return value;
   }
   else {
     holder[prop] = EVALUATING;
-    return false;
+    const value = calc();
+    holder[prop] = value;
+    return value;
   }
 }
 
@@ -84,22 +86,18 @@ export class GroupNode extends ConfigNode {
     if (member === undefined) {
       return undefined; // TODO throw an exception?
     }
-    if (checkCache(member, "node")) {
-      return member;
-    }
-
-    const {detail} = member;
-    const ctx = this._ctx;
-    const {value = {}, updateTo} = ctx;
-    const node = detail({
-      ...ctx,
-      parent: this,
-      // ### should we always descend?
-      value: value[tag],
-      updateTo: newValue => updateTo({...value, [tag]: newValue}),
+    cache(member, "node", () => {
+      const {detail} = member;
+      const ctx = this._ctx;
+      const {value = {}, updateTo} = ctx;
+      return detail({
+        ...ctx,
+        parent: this,
+        // ### should we always descend?
+        value: value[tag],
+        updateTo: newValue => updateTo({...value, [tag]: newValue}),
+      });
     });
-
-    member.node = node;
     return member;
   }
 
@@ -119,14 +117,14 @@ export class GroupNode extends ConfigNode {
 }
 
 function resolveMode(ctx, choice) {
-  if (checkCache(choice, "resolvedMode")) {
-    return choice.resolvedMode;
-  }
-  const {mode} = choice;
-  return choice.resolvedMode =
-    mode === undefined ? "normal":
-    mode instanceof Function ? mode(ctx) :
-    mode;
+  return cache(choice, "resolvedMode", () => {
+    const {mode} = choice;
+    return (
+      mode === undefined ? "normal":
+      mode instanceof Function ? mode(ctx) :
+      mode
+    );
+  });
 }
 
 const modes = ["default", "normal", "warning", "error", "hidden"];
@@ -188,13 +186,13 @@ export class SelectNode extends ConfigNode {
   }
 
   _determineChoice() {
-    if (checkCache(this, "_choice")) {
-      return;
-    }
-    const {value = {}} = this._ctx;
-    this._choice = (this._isUserInput = value.$choice !== undefined)
-      ? value.$choice
-      : findBestChoice(this._ctx, this.choices).tag;
+    cache(this, "_choice", () => {
+      const {value = {}} = this._ctx;
+      const {$choice} = value
+      return (this._isUserInput = $choice !== undefined)
+        ? $choice
+        : findBestChoice(this._ctx, this.choices).tag;
+    });
   }
 
   get isUserInput() {
@@ -230,17 +228,15 @@ export class SelectNode extends ConfigNode {
   }
 
   get detail() {
-    if (checkCache(this, "_detail")) {
-      return this._detail;
-    }
-
-    const detailType = this._choicesByTag[this.choice].detail || (() => undefined);
-    const {value, updateTo} = this._ctx;
-    return this._detail = detailType({
-      ...this._ctx,
-      parent: this,
-      value: value && value.$detail,
-      updateTo: newValue => updateTo({...value, $detail: newValue}),
+    return cache(this, "_detail", () => {
+      const detailType = this._choicesByTag[this.choice].detail || (() => undefined);
+      const {value, updateTo} = this._ctx;
+      return detailType({
+        ...this._ctx,
+        parent: this,
+        value: value && value.$detail,
+        updateTo: newValue => updateTo({...value, $detail: newValue}),
+      });
     });
   }
 }
@@ -253,13 +249,12 @@ export class EitherNode extends ConfigNode {
   }
 
   _determineChoice() {
-    if (checkCache(this, "_choice")) {
-      return;
-    }
-    const {value = {}} = this._ctx;
-    this._choice = (this._isUserInput = value.$choice !== undefined)
-      ? value.$choice
-      : this._options.defaultChoice;
+    cache(this, "_choice", () => {
+      const {value = {}} = this._ctx;
+      return (this._isUserInput = value.$choice !== undefined)
+        ? value.$choice
+        : this._options.defaultChoice;
+    });
   }
 
   get isUserInput() {
@@ -288,19 +283,17 @@ export class EitherNode extends ConfigNode {
   }
 
   get detail() {
-    if (checkCache(this, "_detail")) {
-      return this._detail;
-    }
-
-    const detailType =
-      (this.choice ? this._yesDetail : this._noDetail) ||
-      (() => undefined);
-    const {value, updateTo} = this._ctx;
-    return this._detail = detailType({
-      ...this._ctx,
-      parent: this,
-      value: value && value.$detail,
-      updateTo: newValue => updateTo({...value, $detail: newValue}),
+    return cache(this, "_detail", () => {
+      const detailType =
+        (this.choice ? this._yesDetail : this._noDetail) ||
+        (() => undefined);
+      const {value, updateTo} = this._ctx;
+      return detailType({
+        ...this._ctx,
+        parent: this,
+        value: value && value.$detail,
+        updateTo: newValue => updateTo({...value, $detail: newValue}),
+      });
     });
   }
 }
@@ -322,17 +315,15 @@ export class ListNode extends ConfigNode {
       throw new Error("out of range");
     }
     const elementIData = this._elementData[i];
-    if (checkCache(elementIData, "value")) {
-      return elementIData.value;
-    }
-
-    const {value, updateTo} = this._ctx;
-    return elementIData.value = elementType({
-      ...this._ctx,
-      parent: this,
-      value: value[i],
-      updateTo: newValue =>
+    return cache(elementIData, "value", () => {
+      const {value, updateTo} = this._ctx;
+      return elementType({
+        ...this._ctx,
+        parent: this,
+        value: value[i],
+        updateTo: newValue =>
         updateTo([...value.slice(0, i), newValue, ...value.slice(i + 1)]),
+      });
     });
   }
 
