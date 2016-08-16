@@ -22,9 +22,9 @@ function cache(holder, prop, calc) {
   }
 }
 
-const addVisitorNames = (options = {}, ...props) => {
+const addVisitorNames = (options = {}, ...moreNames) => {
   const {visitorNames = []} = options;
-  return {...options, visitorNames: [...visitorNames, ...props]}
+  return {...options, visitorNames: [...visitorNames, ...moreNames]}
 }
 
 export class ConfigNode {
