@@ -54,9 +54,7 @@ export class ConfigNode {
   }
 
   get id() {
-    return cache(this, "_id", () =>
-      this.parent ? `${this.parent.id}/${this._ctx.tag}` : ""
-    )
+    return this._ctx.id;
   }
 
   accept(visitor) {
@@ -107,7 +105,7 @@ export class GroupNode extends ConfigNode {
       return detail({
         ...ctx,
         parent: this,
-        tag,
+        id: `${this.id}.${tag}`,
         // ### should we always descend?
         value: value.get(tag),
         updateTo: newValue => updateTo(value.set(tag, newValue)),
@@ -249,7 +247,7 @@ export class SelectNode extends ConfigNode {
       return detailType({
         ...this._ctx,
         parent: this,
-        tag: "$detail",
+        id: `${this.id}.$detail`,
         value: value.get("$detail"),
         updateTo: newValue => updateTo(value.set("$detail", newValue)),
       });
@@ -308,6 +306,7 @@ export class EitherNode extends ConfigNode {
       return detailType({
         ...this._ctx,
         parent: this,
+        id: `${this.id}.$detail`,
         value: value.get("$detail"),
         updateTo: newValue => updateTo(value.set("$detail", newValue)),
       });
@@ -337,6 +336,7 @@ export class ListNode extends ConfigNode {
       return elementType({
         ...this._ctx,
         parent: this,
+        id: `${this.id}[${i}]`,
         value: value.get(i),
         updateTo: newValue => updateTo(value.set(i, newValue)),
       });

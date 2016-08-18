@@ -133,6 +133,7 @@ class Configurator extends React.Component {
       <div>
         {render(
           tShirt({
+            id: "$root",
             value: this.state.config,
             updateTo: config => this.setState({config})
           })
