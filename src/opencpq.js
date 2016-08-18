@@ -37,6 +37,10 @@ export class ConfigNode {
     this._options = addVisitorNames(options, "visitConfig");
   }
 
+  get options() {
+    return this._options;
+  }
+
   get props() {
     return this._options.props;
   }

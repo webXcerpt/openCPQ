@@ -4,7 +4,7 @@ import ReactDOM from "react-dom";
 import Immutable from "immutable";
 
 import {CGroup, CSelect, CPrimitive} from "./opencpq.js"
-import renderer from "./renderers/ugly-renderer.js";
+import render from "./renderers/ugly-renderer.js";
 
 /*
 const tShirt = config`[
@@ -61,6 +61,7 @@ const tShirt = CGroup([
     tag: "color",
     props: {label: "Color"},
     detail: CSelect(
+      {props: {render: renderAsRadioButtons}},
       ["red", "green", "blue"].map(tag => ({
         tag,
         mode: ctx => {
@@ -76,6 +77,7 @@ const tShirt = CGroup([
       tag: "textColor",
       props: {label: "Text Color"},
       detail: CSelect(
+        // {props: {render: renderAsRadioButtons}},
         ["red", "green", "blue"].map(tag =>
           ({tag, mode: ctx => cref(ctx, "color").choice === tag ? "error" : "normal"})
         )
@@ -89,6 +91,19 @@ const tShirt = CGroup([
   ],
 ]);
 
+function renderAsRadioButtons({choices, choice, fullChoice: {resolvedMode}, choose}) {
+  return (
+    <div>
+      {choices.map(({tag, resolvedMode, props: {label = tag} = {}}) =>
+        <div key={tag}>
+          <input type="radio" checked={tag === choice} onChange={() => choose(tag)}/>
+          <span>{label}{" "}[{resolvedMode}]</span>
+        </div>
+      )}
+    </div>
+  );
+}
+
 class Configurator extends React.Component {
   constructor(props, context) {
     super(props, context);
@@ -99,13 +114,12 @@ class Configurator extends React.Component {
   render() {
     return (
       <div>
-        {
+        {render(
           tShirt({
             value: this.state.config,
             updateTo: config => this.setState({config})
           })
-          .accept(renderer)
-        }
+        )}
         <pre>
           {JSON.stringify(this.state.config, null, 2)}
         </pre>

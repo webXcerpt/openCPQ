@@ -8,7 +8,7 @@ const modeColors = {
   hidden: "white",
 }
 
-export default {
+const visitor = {
 
   visitGroup({members}) {
     return (
@@ -18,7 +18,7 @@ export default {
             const {label = tag} = props;
             return [
               <dt key={`dt-${tag}`}>{label}</dt>,
-              <dd key={`dd-${tag}`}>{node.accept(this)}</dd>
+              <dd key={`dd-${tag}`}>{renderUgly(node)}</dd>
             ];
           }))
         }
@@ -54,7 +54,7 @@ export default {
             <button onClick={unset}>unset</button>
           }
         </span>
-        {detail && detail.accept(this)}
+        {detail && renderUgly(detail)}
       </div>
     );
   },
@@ -82,3 +82,10 @@ export default {
   },
 
 };
+
+function renderUgly(node) {
+  const {options: {props: {render} = {}} = {}} = node;
+  return render ? render(node) : node.accept(visitor);
+}
+
+export default renderUgly;
