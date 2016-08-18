@@ -77,7 +77,7 @@ const tShirt = CGroup([
       tag: "textColor",
       props: {label: "Text Color"},
       detail: CSelect(
-        // {props: {render: renderAsRadioButtons}},
+        {props: {render: renderAsRadioButtons}},
         ["red", "green", "blue"].map(tag =>
           ({tag, mode: ctx => cref(ctx, "color").choice === tag ? "error" : "normal"})
         )
@@ -91,14 +91,26 @@ const tShirt = CGroup([
   ],
 ]);
 
-function renderAsRadioButtons({choices, choice, fullChoice: {resolvedMode}, choose}) {
+function renderAsRadioButtons({id, choices, choice, fullChoice: {resolvedMode}, choose}) {
   return (
     <div>
-      {choices.map(({tag, resolvedMode, props: {label = tag} = {}}) =>
-        <div key={tag}>
-          <input type="radio" checked={tag === choice} onChange={() => choose(tag)}/>
-          <span>{label}{" "}[{resolvedMode}]</span>
-        </div>
+      {choices.map(({tag, resolvedMode, props: {label = tag} = {}}) => {
+        const inputId = `${id}:${tag}`;
+        return (
+          <div key={tag}>
+            <input
+              type="radio"
+              id={inputId}
+              name={id}
+              checked={tag === choice}
+              onChange={() => choose(tag)}
+            />
+            <label htmlFor={inputId}>
+              {label}{" "}[{resolvedMode}]
+            </label>
+          </div>
+        );
+      }
       )}
     </div>
   );

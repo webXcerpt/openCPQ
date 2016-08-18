@@ -53,6 +53,12 @@ export class ConfigNode {
     return this._ctx.parent;
   }
 
+  get id() {
+    return cache(this, "_id", () =>
+      this.parent ? `${this.parent.id}/${this._ctx.tag}` : ""
+    )
+  }
+
   accept(visitor) {
     const name = this._options.visitorNames.find(n => visitor.hasOwnProperty(n));
     return name && visitor[name](this);
@@ -95,12 +101,13 @@ export class GroupNode extends ConfigNode {
       return undefined; // TODO throw an exception?
     }
     cache(member, "node", () => {
-      const {detail} = member;
+      const {tag, detail} = member;
       const ctx = this._ctx;
       const {value = emptyMap, updateTo} = ctx;
       return detail({
         ...ctx,
         parent: this,
+        tag,
         // ### should we always descend?
         value: value.get(tag),
         updateTo: newValue => updateTo(value.set(tag, newValue)),
@@ -242,6 +249,7 @@ export class SelectNode extends ConfigNode {
       return detailType({
         ...this._ctx,
         parent: this,
+        tag: "$detail",
         value: value.get("$detail"),
         updateTo: newValue => updateTo(value.set("$detail", newValue)),
       });
