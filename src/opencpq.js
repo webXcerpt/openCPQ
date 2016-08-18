@@ -193,9 +193,9 @@ export class SelectNode extends ConfigNode {
     cache(this, "_choice", () => {
       const {value = emptyMap} = this._ctx;
       const $choice = value.get("$choice");
-      return (this._isUserInput = $choice !== undefined)
-        ? $choice
-        : findBestChoice(this._ctx, this.choices).tag;
+      const isUserInput = $choice !== undefined;
+      this._isUserInput = isUserInput;
+      return isUserInput ? $choice : findBestChoice(this._ctx, this.choices).tag;
     });
   }
 
