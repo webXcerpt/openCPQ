@@ -97,16 +97,12 @@ class Configurator extends React.Component {
     }
   }
   render() {
-    const setConfig = config => this.setState({config});
-
     return (
       <div>
         {
           tShirt({
             value: this.state.config,
-            updateTo(newValue) {
-              setConfig(newValue);
-            }
+            updateTo: config => this.setState({config})
           })
           .accept(renderer)
         }
