@@ -247,7 +247,7 @@ export class SelectNode extends ConfigNode {
 
 export class EitherNode extends ConfigNode {
   constructor(ctx, options, yesDetail, noDetail) {
-    super(ctx, addVisitorNames(options, "visitOption"));
+    super(ctx, addVisitorNames(options, "visitEither"));
     this._yesDetail = yesDetail;
     this._noDetail = noDetail;
   }
