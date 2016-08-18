@@ -1,6 +1,8 @@
 import "babel-polyfill";
 import React from "react";
 import ReactDOM from "react-dom";
+import Immutable from "immutable";
+
 import {CGroup, CSelect, CPrimitive} from "./opencpq.js"
 import renderer from "./renderers/ugly-renderer.js";
 
@@ -91,7 +93,7 @@ class Configurator extends React.Component {
   constructor(props, context) {
     super(props, context);
     this.state = {
-      config: { color: {$choice: "blue"} }
+      config: Immutable.fromJS({color: {$choice: "blue"}})
     }
   }
   render() {

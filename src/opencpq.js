@@ -1,4 +1,8 @@
-import I from "immutable";
+import Immutable from "immutable";
+
+
+const emptyMap = Immutable.Map();
+const emptyList = Immutable.List();
 
 // Various values are constructed lazily when they are first accessed.  The
 // property for the value is temporarily set to the marker object `EVALUATING`
@@ -89,13 +93,13 @@ export class GroupNode extends ConfigNode {
     cache(member, "node", () => {
       const {detail} = member;
       const ctx = this._ctx;
-      const {value = {}, updateTo} = ctx;
+      const {value = emptyMap, updateTo} = ctx;
       return detail({
         ...ctx,
         parent: this,
         // ### should we always descend?
-        value: value[tag],
-        updateTo: newValue => updateTo({...value, [tag]: newValue}),
+        value: value.get(tag),
+        updateTo: newValue => updateTo(value.set(tag, newValue)),
       });
     });
     return member;
@@ -187,8 +191,8 @@ export class SelectNode extends ConfigNode {
 
   _determineChoice() {
     cache(this, "_choice", () => {
-      const {value = {}} = this._ctx;
-      const {$choice} = value
+      const {value = emptyMap} = this._ctx;
+      const $choice = value.get("$choice");
       return (this._isUserInput = $choice !== undefined)
         ? $choice
         : findBestChoice(this._ctx, this.choices).tag;
@@ -209,7 +213,7 @@ export class SelectNode extends ConfigNode {
     if (newChoice === this.choice) {
       return;
     }
-    this._ctx.updateTo({$choice: newChoice});
+    this._ctx.updateTo(Immutable.Map.of("$choice", newChoice));
   }
 
   get fullChoice() {
@@ -230,12 +234,12 @@ export class SelectNode extends ConfigNode {
   get detail() {
     return cache(this, "_detail", () => {
       const detailType = this._choicesByTag[this.choice].detail || (() => undefined);
-      const {value, updateTo} = this._ctx;
+      const {value = emptyMap, updateTo} = this._ctx;
       return detailType({
         ...this._ctx,
         parent: this,
-        value: value && value.$detail,
-        updateTo: newValue => updateTo({...value, $detail: newValue}),
+        value: value.get("$detail"),
+        updateTo: newValue => updateTo(value.set("$detail", newValue)),
       });
     });
   }
@@ -250,10 +254,11 @@ export class EitherNode extends ConfigNode {
 
   _determineChoice() {
     cache(this, "_choice", () => {
-      const {value = {}} = this._ctx;
-      return (this._isUserInput = value.$choice !== undefined)
-        ? value.$choice
-        : this._options.defaultChoice;
+      const {value = emptyMap} = this._ctx;
+      const $choice = value.get("$choice");
+      const isUserInput = $choice !== undefined;
+      this._isUserInput = isUserInput;
+      return isUserInput ? $choice : this._options.defaultChoice;
     });
   }
 
@@ -287,12 +292,12 @@ export class EitherNode extends ConfigNode {
       const detailType =
         (this.choice ? this._yesDetail : this._noDetail) ||
         (() => undefined);
-      const {value, updateTo} = this._ctx;
+      const {value = emptyMap, updateTo} = this._ctx;
       return detailType({
         ...this._ctx,
         parent: this,
-        value: value && value.$detail,
-        updateTo: newValue => updateTo({...value, $detail: newValue}),
+        value: value.get("$detail"),
+        updateTo: newValue => updateTo(value.set("$detail", newValue)),
       });
     });
   }
@@ -303,7 +308,7 @@ export class ListNode extends ConfigNode {
     super(ctx, addVisitorNames(options, "visitList"));
 
     this._elementType = element;
-    this._elementData = ctx.value.map(elem => ({}));
+    this._elementData = ctx.value.toArray().map(elem => ({}));
   }
 
   get length() {
@@ -316,13 +321,12 @@ export class ListNode extends ConfigNode {
     }
     const elementIData = this._elementData[i];
     return cache(elementIData, "value", () => {
-      const {value, updateTo} = this._ctx;
+      const {value = emptyList, updateTo} = this._ctx;
       return elementType({
         ...this._ctx,
         parent: this,
-        value: value[i],
-        updateTo: newValue =>
-        updateTo([...value.slice(0, i), newValue, ...value.slice(i + 1)]),
+        value: value.get(i),
+        updateTo: newValue => updateTo(value.set(i, newValue)),
       });
     });
   }
@@ -331,16 +335,14 @@ export class ListNode extends ConfigNode {
     if (i < 0 || i > this.length) {
       throw new Error("out of range");
     }
-    const {value, updateTo} = this._ctx;
-    updateTo([...value.slice(0, i), newValue, ...value.slice(i)]);
+    updateTo(this._ctx.value.insert(i, newValue));
   }
 
   deleteAt(i) {
     if (i < 0 || i >= this.length) {
       throw new Error("out of range");
     }
-    const {value, updateTo} = this._ctx;
-    updateTo([...value.slice(0, i), ...value.slice(i + 1)])
+    updateTo(this._ctx.value.delete(i))
   }
 }
 
