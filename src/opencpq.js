@@ -8,7 +8,7 @@ const emptyList = Immutable.List();
 // property for the value is temporarily set to the marker object `EVALUATING`
 // while the value is being evaluated.  This allows to detect circular
 // dependencies.
-const EVALUATING = ["EVALUATING"];
+const EVALUATING = Symbol("EVALUATING");
 
 function cache(holder, prop, calc) {
   if (holder.hasOwnProperty(prop)) {
