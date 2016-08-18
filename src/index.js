@@ -5,6 +5,8 @@ import Immutable from "immutable";
 
 import {CGroup, CSelect, CPrimitive} from "./opencpq.js"
 import render from "./renderers/ugly-renderer.js";
+import modeColors from "./renderers/mode-colors.js";
+
 
 /*
 const tShirt = config`[
@@ -105,7 +107,10 @@ function renderAsRadioButtons({id, choices, choice, fullChoice: {resolvedMode}, 
               checked={tag === choice}
               onChange={() => choose(tag)}
             />
-            <label htmlFor={inputId}>
+            <label
+              htmlFor={inputId}
+              style={{color: modeColors[resolvedMode]}}
+            >
               {label}{" "}[{resolvedMode}]
             </label>
           </div>

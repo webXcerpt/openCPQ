@@ -1,12 +1,7 @@
 import React from "react";
 
-const modeColors = {
-  "default": "blue",
-  normal: "black",
-  warning: "yellow",
-  error: "red",
-  hidden: "white",
-}
+import modeColors from "./mode-colors.js";
+
 
 const visitor = {
 
