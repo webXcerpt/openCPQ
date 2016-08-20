@@ -3,7 +3,7 @@ import React from "react";
 import ReactDOM from "react-dom";
 import Immutable from "immutable";
 
-import {CGroup, CSelect, CPrimitive} from "./opencpq.js"
+import {CGroup, CSelect, CList, CPrimitive} from "./opencpq.js"
 import render from "./renderers/ugly-renderer.js";
 import modeColors from "./renderers/mode-colors.js";
 
@@ -125,14 +125,14 @@ class Configurator extends React.Component {
   constructor(props, context) {
     super(props, context);
     this.state = {
-      config: Immutable.fromJS({color: {$choice: "blue"}})
+      config: Immutable.fromJS([{color: {$choice: "blue"}}])
     }
   }
   render() {
     return (
       <div>
         {render(
-          tShirt({
+          CList(tShirt)({
             id: "$root",
             value: this.state.config,
             updateTo: config => this.setState({config})

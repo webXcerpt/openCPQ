@@ -54,6 +54,25 @@ const visitor = {
     );
   },
 
+  visitList(node) {
+    return (
+      <ul>
+        {[].concat(...node.elements.map((element, i) => [
+          <li key={`plus-${i}`}>
+            <button onClick={() => node.insertAt(i, undefined)}>+</button>
+          </li>,
+          <li key={`elem-${i}`}>
+            <button onClick={() => node.deleteAt(i)}>&minus;</button>
+            <div>
+              {renderUgly(element)}
+            </div>
+          </li>
+        ]))}
+        <li><button onClick={() => node.insertAt(node.length)}>+</button></li>
+      </ul>
+    );
+  },
+
   visitPrimitive({value = "", updateTo}) {
     return (
       <input

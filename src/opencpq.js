@@ -333,7 +333,7 @@ export class ListNode extends ConfigNode {
     const elementIData = this._elementData[i];
     return cache(elementIData, "value", () => {
       const {value = emptyList, updateTo} = this._ctx;
-      return elementType({
+      return (this._elementType)({
         ...this._ctx,
         parent: this,
         id: `${this.id}[${i}]`,
@@ -343,18 +343,24 @@ export class ListNode extends ConfigNode {
     });
   }
 
+  get elements() {
+    return this._elementData.map((_, i) => this.element(i));
+  }
+
   insertAt(i, newValue) {
     if (i < 0 || i > this.length) {
       throw new Error("out of range");
     }
-    updateTo(this._ctx.value.insert(i, newValue));
+    const {value = emptyList, updateTo} = this._ctx;
+    updateTo(value.insert(i, newValue));
   }
 
   deleteAt(i) {
     if (i < 0 || i >= this.length) {
       throw new Error("out of range");
     }
-    updateTo(this._ctx.value.delete(i))
+    const {value = emptyList, updateTo} = this._ctx;
+    updateTo(value.delete(i))
   }
 }
 
@@ -383,12 +389,7 @@ export class UnitNode extends ConfigNode {
 }
 
 
-const withOptions = args =>
-  args[0] == undefined ||
-  args[0] instanceof Array ||
-  args[0] instanceof Function
-  ? [{}, ...args]
-  : args;
+const withOptions = args => args.length <= 1 ? [{}, ...args] : args;
 
 export function CGroup(...args) {
   return ctx => new GroupNode(ctx, ...withOptions(args));
