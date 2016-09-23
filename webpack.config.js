@@ -6,7 +6,8 @@ var config = {
 	target: "web",
 	entry: [].concat(
 		"!file-loader?name=index.html&context=./src!./src/index.html",
-		"./src/index.js"
+    "./src/t-shirt.js",
+    "./src/lift.js"
 	),
 	output: {
 		path: path.resolve("dst"),

@@ -319,7 +319,8 @@ export class ListNode extends ConfigNode {
     super(ctx, addVisitorNames(options, "visitList"));
 
     this._elementType = element;
-    this._elementData = ctx.value.toArray().map(elem => ({}));
+    const {value = emptyList} = ctx;
+    this._elementData = value.toArray().map(elem => ({}));
   }
 
   get length() {

@@ -133,7 +133,7 @@ class Configurator extends React.Component {
       <div>
         {render(
           CList(tShirt)({
-            id: "$root",
+            id: "$t-shirt",
             value: this.state.config,
             updateTo: config => this.setState({config})
           })
@@ -146,4 +146,4 @@ class Configurator extends React.Component {
   }
 }
 
-ReactDOM.render(<Configurator/>, document.getElementById("mnt"));
+ReactDOM.render(<Configurator/>, document.getElementById("t-shirt"));
