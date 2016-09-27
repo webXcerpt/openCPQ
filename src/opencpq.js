@@ -99,7 +99,7 @@ export class GroupNode extends ConfigNode {
       return undefined; // TODO throw an exception?
     }
     cache(member, "node", () => {
-      const {tag, detail} = member;
+      const {tag, detail = CUnit()} = member;
       const ctx = this._ctx;
       const {value = emptyMap, updateTo} = ctx;
       return detail({
@@ -286,7 +286,7 @@ export class EitherNode extends ConfigNode {
     if (newChoice === this.choice) {
       return;
     }
-    this._ctx.updateTo({$choice: newChoice});
+    this._ctx.updateTo(Immutable.Map.of("$choice", newChoice));
   }
 
   get choose() {
@@ -401,7 +401,11 @@ export function CSelect(...args) {
 }
 
 export function CEither(...args) {
-  return ctx => new EitherNode(ctx, ...withOptions(args));
+  const arg0 = args[0];
+  if (arg0 === undefined || arg0 instanceof Function) {
+    args = [{}, ...args];
+  }
+  return ctx => new EitherNode(ctx, ...args);
 }
 
 export function CList(...args) {

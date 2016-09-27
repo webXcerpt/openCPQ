@@ -54,6 +54,24 @@ const visitor = {
     );
   },
 
+  visitEither({isUserInput, choice = false, detail, choose, unset}) {
+    return (
+      <div>
+        <span>
+          <input
+            type="checkbox"
+            checked={choice}
+            onChange={event => choose(event.target.checked)}
+          />
+          {isUserInput &&
+            <button onClick={unset}>unset</button>
+          }
+        </span>
+        {detail && renderUgly(detail)}
+      </div>
+    );
+  },
+
   visitList(node) {
     return (
       <ul>
