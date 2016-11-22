@@ -3,6 +3,7 @@ import Immutable from "immutable";
 
 const emptyMap = Immutable.Map();
 const emptyList = Immutable.List();
+const identity = x => x;
 
 // Various values are constructed lazily when they are first accessed.  The
 // property for the value is temporarily set to the marker object `EVALUATING`
@@ -28,17 +29,24 @@ function cache(holder, prop, calc) {
 
 const addVisitorNames = (options = {}, ...moreNames) => {
   const {visitorNames = []} = options;
-  return {...options, visitorNames: [...visitorNames, ...moreNames]}
-}
+  return {...options, visitorNames: [...visitorNames, ...moreNames]};
+};
 
 export class ConfigNode {
-  constructor(ctx, options) {
+  constructor(ctx, options, defaultDefaultValue, visitorName) {
     this._ctx = {...ctx, node: this};
-    this._options = addVisitorNames(options, "visitConfig");
+    this._options = addVisitorNames(
+      { defaultValue: defaultDefaultValue, ...options },
+      visitorName, "visitConfig"
+    );
   }
 
   get options() {
     return this._options;
+  }
+
+  get defaultValue() {
+    return this.options.defaultValue;
   }
 
   get props() {
@@ -47,6 +55,18 @@ export class ConfigNode {
 
   get rawValue() {
     return this._ctx.value;
+  }
+
+  get plainValue() {
+    const rawValue = this.rawValue;
+    return rawValue !== undefined ? rawValue : this.defaultValue;
+  }
+
+  get updateThisTo() {
+    return newValue => {
+      const { transformUpdate = identity } = this.options;
+      return this._ctx.updateTo(transformUpdate(newValue, this.plainValue));
+    };
   }
 
   get parent() {
@@ -65,7 +85,7 @@ export class ConfigNode {
 
 export class GroupNode extends ConfigNode {
   constructor(ctx, options, rawMembers) {
-    super(ctx, addVisitorNames(options, "visitGroup"));
+    super(ctx, options, emptyMap, "visitGroup");
 
     const memberTags = this._memberTags = [];
     const membersByTag = this._membersByTag = {};
@@ -101,14 +121,14 @@ export class GroupNode extends ConfigNode {
     cache(member, "node", () => {
       const {tag, detail = CUnit()} = member;
       const ctx = this._ctx;
-      const {value = emptyMap, updateTo} = ctx;
+      const {value = this.defaultValue} = ctx;
       return detail({
         ...ctx,
         parent: this,
         id: `${this.id}.${tag}`,
         // ### should we always descend?
         value: value.get(tag),
-        updateTo: newValue => updateTo(value.set(tag, newValue)),
+        updateTo: newValue => this.updateThisTo(value.set(tag, newValue)),
       });
     });
     return member;
@@ -162,7 +182,7 @@ function findBestChoice(ctx, choices) {
 
 export class SelectNode extends ConfigNode {
   constructor(ctx, options, rawChoices) {
-    super(ctx, addVisitorNames(options, "visitSelect"));
+    super(ctx, options, emptyMap, "visitSelect");
 
     const choiceTags = this._choiceTags = [];
     const choicesByTag = this._choicesByTag = {};
@@ -200,7 +220,7 @@ export class SelectNode extends ConfigNode {
 
   _determineChoice() {
     cache(this, "_choice", () => {
-      const {value = emptyMap} = this._ctx;
+      const {value = this.defaultValue} = this._ctx;
       const $choice = value.get("$choice");
       const isUserInput = $choice !== undefined;
       this._isUserInput = isUserInput;
@@ -222,7 +242,7 @@ export class SelectNode extends ConfigNode {
     if (newChoice === this.choice) {
       return;
     }
-    this._ctx.updateTo(Immutable.Map.of("$choice", newChoice));
+    this.updateThisTo(Immutable.Map.of("$choice", newChoice));
   }
 
   get fullChoice() {
@@ -243,13 +263,13 @@ export class SelectNode extends ConfigNode {
   get detail() {
     return cache(this, "_detail", () => {
       const detailType = this._choicesByTag[this.choice].detail || (() => undefined);
-      const {value = emptyMap, updateTo} = this._ctx;
+      const {value = this.defaultValue} = this._ctx;
       return detailType({
         ...this._ctx,
         parent: this,
         id: `${this.id}.$detail`,
         value: value.get("$detail"),
-        updateTo: newValue => updateTo(value.set("$detail", newValue)),
+        updateTo: newValue => this.updateThisTo(value.set("$detail", newValue)),
       });
     });
   }
@@ -257,15 +277,17 @@ export class SelectNode extends ConfigNode {
 
 export class EitherNode extends ConfigNode {
   constructor(ctx, options, yesDetail, noDetail) {
-    super(ctx, addVisitorNames(options, "visitEither"));
+    super(ctx, options, emptyMap, "visitEither");
     this._yesDetail = yesDetail;
     this._noDetail = noDetail;
   }
 
   _determineChoice() {
     cache(this, "_choice", () => {
-      const {value = emptyMap} = this._ctx;
+      const {value = this.defaultValue} = this._ctx;
       const $choice = value.get("$choice");
+      // FIXME Check for user input in the value before using the default value.
+      // (Also in other node types?)
       const isUserInput = $choice !== undefined;
       this._isUserInput = isUserInput;
       return isUserInput ? $choice : this._options.defaultChoice;
@@ -286,7 +308,7 @@ export class EitherNode extends ConfigNode {
     if (newChoice === this.choice) {
       return;
     }
-    this._ctx.updateTo(Immutable.Map.of("$choice", newChoice));
+    this.updateThisTo(Immutable.Map.of("$choice", newChoice));
   }
 
   get choose() {
@@ -302,25 +324,28 @@ export class EitherNode extends ConfigNode {
       const detailType =
         (this.choice ? this._yesDetail : this._noDetail) ||
         (() => undefined);
-      const {value = emptyMap, updateTo} = this._ctx;
+      const {value = this.defaultValue} = this._ctx;
       return detailType({
         ...this._ctx,
         parent: this,
         id: `${this.id}.$detail`,
         value: value.get("$detail"),
-        updateTo: newValue => updateTo(value.set("$detail", newValue)),
+        updateTo: newValue => this.updateThisTo(value.set("$detail", newValue)),
       });
     });
   }
 }
 
 export class ListNode extends ConfigNode {
+  // TODO: It would be nice if node could be asked whether insertions/deletions
+  // are possible without violating the length constraints.
+
   constructor(ctx, options, element) {
-    super(ctx, addVisitorNames(options, "visitList"));
+    super(ctx, options, emptyList, "visitList");
 
     this._elementType = element;
-    const {value = emptyList} = ctx;
-    this._elementData = value.toArray().map(elem => ({}));
+    const {value = this.defaultValue} = ctx;
+    this._elementData = value.toArray().map(() => ({}));
   }
 
   get length() {
@@ -333,13 +358,13 @@ export class ListNode extends ConfigNode {
     }
     const elementIData = this._elementData[i];
     return cache(elementIData, "value", () => {
-      const {value = emptyList, updateTo} = this._ctx;
+      const {value = this.defaultValue} = this._ctx;
       return (this._elementType)({
         ...this._ctx,
         parent: this,
         id: `${this.id}[${i}]`,
         value: value.get(i),
-        updateTo: newValue => updateTo(value.set(i, newValue)),
+        updateTo: newValue => this.updateThisTo(value.set(i, newValue)),
       });
     });
   }
@@ -350,24 +375,32 @@ export class ListNode extends ConfigNode {
 
   insertAt(i, newValue) {
     if (i < 0 || i > this.length) {
-      throw new Error("out of range");
+      throw new Error("index out of range");
     }
-    const {value = emptyList, updateTo} = this._ctx;
-    updateTo(value.insert(i, newValue));
+    const {value = this.defaultValue} = this._ctx;
+    const {maxLength = Infinity} = this._options;
+    if (value.size >= maxLength) {
+      throw new Error("list too long");
+    }
+    this.updateThisTo(value.insert(i, newValue));
   }
 
   deleteAt(i) {
     if (i < 0 || i >= this.length) {
-      throw new Error("out of range");
+      throw new Error("index out of range");
     }
-    const {value = emptyList, updateTo} = this._ctx;
-    updateTo(value.delete(i))
+    const {value = this.defaultValue} = this._ctx;
+    const {minLength = 0} = this._options;
+    if (value.size <= minLength) {
+      throw new Error("list too short");
+    }
+    this.updateThisTo(value.delete(i));
   }
 }
 
 export class PrimitiveNode extends ConfigNode {
   constructor(ctx, options) {
-    super(ctx, addVisitorNames(options, "visitPrimitive"));
+    super(ctx, options, undefined, "visitPrimitive");
   }
 
   get value() {
@@ -375,7 +408,7 @@ export class PrimitiveNode extends ConfigNode {
   }
 
   set value(newValue) {
-    this._ctx.updateTo(newValue);
+    this.updateThisTo(newValue);
   }
 
   get updateTo() {
@@ -385,10 +418,101 @@ export class PrimitiveNode extends ConfigNode {
 
 export class UnitNode extends ConfigNode {
   constructor(ctx, options) {
-    super(ctx, addVisitorNames(options, "visitUnit"));
+    super(ctx, options, undefined, "visitUnit");
   }
 }
 
+const emptyUndo = Immutable.Map({
+  past: emptyList,
+  current: undefined,
+  future: emptyList,
+});
+
+export class UndoNode extends ConfigNode {
+  constructor(ctx, options, subtype) {
+    super(ctx, options, undefined, "visitUndo");
+    this._subtype = subtype;
+    const { defaultValue = emptyUndo } = options;
+    const { value = defaultValue } = ctx;
+    this._past = value.get('past');
+    this._current = value.get('current');
+    this._future = value.get('future');
+  }
+
+  get current() {
+    return this._subtype({
+      ...this._ctx,
+      parent: this,
+      id: `${this.id}.undoable`,
+      value: this._current,
+      updateTo: this.updateTo,
+    });
+  }
+
+  set current(newValue) {
+    this.updateThisTo(Immutable.Map({
+      past: this._past.push(this._current),
+      current: newValue,
+      future: emptyList,
+    }));
+  }
+
+  get updateTo() {
+    return newValue => this.current = newValue;
+  }
+
+  get undo() {
+    return !this._past.isEmpty() && (() => this.updateThisTo(Immutable.Map({
+      past: this._past.pop(),
+      current: this._past.last(),
+      future: this._future.unshift(this._current),
+    })));
+  }
+
+  get redo() {
+    return !this._future.isEmpty() && (() => this.updateThisTo(Immutable.Map({
+      past: this._past.push(this._current),
+      current: this._future.first(),
+      future: this._future.shift(),
+    })));
+  }
+}
+
+export class WrapperNode extends ConfigNode {
+  constructor(ctx, options, subtype) {
+    super(ctx, options, undefined, "visitWrapper");
+    this._subtype = subtype;
+  }
+
+  get subtype() {
+    return this._subtype;
+  }
+
+  get child() {
+    return this._subtype({
+      ...this._ctx,
+      parent: this,
+      id: `${this.id}.wrapped`,
+      updateTo: this.updateTo,
+    });
+  }
+
+  set child(newValue) {
+    this.updateThisTo(newValue);
+  }
+
+  get updateTo() {
+    return newValue => this.child = newValue;
+  }
+
+}
+
+
+// Idea: interceptors for update methods
+// The modeler should be enabled to provide checks which are performed by
+// update methods.  If the check fails, the update is prohibited.
+// (Or should we "just" subclass the node types to achieve this?)
+// - The minLength/maxLength checks for lists could be implemented this way.
 
 const withOptions = args => args.length <= 1 ? [{}, ...args] : args;
 
@@ -418,4 +542,12 @@ export function CPrimitive(options) {
 
 export function CUnit(options) {
   return ctx => new UnitNode(ctx, options);
+}
+
+export function CUndo(...args) {
+  return ctx => new UndoNode(ctx, ...withOptions(args));
+}
+
+export function CWrapper(...args) {
+  return ctx => new WrapperNode(ctx, ...withOptions(args));
 }
