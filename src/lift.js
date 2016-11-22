@@ -7,13 +7,19 @@ import {CGroup, CSelect, CList, CPrimitive} from "./opencpq.js"
 import render from "./renderers/ugly-renderer.js";
 import modeColors from "./renderers/mode-colors.js";
 
+const colors = [
+  {name: "white", color: "#ffffff"},
+  {name: "black", color: "#000000"},
+  {name: "grey" , color: "#808080"},
+  {name: "green", color: "#00ff00"},
+];
+
+const colorMenu = CSelect(
+  colors.map(({name, color}) => ({tag: name, props: {color}}))
+);
+
 const door = CGroup([
-  {tag: "color", props: {label: "Color"}, detail: CSelect([
-    {tag: "white", props: {color: "#ffffff"}},
-    {tag: "black", props: {color: "#000000"}},
-    {tag: "grey" , props: {color: "#808080"}},
-    {tag: "green", props: {color: "#00ff00"}},
-  ])}
+  {tag: "color", props: {label: "Color"}, detail: colorMenu}
 ]);
 
 const levelDoor = (side, tag, label) => ({node}) =>
@@ -25,7 +31,15 @@ const levelDoor = (side, tag, label) => ({node}) =>
 
 const level = CGroup([
   {tag: "name", props: {label: "Level Name"}, detail: CPrimitive()},
+  // In the aritco configurator heights are given incrementally.  And for each
+  // floor (even the last one!) the increment ("travel height") is given as
+  // ceiling height plus ceiling thickness.
   {tag: "height", props: {label: "Height Above Reference Level (mm)"}, detail: CPrimitive()},
+  // ### walls:
+  //   side A: glass panel/sheet panel
+  //   side B: glass panel/sheet panel
+  //   side C: glass panel/sheet panel
+  //   (The ARITCO configurator asks this even for the door side(s).)
   {tag: "doors", props: {label: "Doors"}, detail: CGroup([
     {tag: "config", props: {label: "Configuration"}, detail: CSelect([
       {tag: "F"  , props: {label: "front"}},
@@ -43,6 +57,27 @@ const level = CGroup([
 ]);
 
 const lift = CGroup([
+  // construction:
+  //   number of floors: 2/3/4/5/6
+  //   floor numbering starts at: -1/0/1 (or any integer?)
+  //   ceiling: boolean
+  //   back covering: boolean
+  // size: 1100x1400/1000x1200/1100x830/1000x830/600x830
+  // colors:
+  //   wall color: colorMenu
+  //   door color: colorMenu
+  // glass:
+  //   glass walls: yes/no
+  //     glass finish: clear/tinted
+  //     glass height: standard/high
+  // interior:
+  //   floor: carpet/vinyl (actually multiple carpet colors and vinyl designs)
+  //   wall design: (9 different designs)
+  // light:
+  //   personalized light: yes/no
+  //      color: rainbow slider
+  //      saturation: slider (saturation based on the selected color)
+  //
   {tag: "levels", props: {label: "Levels"}, detail: CList(level)},
 ]);
 
